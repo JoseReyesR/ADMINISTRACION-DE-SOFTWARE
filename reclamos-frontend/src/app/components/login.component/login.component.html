@@ -1,0 +1,64 @@
+<div class="container d-flex justify-content-center align-items-center vh-100 bg-light">
+  <!-- Tarjeta de Login -->
+  <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px">
+    <div class="text-center mb-4">
+      <h2 class="text-success fw-bold">TOTTUS</h2>
+      <p class="text-muted">Sistema de Reclamos (Libro de Reclamaciones)</p>
+    </div>
+
+    <!-- Formulario con Template Driven Forms (#loginForm) -->
+    <form #loginForm="ngForm" (ngSubmit)="onLogin()">
+      <!-- Campo Correo -->
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo Electrónico</label>
+        <input
+          type="email"
+          class="form-control"
+          id="correo"
+          name="correo"
+          [(ngModel)]="credenciales.correo"
+          required
+          placeholder="ejemplo@correo.com"
+        />
+      </div>
+
+      <!-- Campo Contraseña -->
+      <div class="mb-4">
+        <label for="password" class="form-label">Contraseña</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          [(ngModel)]="credenciales.password"
+          placeholder="Solo usuarios registrados"
+        />
+      </div>
+
+      <!-- Botón de Envío -->
+      <button
+        type="submit"
+        class="btn btn-success w-100 fw-bold mb-3"
+        [disabled]="!loginForm.form.valid"
+      >
+        Iniciar Sesión
+      </button>
+    </form>
+
+    <hr />
+
+    <!-- Botones para Invitados (RF01 y RF07) -->
+    <div class="text-center d-grid gap-2">
+      <button type="button" class="btn btn-outline-secondary" (click)="onLogin()">
+        Registrar Reclamo sin cuenta
+      </button>
+      <button
+        type="button"
+        class="btn btn-link text-decoration-none"
+        (click)="irAConsultaInvitado()"
+      >
+        ¿Ya tienes un código? Consulta aquí
+      </button>
+    </div>
+  </div>
+</div>
