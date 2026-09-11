@@ -31,8 +31,16 @@ public class Reclamo {
     @JoinColumn(name = "estado_id", nullable = false)
     private EstadoReclamo estado;
 
-    @Column(name = "tipo_compra", length = 50)
-    private String tipoCompra;
+    // --- NUEVOS CAMPOS DEL FRONTEND ---
+    @Column(name = "tipo_solicitud", nullable = false, length = 50)
+    private String tipoSolicitud;
+
+    @Column(name = "canal_compra", length = 50)
+    private String canalCompra;
+
+    @Column(name = "tienda", length = 100)
+    private String tienda;
+    // ----------------------------------
 
     @Column(name = "numero_boleta_pedido", length = 100)
     private String numeroBoletaPedido;
@@ -55,7 +63,7 @@ public class Reclamo {
     public Reclamo() {
     }
 
-    // Getters y Setters
+    // --- Getters y Setters ---
     public Integer getId() {
         return id;
     }
@@ -104,12 +112,28 @@ public class Reclamo {
         this.estado = estado;
     }
 
-    public String getTipoCompra() {
-        return tipoCompra;
+    public String getTipoSolicitud() {
+        return tipoSolicitud;
     }
 
-    public void setTipoCompra(String tipoCompra) {
-        this.tipoCompra = tipoCompra;
+    public void setTipoSolicitud(String tipoSolicitud) {
+        this.tipoSolicitud = tipoSolicitud;
+    }
+
+    public String getCanalCompra() {
+        return canalCompra;
+    }
+
+    public void setCanalCompra(String canalCompra) {
+        this.canalCompra = canalCompra;
+    }
+
+    public String getTienda() {
+        return tienda;
+    }
+
+    public void setTienda(String tienda) {
+        this.tienda = tienda;
     }
 
     public String getNumeroBoletaPedido() {
