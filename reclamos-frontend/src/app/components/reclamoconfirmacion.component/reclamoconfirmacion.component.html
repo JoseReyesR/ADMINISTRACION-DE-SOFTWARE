@@ -1,1 +1,146 @@
-<p>reclamoconfirmacion.component works!</p>
+<!-- Barra Superior Nav -->
+<nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7bb32e">
+  <div class="container-fluid px-4 py-1">
+    <div class="d-flex align-items-center">
+      <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
+      <span class="text-white fw-bold me-2">Centro de Ayuda</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none ms-3"
+        (click)="salir()"
+        data-cy="nav-salir"
+        >> Salir</a
+      >
+    </div>
+  </div>
+</nav>
+
+<div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
+  <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px; height: fit-content">
+    <div class="card-body p-5">
+      <!-- Stepper Visual (Paso 3 Activo) -->
+      <div class="position-relative mb-5">
+        <div
+          class="progress position-absolute top-50 start-50 translate-middle"
+          style="height: 2px; width: 66%; z-index: 1"
+        >
+          <div class="progress-bar bg-light" role="progressbar" style="width: 100%"></div>
+        </div>
+        <div class="d-flex justify-content-between position-relative" style="z-index: 2">
+          <!-- Paso 1: Completado -->
+          <div class="text-center bg-white px-2">
+            <div
+              class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1 border-success"
+              style="
+                width: 40px;
+                height: 40px;
+                background-color: white;
+                color: #7bb32e;
+                border: 2px solid;
+              "
+            >
+              &#10003;
+            </div>
+            <p class="fw-bold small mb-0" style="color: #7bb32e">Datos</p>
+          </div>
+          <!-- Paso 2: Completado -->
+          <div class="text-center bg-white px-2">
+            <div
+              class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1 border-success"
+              style="
+                width: 40px;
+                height: 40px;
+                background-color: white;
+                color: #7bb32e;
+                border: 2px solid;
+              "
+            >
+              &#10003;
+            </div>
+            <p class="fw-bold small mb-0" style="color: #7bb32e">Incidente y Evidencia</p>
+          </div>
+          <!-- Paso 3: Activo -->
+          <div class="text-center bg-white px-2">
+            <div
+              class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1 shadow-sm"
+              style="width: 40px; height: 40px; background-color: #7bb32e; color: white"
+            >
+              3
+            </div>
+            <p class="fw-bold small mb-0" style="color: #7bb32e">Fin</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de Confirmación -->
+      <div class="text-center mt-4">
+        <div class="mb-4">
+          <div
+            class="rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm"
+            style="
+              width: 80px;
+              height: 80px;
+              font-size: 2.5rem;
+              background-color: #e8f5e9;
+              color: #7bb32e;
+            "
+          >
+            &#10003;
+          </div>
+        </div>
+
+        <h2 class="fw-bold text-dark mb-2" data-cy="titulo-exito">¡Queja Registrada!</h2>
+        <p class="text-muted mb-4">
+          Hemos enviado una confirmación a
+          <strong data-cy="correo-confirmacion">{{ correoCliente }}</strong
+          >.
+        </p>
+
+        <!-- Caja del Código -->
+        <div class="bg-light border rounded p-4 mb-4 mx-auto" style="max-width: 400px">
+          <p class="text-secondary fw-bold small mb-1">CÓDIGO DE SEGUIMIENTO</p>
+          <h2 class="fw-bold text-primary mb-3" data-cy="codigo-seguimiento">
+            {{ codigoSeguimiento }}
+          </h2>
+
+          <div
+            class="bg-white border rounded py-2 px-3 d-inline-block text-danger small fw-bold shadow-sm"
+            data-cy="alerta-plazo"
+          >
+            &#9202; Plazo máximo de respuesta: 15 días hábiles.
+          </div>
+        </div>
+
+        <!-- Botones Finales -->
+        <div class="d-grid gap-3 col-md-6 mx-auto mt-4">
+          <button
+            class="btn text-white fw-bold rounded-pill py-2"
+            style="background-color: #1a2b3c"
+            (click)="irAMisCasos()"
+            data-cy="btn-ver-mis-casos"
+          >
+            Ver Mis Casos
+          </button>
+          <button
+            class="btn btn-link text-success text-decoration-none fw-bold"
+            (click)="salir()"
+            data-cy="btn-salir-flujo"
+          >
+            Salir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Widget Flotante Accesibilidad -->
+<button
+  class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 shadow d-flex justify-content-center align-items-center"
+  style="width: 50px; height: 50px; z-index: 1000"
+  data-cy="btn-accesibilidad"
+>
+  <i class="fs-4 text-white">&#9855;</i>
+</button>

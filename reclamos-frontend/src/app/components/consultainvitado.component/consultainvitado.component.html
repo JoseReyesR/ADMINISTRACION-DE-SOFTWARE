@@ -1,1 +1,120 @@
-<p>consultainvitado.component works!</p>
+<!-- Barra Superior Nav -->
+<nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7bb32e">
+  <div class="container-fluid px-4 py-1">
+    <div class="d-flex align-items-center">
+      <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
+      <span class="text-white fw-bold me-2">Centro de Ayuda</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none ms-3"
+        (click)="volver()"
+        data-cy="nav-salir"
+        >> Salir</a
+      >
+    </div>
+  </div>
+</nav>
+
+<div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
+  <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px; height: fit-content">
+    <div class="card-body p-5">
+      <h3 class="fw-bold mb-1 text-dark">Seguimiento de Invitado</h3>
+      <p class="text-muted mb-4 small">
+        Consulta el estado de tu reclamo ingresando tu número de documento y código de seguimiento.
+      </p>
+
+      <form #invitadoForm="ngForm" (ngSubmit)="consultarCaso()">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label fw-bold small text-dark">Tipo Documento</label>
+            <select
+              class="form-select"
+              name="tipoDocumento"
+              [(ngModel)]="consulta.tipoDocumento"
+              data-cy="select-tipo-doc"
+              required
+            >
+              <option value="DNI">DNI</option>
+              <option value="CE">Carnet de Extranjería</option>
+              <option value="PASAPORTE">Pasaporte</option>
+            </select>
+          </div>
+          <div class="col-md-8">
+            <label class="form-label fw-bold small text-dark">Número de Documento</label>
+            <input
+              type="text"
+              class="form-control"
+              name="numeroDocumento"
+              [(ngModel)]="consulta.numeroDocumento"
+              data-cy="input-num-doc"
+              placeholder="Ingrese número..."
+              required
+            />
+          </div>
+          <div class="col-12 mt-3">
+            <label class="form-label fw-bold small text-dark">Código de Seguimiento</label>
+            <input
+              type="text"
+              class="form-control"
+              name="codigoSeguimiento"
+              [(ngModel)]="consulta.codigoSeguimiento"
+              data-cy="input-codigo"
+              placeholder="Ej: REQ-2026-8927"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-5">
+          <button
+            type="button"
+            class="btn btn-outline-secondary px-4 rounded-pill fw-bold"
+            (click)="volver()"
+            data-cy="btn-volver"
+          >
+            &#8592; Atrás
+          </button>
+          <button
+            type="submit"
+            class="btn text-white px-5 fw-bold rounded-pill"
+            style="background-color: #7bb32e"
+            [disabled]="!invitadoForm.form.valid"
+            data-cy="btn-consultar"
+          >
+            Consultar Estado &#8594;
+          </button>
+        </div>
+      </form>
+
+      <!-- Resultados de la consulta -->
+      <div *ngIf="buscado" class="mt-5">
+        <div *ngIf="resultado" class="alert alert-success border-0 shadow-sm p-4">
+          <h5 class="fw-bold text-success mb-2">&#10003; Caso Encontrado</h5>
+          <p class="mb-1 small"><strong>Código:</strong> {{ resultado.codigo }}</p>
+          <p class="mb-1 small"><strong>Motivo:</strong> {{ resultado.motivo }}</p>
+          <p class="mb-1 small"><strong>Fecha:</strong> {{ resultado.fecha }}</p>
+          <p class="mb-0 small">
+            <strong>Estado:</strong>
+            <span class="badge bg-warning text-dark">{{ resultado.estado }}</span>
+          </p>
+        </div>
+        <div *ngIf="!resultado" class="alert alert-danger border-0 shadow-sm p-4 text-center">
+          <p class="mb-0 fw-bold small">
+            &#9888; No se encontró ningún reclamo registrado con estos datos de verificación.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Widget Flotante Accesibilidad -->
+<button
+  class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 shadow d-flex justify-content-center align-items-center"
+  style="width: 50px; height: 50px; z-index: 1000"
+  data-cy="btn-accesibilidad"
+>
+  <i class="fs-4 text-white">&#9855;</i>
+</button>

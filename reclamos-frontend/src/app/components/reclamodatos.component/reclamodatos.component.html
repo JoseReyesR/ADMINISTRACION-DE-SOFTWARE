@@ -1,1 +1,206 @@
-<p>reclamodatos.component works!</p>
+<!-- Barra Superior Nav -->
+<nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7bb32e">
+  <div class="container-fluid px-4 py-1">
+    <div class="d-flex align-items-center">
+      <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
+      <span class="text-white fw-bold me-2">Centro de Ayuda</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none me-4 small"
+        data-cy="nav-nuevo-reclamo"
+        >Nuevo Reclamo</a
+      >
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none me-4 small"
+        data-cy="nav-mis-casos"
+        >&#128193; Mis Casos</a
+      >
+      <button
+        class="btn btn-sm btn-outline-light d-flex align-items-center fw-bold"
+        data-cy="nav-seguimiento-invitado"
+      >
+        &#128269; Seguimiento Invitado
+      </button>
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none ms-3"
+        (click)="volver()"
+        data-cy="nav-salir"
+        >> Salir</a
+      >
+    </div>
+  </div>
+</nav>
+
+<!-- Contenedor Principal -->
+<div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
+  <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px; height: fit-content">
+    <div class="card-body p-5">
+      <!-- Stepper Visual (3 Pasos Optimizados) -->
+      <div class="position-relative mb-5">
+        <div
+          class="progress position-absolute top-50 start-50 translate-middle"
+          style="height: 2px; width: 66%; z-index: 1"
+        >
+          <div class="progress-bar bg-light" role="progressbar" style="width: 100%"></div>
+        </div>
+        <div class="d-flex justify-content-between position-relative" style="z-index: 2">
+          <div class="text-center bg-white px-2">
+            <div
+              class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1"
+              style="width: 40px; height: 40px; background-color: #7bb32e; color: white"
+            >
+              1
+            </div>
+            <p class="fw-bold small mb-0" style="color: #7bb32e">Datos</p>
+          </div>
+          <div class="text-center bg-white px-2">
+            <div
+              class="bg-white text-secondary rounded-circle d-inline-flex align-items-center justify-content-center border mb-1"
+              style="width: 40px; height: 40px"
+            >
+              2
+            </div>
+            <p class="text-muted small mb-0">Incidente y Evidencia</p>
+          </div>
+          <div class="text-center bg-white px-2">
+            <div
+              class="bg-white text-secondary rounded-circle d-inline-flex align-items-center justify-content-center border mb-1"
+              style="width: 40px; height: 40px"
+            >
+              3
+            </div>
+            <p class="text-muted small mb-0">Fin</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Título y Subtítulo -->
+      <h3 class="fw-bold mb-1 text-dark">Hola, identifícate</h3>
+      <p class="text-muted mb-4 small">
+        Ingresa tus datos personales para continuar con el registro.
+      </p>
+
+      <!-- Formulario de Datos -->
+      <form #datosForm="ngForm" (ngSubmit)="siguientePaso()">
+        <div class="row g-4">
+          <!-- Tipo de Documento -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold text-dark small">Tipo Documento</label>
+            <select
+              class="form-select"
+              name="tipoDocumento"
+              [(ngModel)]="cliente.tipoDocumento"
+              required
+              data-cy="select-tipo-documento"
+            >
+              <option value="DNI">DNI</option>
+              <option value="CE">Carnet de Extranjería</option>
+              <option value="PASAPORTE">Pasaporte</option>
+            </select>
+          </div>
+
+          <!-- Número de Documento -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold text-dark small">Número de Documento</label>
+            <input
+              type="text"
+              class="form-control"
+              name="numeroDocumento"
+              [(ngModel)]="cliente.numeroDocumento"
+              required
+              minlength="8"
+              maxlength="20"
+              data-cy="input-numero-documento"
+            />
+          </div>
+
+          <!-- Nombres -->
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold text-dark small">Nombres</label>
+            <input
+              type="text"
+              class="form-control"
+              name="nombres"
+              [(ngModel)]="cliente.nombres"
+              required
+              data-cy="input-nombres"
+            />
+          </div>
+
+          <!-- Apellidos -->
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold text-dark small">Apellidos</label>
+            <input
+              type="text"
+              class="form-control"
+              name="apellidos"
+              [(ngModel)]="cliente.apellidos"
+              required
+              data-cy="input-apellidos"
+            />
+          </div>
+
+          <!-- Correo -->
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold text-dark small">Correo (Importante)</label>
+            <input
+              type="email"
+              class="form-control"
+              name="correo"
+              [(ngModel)]="cliente.correo"
+              required
+              data-cy="input-correo"
+            />
+          </div>
+
+          <!-- Celular -->
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold text-dark small">Celular</label>
+            <input
+              type="text"
+              class="form-control"
+              name="celular"
+              [(ngModel)]="cliente.celular"
+              required
+              data-cy="input-celular"
+            />
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="d-flex justify-content-between mt-5">
+          <button
+            type="button"
+            class="btn btn-outline-secondary px-4 rounded-pill"
+            (click)="volver()"
+            data-cy="btn-volver-login"
+          >
+            &#8592; Atrás
+          </button>
+          <button
+            type="submit"
+            class="btn text-white px-5 fw-bold rounded-pill"
+            style="background-color: #7bb32e"
+            [disabled]="!datosForm.form.valid"
+            data-cy="btn-continuar-paso1"
+          >
+            Continuar &#8594;
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Widget de Accesibilidad (Botón Flotante) -->
+<button
+  class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 shadow d-flex justify-content-center align-items-center"
+  style="width: 50px; height: 50px; z-index: 1000"
+  data-cy="btn-accesibilidad"
+>
+  <i class="fs-4 text-white">&#9855;</i>
+</button>
