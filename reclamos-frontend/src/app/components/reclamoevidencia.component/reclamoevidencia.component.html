@@ -1,1 +1,294 @@
-<p>reclamoevidencia.component works!</p>
+<!-- Barra Superior Nav -->
+<nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7bb32e">
+  <div class="container-fluid px-4 py-1">
+    <div class="d-flex align-items-center">
+      <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
+      <span class="text-white fw-bold me-2">Centro de Ayuda</span>
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none ms-2"
+        (click)="volver()"
+        data-cy="nav-salir"
+        >> Salir</a
+      >
+    </div>
+    <div class="d-flex align-items-center">
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none me-4 small"
+        data-cy="nav-nuevo-reclamo"
+        >Nuevo Reclamo</a
+      >
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none me-4 small"
+        data-cy="nav-mis-casos"
+        >&#128193; Mis Casos</a
+      >
+      <button
+        class="btn btn-sm btn-outline-light d-flex align-items-center fw-bold"
+        data-cy="nav-seguimiento-invitado"
+      >
+        &#128269; Seguimiento Invitado
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
+  <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px">
+    <div class="card-body p-5">
+      <!-- Stepper Visual (Igual a la imagen: 4 pasos visuales) -->
+      <div class="position-relative mb-5">
+        <div
+          class="progress position-absolute top-50 start-50 translate-middle"
+          style="height: 2px; width: 80%; z-index: 1"
+        >
+          <div class="progress-bar bg-light" role="progressbar" style="width: 100%"></div>
+        </div>
+        <div class="d-flex justify-content-between position-relative" style="z-index: 2">
+          <!-- Paso 1 -->
+          <div class="text-center bg-white px-2">
+            <div
+              class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1"
+              style="width: 40px; height: 40px; background-color: #7bb32e; color: white"
+            >
+              &#10003;
+            </div>
+            <p class="fw-bold small mb-0" style="color: #7bb32e">Datos</p>
+          </div>
+          <!-- Paso 2 (Activo) -->
+          <div class="text-center bg-white px-2">
+            <div
+              class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1 shadow-sm"
+              style="width: 40px; height: 40px; background-color: #7bb32e; color: white"
+            >
+              2
+            </div>
+            <p class="fw-bold small mb-0" style="color: #7bb32e">Incidente</p>
+          </div>
+          <!-- Paso 3 -->
+          <div class="text-center bg-white px-2">
+            <div
+              class="bg-white text-secondary rounded-circle d-inline-flex align-items-center justify-content-center border mb-1"
+              style="width: 40px; height: 40px"
+            >
+              3
+            </div>
+            <p class="text-muted small mb-0">Evidencia</p>
+          </div>
+          <!-- Paso 4 -->
+          <div class="text-center bg-white px-2">
+            <div
+              class="bg-white text-secondary rounded-circle d-inline-flex align-items-center justify-content-center border mb-1"
+              style="width: 40px; height: 40px"
+            >
+              &#10003;
+            </div>
+            <p class="text-muted small mb-0">Fin</p>
+          </div>
+        </div>
+      </div>
+
+      <h4 class="fw-bold mb-4">Detalles del Caso</h4>
+
+      <form #incidenteForm="ngForm" (ngSubmit)="siguientePaso()">
+        <!-- Caja: ¿Qué deseas presentar? -->
+        <div class="p-3 rounded mb-4 border" style="background-color: #f5fcf5">
+          <label class="form-label fw-bold small text-dark">¿Qué deseas presentar?</label>
+          <div class="d-flex gap-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="tipoSolicitud"
+                value="Reclamo"
+                [(ngModel)]="incidente.tipoSolicitud"
+                data-cy="radio-reclamo"
+              />
+              <label class="form-check-label"
+                >Reclamo <span class="text-muted small">(Producto/Cobro)</span></label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="tipoSolicitud"
+                value="Queja"
+                [(ngModel)]="incidente.tipoSolicitud"
+                data-cy="radio-queja"
+              />
+              <label class="form-check-label"
+                >Queja <span class="text-muted small">(Atención/Infraestructura)</span></label
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjetas de Canal de Compra -->
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <div
+              class="card text-center py-3 border-2"
+              [ngClass]="{
+                'border-success text-success fw-bold': incidente.canalCompra === 'Tienda Física',
+                'border-light text-muted': incidente.canalCompra !== 'Tienda Física',
+              }"
+              (click)="incidente.canalCompra = 'Tienda Física'"
+              style="cursor: pointer"
+              data-cy="card-tienda"
+            >
+              <span class="fs-4">&#127980;</span>
+              <span class="mt-1">Tienda Física</span>
+            </div>
+          </div>
+          <div class="col-6">
+            <div
+              class="card text-center py-3 border-2"
+              [ngClass]="{
+                'border-success text-success fw-bold': incidente.canalCompra === 'Tottus.com',
+                'border-light text-muted': incidente.canalCompra !== 'Tottus.com',
+              }"
+              (click)="incidente.canalCompra = 'Tottus.com'"
+              style="cursor: pointer"
+              data-cy="card-web"
+            >
+              <span class="fs-4">&#128187;</span>
+              <span class="mt-1">Tottus.com</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario Principal -->
+        <div class="row g-3">
+          <!-- Tienda y Boleta -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold small">Tienda y Boleta</label>
+            <select
+              class="form-select"
+              name="tienda"
+              [(ngModel)]="incidente.tienda"
+              data-cy="select-tienda"
+              required
+            >
+              <option value="" disabled>-- Tienda --</option>
+              <option value="Trujillo Centro">Trujillo Centro</option>
+              <option value="Mall Aventura">Mall Aventura</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-bold small text-white d-none d-md-block">.</label>
+            <input
+              type="text"
+              class="form-control"
+              name="numeroBoleta"
+              [(ngModel)]="incidente.numeroBoleta"
+              data-cy="input-boleta"
+              placeholder="N° Boleta (Ej: B001-123)"
+              required
+            />
+          </div>
+
+          <!-- Motivo y Producto -->
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold small">Motivo</label>
+            <select
+              class="form-select"
+              name="motivo"
+              [(ngModel)]="incidente.motivo"
+              data-cy="select-motivo"
+              required
+            >
+              <option value="" disabled>Seleccione...</option>
+              <option value="Cobro equivocado en caja">Cobro equivocado en caja</option>
+              <option value="Producto vencido">Producto vencido</option>
+            </select>
+            <small class="text-danger fw-bold d-block mt-1" style="font-size: 0.75rem"
+              >&#9888; Caso de Alta Prioridad</small
+            >
+          </div>
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold small">Producto (Opcional)</label>
+            <input
+              type="text"
+              class="form-control"
+              name="producto"
+              [(ngModel)]="incidente.producto"
+              data-cy="input-producto"
+              placeholder="Ej: Leche Gloria..."
+            />
+          </div>
+
+          <!-- Descripción -->
+          <div class="col-12 mt-3">
+            <label class="form-label fw-bold small">Descripción</label>
+            <textarea
+              class="form-control"
+              name="descripcion"
+              [(ngModel)]="incidente.descripcion"
+              data-cy="input-descripcion"
+              rows="3"
+              placeholder="Detalla lo sucedido..."
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Zona de Evidencia (Anclada al final para mantener el flujo de 3 vistas) -->
+        <div
+          class="mt-4 border border-2 border-success rounded p-4 text-center bg-light position-relative"
+          style="border-style: dashed !important"
+        >
+          <input
+            type="file"
+            class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+            style="cursor: pointer"
+            (change)="onArchivoSeleccionado($event)"
+            data-cy="input-file"
+          />
+          <div *ngIf="!archivoSeleccionado">
+            <h6 class="fw-bold text-dark mb-1">&#128193; Toca para subir evidencia (Opcional)</h6>
+            <p class="text-muted small mb-0">Máx 10MB (JPG, PNG, PDF)</p>
+          </div>
+          <div *ngIf="archivoSeleccionado" class="text-success fw-bold">
+            &#10003; Archivo listo: {{ archivoSeleccionado.name }}
+          </div>
+        </div>
+        <div *ngIf="mensajeError" class="alert alert-danger mt-2 small text-center fw-bold">
+          &#9888; {{ mensajeError }}
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-between mt-5">
+          <button
+            type="button"
+            class="btn btn-outline-secondary px-4 rounded-pill fw-bold"
+            (click)="volver()"
+            data-cy="btn-volver"
+          >
+            &#8592; Atrás
+          </button>
+          <button
+            type="submit"
+            class="btn text-white px-5 fw-bold rounded-pill"
+            style="background-color: #7bb32e"
+            [disabled]="!incidenteForm.form.valid"
+            data-cy="btn-continuar-paso2"
+          >
+            Continuar &#8594;
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Widget Flotante Accesibilidad -->
+<button
+  class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 shadow d-flex justify-content-center align-items-center"
+  style="width: 50px; height: 50px; z-index: 1000"
+  data-cy="btn-accesibilidad"
+>
+  <i class="fs-4 text-white">&#9855;</i>
+</button>

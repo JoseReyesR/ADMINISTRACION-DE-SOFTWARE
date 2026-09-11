@@ -1,1 +1,43 @@
-<p>reclamoconfirmacion.component works!</p>
+<div
+  class="container py-5 d-flex justify-content-center align-items-center"
+  style="min-height: 100vh"
+>
+  <div class="card shadow border-0 text-center p-5" style="width: 100%; max-width: 600px">
+    <!-- Icono de Check -->
+    <div class="mb-4">
+      <div
+        class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm"
+        style="width: 80px; height: 80px; font-size: 2.5rem"
+      >
+        &#10003;
+      </div>
+    </div>
+
+    <h2 class="fw-bold text-dark mb-2">¡Queja Registrada!</h2>
+    <p class="text-muted mb-4">
+      Hemos enviado una confirmación a <strong>maria.torres@gmail.com</strong>.
+    </p>
+
+    <!-- Caja del Código (Según tu mockup) -->
+    <div class="bg-light border rounded p-4 mb-4">
+      <p class="text-secondary fw-bold small mb-1">CÓDIGO DE SEGUIMIENTO</p>
+      <h2 class="fw-bold text-primary mb-3">REQ-2026-8927</h2>
+
+      <div
+        class="bg-white border rounded py-2 px-3 d-inline-block text-danger small fw-bold shadow-sm"
+      >
+        &#9202; Plazo máximo de respuesta: 15 días hábiles.
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="d-grid gap-2 col-8 mx-auto">
+      <button class="btn btn-dark fw-bold rounded-pill" (click)="irAMisCasos()">
+        Ver Mis Casos
+      </button>
+      <button class="btn btn-link text-success text-decoration-none fw-bold" (click)="salir()">
+        Salir
+      </button>
+    </div>
+  </div>
+</div>

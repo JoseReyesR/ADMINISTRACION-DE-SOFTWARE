@@ -1,9 +1,20 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
-  imports: [],
-  selector: 'app-reclamoconfirmacion.component',
-  styleUrl: './reclamoconfirmacion.component.css',
-  templateUrl: './reclamoconfirmacion.component.html',
+  selector: 'app-reclamoconfirmacion',
+  standalone: true,
+  templateUrl: './reclamoconfirmacion.component.html'
 })
-export class ReclamoconfirmacionComponent {}
+export class ReclamoconfirmacionComponent {
+
+  constructor(private router: Router) {}
+
+  irAMisCasos() {
+    this.router.navigate(['/dashboard']);
+  }
+
+  salir() {
+    this.router.navigate(['/login']);
+  }
+}
