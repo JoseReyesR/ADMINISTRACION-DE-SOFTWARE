@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.security.core.Authentication; // Asegúrate de importar esto
 
 @RestController
 @RequestMapping("/api/reclamos")
@@ -41,5 +42,16 @@ public class ReclamoController {
         Optional<Reclamo> reclamo = reclamoService.buscarPorCodigo(codigo);
         return reclamo.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // NUEVO: GET /api/reclamos/mis-casos -> Devuelve el historial del cliente
+    // logueado
+    @GetMapping("/mis-casos")
+    public ResponseEntity<List<Reclamo>> listarMisCasos(Authentication authentication) {
+        // Extraemos el correo directamente del Token JWT por seguridad
+        String correoCliente = authentication.getName();
+        List<Reclamo> historial = reclamoService.obtenerMisCasos(correoCliente);
+
+        return ResponseEntity.ok(historial);
     }
 }

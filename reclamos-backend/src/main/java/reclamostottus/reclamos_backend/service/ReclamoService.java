@@ -130,4 +130,11 @@ public class ReclamoService {
 
         return reclamoGuardado;
     }
+
+    // NUEVO: Obtener historial exclusivo de un cliente
+    public List<Reclamo> obtenerMisCasos(String correoCliente) {
+        return reclamoRepository.findByUsuarioCorreo(correoCliente);
+    }
 }
+
+// NUEVO: Obtener historial exclusivo de un cliente
