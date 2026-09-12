@@ -41,7 +41,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/login", "/api/reclamos").permitAll() // Rutas públicas
+                        // .requestMatchers("/api/auth/login", "/api/reclamos").permitAll() Rutas
+                        // públicas
+                        .requestMatchers("/api/auth/login", "/api/reclamos", "/api/usuarios/documento/**").permitAll()
                         .anyRequest().authenticated() // Todo lo demás requiere autenticación
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
