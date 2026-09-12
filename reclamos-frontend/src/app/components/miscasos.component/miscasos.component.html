@@ -4,11 +4,7 @@
     <div class="d-flex align-items-center">
       <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
       <span class="text-white fw-bold me-2">Portal de Clientes</span>
-      <a
-        href="javascript:void(0)"
-        class="text-white text-decoration-none ms-2"
-        (click)="salir()"
-        data-cy="nav-salir"
+      <a href="javascript:void(0)" class="text-white text-decoration-none ms-2" (click)="salir()"
         >> Salir</a
       >
     </div>
@@ -17,13 +13,11 @@
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small fw-bold"
         (click)="nuevoReclamo()"
-        data-cy="nav-nuevo-reclamo"
         >Nuevo Reclamo</a
       >
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small fw-bold text-decoration-underline"
-        data-cy="nav-mis-casos"
         >&#128193; Mis Casos</a
       >
     </div>
@@ -42,7 +36,6 @@
           href="javascript:void(0)"
           class="text-success fw-bold text-decoration-none"
           (click)="nuevoReclamo()"
-          data-cy="btn-nuevo-reclamo-tabla"
         >
           Nuevo Reclamo +
         </a>
@@ -65,14 +58,14 @@
           </thead>
           <tbody>
             <tr *ngFor="let caso of reclamos" class="bg-white border-bottom">
-              <td class="fw-bold text-dark py-3" data-cy="fila-codigo">{{ caso.codigo }}</td>
+              <td class="fw-bold text-dark py-3">{{ caso.codigo }}</td>
               <td class="text-secondary small">{{ caso.fecha }}</td>
               <td class="text-secondary small">{{ caso.motivo }}</td>
               <td>
-                <!-- Insignias dinámicas según el estado -->
                 <span
                   class="badge rounded-pill fw-bold px-3 py-2 border d-inline-flex align-items-center"
                   [ngClass]="{
+                    'bg-light text-secondary border-secondary': caso.estado === 'Ingresado',
                     'bg-warning text-dark border-warning': caso.estado === 'En Proceso',
                     'bg-danger text-white border-danger': caso.estado === 'Vencido',
                     'bg-white text-success border-success': caso.estado === 'Resuelto',
@@ -80,29 +73,13 @@
                   }"
                   [style.background-color]="caso.estado === 'En Proceso' ? '#fcf0cc' : ''"
                 >
-                  <i
-                    class="me-1 small"
-                    [ngClass]="{
-                      'bi bi-clock-history': caso.estado === 'En Proceso',
-                      'bi bi-x-circle-fill': caso.estado === 'Vencido',
-                      'bi bi-check-circle-fill': caso.estado === 'Resuelto',
-                      'bi bi-search': caso.estado === 'En Análisis',
-                    }"
-                  ></i>
-                  {{
-                    caso.estado === 'Resuelto'
-                      ? '✓ ' + caso.estado
-                      : caso.estado === 'En Análisis'
-                        ? '🔍 ' + caso.estado
-                        : '⏱ ' + caso.estado
-                  }}
+                  {{ caso.estado }}
                 </span>
               </td>
               <td class="text-center">
                 <button
                   class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold"
                   (click)="verDetalle(caso.codigo)"
-                  data-cy="btn-ver-detalle"
                 >
                   Ver
                 </button>
@@ -111,15 +88,18 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Mensaje si no hay reclamos -->
+      <div *ngIf="reclamos.length === 0" class="text-center py-4">
+        <p class="text-muted small mb-0">No se encontraron reclamos en el historial.</p>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Widget Flotante Accesibilidad -->
 <button
   class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4 shadow d-flex justify-content-center align-items-center"
   style="width: 50px; height: 50px; z-index: 1000"
-  data-cy="btn-accesibilidad"
 >
   <i class="fs-4 text-white">&#9855;</i>
 </button>

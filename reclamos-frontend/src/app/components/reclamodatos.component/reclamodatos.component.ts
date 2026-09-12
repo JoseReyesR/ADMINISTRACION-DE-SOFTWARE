@@ -38,25 +38,36 @@ export class ReclamodatosComponent {
     if (this.cliente.tipoDocumento === 'DNI' && this.cliente.numeroDocumento.length === 8) {
       this.usuarioService.buscarPorDocumento(this.cliente.numeroDocumento).subscribe({
         next: (datos) => {
-          // Cliente encontrado: Autocompletamos los campos
-          this.cliente.nombres = datos.nombres;
-          this.cliente.apellidos = datos.apellidos;
-          this.cliente.correo = datos.correo;
-          this.cliente.celular = datos.telefono;
-          this.mensajeBienvenida = `¡Hola ${datos.nombres}! Tus datos han sido cargados.`;
+          // Evaluamos la variable booleana que nos envía Spring Boot
+          if (datos.encontrado) {
+            // Cliente encontrado: Autocompletamos los campos
+            this.cliente.nombres = datos.nombres;
+            this.cliente.apellidos = datos.apellidos;
+            this.cliente.correo = datos.correo;
+            this.cliente.celular = datos.telefono;
+            this.mensajeBienvenida = `¡Hola ${datos.nombres}! Tus datos han sido cargados.`;
+          } else {
+            // No encontrado en BD: Pasa a modo Invitado limpiando los campos
+            this.limpiarCampos();
+          }
         },
         error: (err) => {
-          // Error 404: Cliente nuevo (Invitado). Limpiamos para que llene a mano
-          this.mensajeBienvenida = '';
-          this.cliente.nombres = '';
-          this.cliente.apellidos = '';
-          this.cliente.correo = '';
-          this.cliente.celular = '';
+          console.error('Error de conexión:', err);
+          this.limpiarCampos();
         }
       });
     } else {
       this.mensajeBienvenida = '';
     }
+  }
+
+  // Método de apoyo para mantener el código ordenado
+  limpiarCampos() {
+    this.mensajeBienvenida = '';
+    this.cliente.nombres = '';
+    this.cliente.apellidos = '';
+    this.cliente.correo = '';
+    this.cliente.celular = '';
   }
 
   // Método para avanzar al siguiente paso
@@ -70,4 +81,11 @@ export class ReclamodatosComponent {
   volver() {
     this.router.navigate(['/login']);
   }
+
+  // NUEVO: Método para ir a la tabla de Mis Casos
+  irAMisCasos() {
+    this.router.navigate(['/mis-casos']);
+  }
+
+
 }

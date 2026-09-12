@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ReclamoService } from '../../services/reclamo.service';
 
 @Component({
   selector: 'app-miscasos',
@@ -9,20 +10,49 @@ import { Router } from '@angular/router';
   templateUrl: './miscasos.component.html',
   styleUrls: ['./miscasos.component.css']
 })
-export class MiscasosComponent {
+export class MiscasosComponent implements OnInit {
 
-  // Mantenemos los datos simulados temporalmente para no perder tu diseño
-  reclamos = [
-    { codigo: 'REQ-2026-8927', fecha: '9/9/2026', motivo: '[Queja] Tienda - Información inc...', estado: 'En Proceso' },
-    { codigo: 'REQ-2026-3113', fecha: '6/9/2026', motivo: '[Queja] Tienda - Demora excesiv...', estado: 'En Proceso' },
-    { codigo: 'REQ-2025-245', fecha: '27/11/2025', motivo: '[Reclamo] Tienda - Cobro equivo...', estado: 'En Proceso' },
-    { codigo: 'REQ-2025-101', fecha: '01/10/2025', motivo: '[Reclamo] Web - Falta producto', estado: 'Vencido' },
-    { codigo: 'REQ-2025-402', fecha: '15/11/2025', motivo: '[Reclamo] Tienda - Producto ven...', estado: 'Resuelto' },
-    { codigo: 'REQ-2025-750', fecha: '20/11/2025', motivo: '[Queja] Web - Delivery no llegó', estado: 'En Análisis' },
-    { codigo: 'REQ-2025-889', fecha: '26/11/2025', motivo: '[Reclamo] Tienda - Cobro equivo...', estado: 'En Proceso' }
-  ];
+  reclamos: any[] = [];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private reclamoService: ReclamoService,
+    private cdr: ChangeDetectorRef // Inyectamos el detector de cambios de Angular
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarMisCasos();
+  }
+
+  cargarMisCasos() {
+    this.reclamoService.obtenerMisCasos().subscribe({
+      next: (datosBackend: any[]) => {
+        // 1. Verificamos que lleguen los datos
+        console.log('📦 1. Datos del Backend:', datosBackend);
+
+        if (datosBackend && datosBackend.length > 0) {
+          // 2. Mapeamos la data
+          this.reclamos = datosBackend.map(reclamo => ({
+            codigo: reclamo.codigoSeguimiento,
+            fecha: reclamo.fechaCompra || reclamo.fechaRegistro || 'Sin fecha',
+            motivo: `[${reclamo.tipoSolicitud}] - ${reclamo.productoImplicado || 'General'}`,
+            estado: reclamo.estado ? reclamo.estado.nombre : 'Ingresado'
+          }));
+
+          // 3. Imprimimos para confirmar que el mapeo funcionó
+          console.log('✅ 2. Datos listos para la tabla:', this.reclamos);
+
+          // 4. ¡LA CLAVE! Obligamos a Angular a actualizar el HTML en este instante
+          this.cdr.detectChanges();
+        } else {
+          this.reclamos = [];
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error al cargar la tabla:', error);
+      }
+    });
+  }
 
   nuevoReclamo() {
     this.router.navigate(['/reclamo/datos']);
@@ -30,11 +60,9 @@ export class MiscasosComponent {
 
   verDetalle(codigo: string) {
     console.log('Viendo detalle del caso:', codigo);
-    // Lógica futura para ver detalles del reclamo
   }
 
   salir() {
-    // Redirige al login de clientes, no al del BackOffice
     this.router.navigate(['/ingresar']);
   }
 }

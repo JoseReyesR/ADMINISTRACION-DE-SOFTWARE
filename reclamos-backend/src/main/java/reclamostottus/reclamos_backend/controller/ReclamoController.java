@@ -50,7 +50,15 @@ public class ReclamoController {
     public ResponseEntity<List<Reclamo>> listarMisCasos(Authentication authentication) {
         // Extraemos el correo directamente del Token JWT por seguridad
         String correoCliente = authentication.getName();
+        // --- INICIO DE RASTREO ---
+        System.out.println("\n=== DEBUG PANEL MIS CASOS ===");
+        System.out.println("1. Correo extraído del Token JWT: [" + correoCliente + "]");
+
         List<Reclamo> historial = reclamoService.obtenerMisCasos(correoCliente);
+
+        System.out.println("2. Cantidad de reclamos encontrados en MySQL: " + historial.size());
+        System.out.println("===============================\n");
+        // --- FIN DE RASTREO ---
 
         return ResponseEntity.ok(historial);
     }

@@ -34,4 +34,11 @@ export class ReclamoService {
     // Enviamos el JSON consolidado al Backend
     return this.http.post<any>(this.apiUrl, formData);
     }
+
+    obtenerMisCasos(): Observable<any[]> {
+    // Apunta exactamente al nuevo endpoint protegido
+    return this.http.get<any[]>(`${this.apiUrl}/mis-casos`);
+  }
+
+
 }
