@@ -61,5 +61,28 @@ public class SetupDataLoader implements CommandLineRunner {
             usuarioRepository.save(uTest);
             System.out.println("✅ USUARIO CREADO: test@admin | CLAVE: 1234");
         }
+
+        // NUEVO CLIENTE DE PRUEBA
+        if (usuarioRepository.findByCorreo("cliente@tottus.com").isEmpty()) {
+            Usuario uCliente = new Usuario();
+            uCliente.setTipoDocumento("DNI");
+            uCliente.setNumeroDocumento("88889999");
+            uCliente.setNombres("María");
+            uCliente.setApellidos("Torres");
+            uCliente.setCorreo("cliente@tottus.com");
+            uCliente.setTelefono("987654321");
+
+            // Encriptamos la clave "123456" de forma nativa
+            uCliente.setPassword(passwordEncoder.encode("123456"));
+            uCliente.setIsActive(true);
+
+            Rol rCliente = new Rol();
+            rCliente.setId(1); // ID 1 corresponde a ROLE_CLIENTE en tu base de datos
+            uCliente.setRol(rCliente);
+
+            usuarioRepository.save(uCliente);
+            System.out.println("✅ CLIENTE CREADO: cliente@tottus.com | CLAVE: 123456");
+        }
+
     }
 }
