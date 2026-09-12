@@ -9,10 +9,10 @@ import { ReclamodatosComponent } from './components/reclamodatos.component/recla
 import { ReclamoevidenciaComponent } from './components/reclamoevidencia.component/reclamoevidencia.component';
 import { ReclamoconfirmacionComponent } from './components/reclamoconfirmacion.component/reclamoconfirmacion.component';
 import { ConsultainvitadoComponent } from './components/consultainvitado.component/consultainvitado.component';
-
+import { IngresoClienteComponent } from './components/ingreso-cliente.component/ingreso-cliente.component';
 export const routes: Routes = [
   // Ruta por defecto redirige al login
-{ path: '', redirectTo: 'reclamo/datos', pathMatch: 'full' }, // El cliente entra directo a su formulario
+{ path: '', redirectTo: 'ingresar', pathMatch: 'full' }, // El cliente entra directo a su formulario
 
   // Rutas públicas
 
@@ -22,6 +22,9 @@ export const routes: Routes = [
   { path: 'reclamo/datos', component: ReclamodatosComponent },
   { path: 'reclamo/evidencia', component:  ReclamoevidenciaComponent },
   { path: 'reclamo/confirmacion', component: ReclamoconfirmacionComponent },
+
+ // RUTA PÚBLICA (Pero exclusiva para clientes)
+  { path: 'ingresar', component: IngresoClienteComponent },
 
   // RUTA PÚBLICA (Pero exclusiva para trabajadores)
   { path: 'login', component: LoginComponent },

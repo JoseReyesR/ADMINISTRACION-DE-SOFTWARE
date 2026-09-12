@@ -1,0 +1,88 @@
+<!-- Barra Superior Nav -->
+<nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7bb32e">
+  <div class="container-fluid px-4 py-1">
+    <div class="d-flex align-items-center">
+      <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
+      <span class="text-white fw-bold me-2">Portal de Clientes</span>
+    </div>
+  </div>
+</nav>
+
+<!-- Contenedor Principal -->
+<div
+  class="container py-5 d-flex justify-content-center align-items-center bg-light"
+  style="min-height: 90vh"
+>
+  <div class="card shadow-sm border-0" style="width: 100%; max-width: 450px">
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <h4 class="fw-bold text-dark">Bienvenido</h4>
+        <p class="text-muted small">
+          Inicia sesión para ver tu historial de casos y agilizar tus registros.
+        </p>
+      </div>
+
+      <!-- Alerta de Error -->
+      <div
+        *ngIf="mensajeError"
+        class="alert alert-danger text-center small py-2 fw-bold shadow-sm"
+        data-cy="alerta-error"
+      >
+        {{ mensajeError }}
+      </div>
+
+      <!-- Formulario Template Driven -->
+      <form #loginClienteForm="ngForm" (ngSubmit)="iniciarSesion()">
+        <div class="mb-3">
+          <label class="form-label fw-bold small text-dark">Correo Electrónico</label>
+          <input
+            type="email"
+            class="form-control bg-light"
+            name="correo"
+            [(ngModel)]="credenciales.correo"
+            required
+            placeholder="tu-correo@email.com"
+            data-cy="input-correo-cliente"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-bold small text-dark">Contraseña</label>
+          <input
+            type="password"
+            class="form-control bg-light"
+            name="password"
+            [(ngModel)]="credenciales.password"
+            required
+            placeholder="••••••••"
+            data-cy="input-password-cliente"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn text-white w-100 fw-bold rounded-pill mb-3"
+          style="background-color: #7bb32e"
+          [disabled]="!loginClienteForm.form.valid"
+          data-cy="btn-ingresar-cliente"
+        >
+          Ingresar
+        </button>
+      </form>
+
+      <hr class="my-4" />
+
+      <!-- Botón para Invitados -->
+      <div class="text-center d-grid gap-2">
+        <button
+          type="button"
+          class="btn btn-outline-secondary rounded-pill fw-bold"
+          (click)="continuarComoInvitado()"
+          data-cy="btn-invitado"
+        >
+          Continuar sin cuenta (Invitado)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
