@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import reclamostottus.reclamos_backend.dto.ReclamoRequestDTO;
 import reclamostottus.reclamos_backend.model.Reclamo;
 import reclamostottus.reclamos_backend.service.ReclamoService;
-
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +19,11 @@ public class ReclamoController {
     private ReclamoService reclamoService;
 
     // POST /api/reclamos -> Recibe el formulario de Angular y lo guarda
-    @PostMapping
-    public ResponseEntity<Reclamo> crearReclamo(@RequestBody ReclamoRequestDTO dto) {
-        Reclamo reclamoGuardado = reclamoService.registrarReclamo(dto);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Reclamo> crearReclamo(
+            @RequestPart("reclamo") ReclamoRequestDTO dto,
+            @RequestPart(value = "archivo", required = false) MultipartFile archivo) {
+        Reclamo reclamoGuardado = reclamoService.registrarReclamo(dto, archivo);
         return ResponseEntity.ok(reclamoGuardado);
     }
 

@@ -18,6 +18,7 @@ public class ReclamoRequestDTO {
     private String motivo;
     private String producto;
     private String descripcion;
+    private String fechaCompra;
 
     public ReclamoRequestDTO() {
     }
@@ -126,4 +127,13 @@ public class ReclamoRequestDTO {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    public String getFechaCompra() {
+        return fechaCompra;
+    }
+
+    public void setFechaCompra(String fechaCompra) {
+        this.fechaCompra = fechaCompra;
+    }
+
 }

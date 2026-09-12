@@ -177,6 +177,16 @@
               <option value="Mall Aventura">Mall Aventura</option>
             </select>
           </div>
+          <div class="col-md-4">
+            <label class="form-label fw-bold small">Fecha de Compra</label>
+            <input
+              type="date"
+              class="form-control"
+              name="fechaCompra"
+              [(ngModel)]="incidente.fechaCompra"
+              required
+            />
+          </div>
           <div class="col-md-6">
             <label class="form-label fw-bold small text-white d-none d-md-block">.</label>
             <input

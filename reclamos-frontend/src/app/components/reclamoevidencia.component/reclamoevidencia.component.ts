@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
+import { ReclamoService } from '../../services/reclamo.service'; // Importamos el servicio
 @Component({
   selector: 'app-reclamoevidencia',
   standalone: true,
@@ -17,6 +17,7 @@ export class ReclamoevidenciaComponent {
     canalCompra: 'Tienda Física', // Nuevo
     tienda: '',
     numeroBoleta: '',
+    fechaCompra: '', // NUEVO CAMPO
     motivo: '',                   // Nuevo
     producto: '',                 // Nuevo
     descripcion: ''
@@ -26,7 +27,8 @@ export class ReclamoevidenciaComponent {
   archivoSeleccionado: File | null = null;
   mensajeError: string = '';
 
-  constructor(private router: Router) {}
+  // Inyectamos el servicio
+  constructor(private router: Router, private reclamoService: ReclamoService) {}
 
   // Validación de 10 MB para la evidencia
   onArchivoSeleccionado(event: any) {
@@ -44,9 +46,16 @@ export class ReclamoevidenciaComponent {
   }
 
   siguientePaso() {
-    console.log('Incidente:', this.incidente, 'Archivo:', this.archivoSeleccionado?.name);
-    // Navegamos al Paso 3 (Confirmación Final)
-    this.router.navigate(['/reclamo/confirmacion']);
+    // AHORA PASAMOS EL ARCHIVO AL SERVICIO
+    this.reclamoService.enviarReclamoTotal(this.incidente, this.archivoSeleccionado).subscribe({
+      next: (respuesta) => {
+        this.router.navigate(['/reclamo/confirmacion']);
+      },
+      error: (error) => {
+        console.error('Error del servidor:', error);
+        this.mensajeError = 'Hubo un error de conexión al guardar el reclamo.';
+      }
+    });
   }
 
   volver() {

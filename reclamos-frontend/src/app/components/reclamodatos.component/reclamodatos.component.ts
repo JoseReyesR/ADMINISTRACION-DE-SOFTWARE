@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ReclamoService } from '../../services/reclamo.service'; // Importamos el servicio
 
 @Component({
   selector: 'app-reclamodatos',
@@ -21,13 +22,13 @@ export class ReclamodatosComponent {
     celular: ''
   };
 
-  constructor(private router: Router) {}
+  // Inyectamos el servicio en el constructor
+  constructor(private router: Router, private reclamoService: ReclamoService) {}
 
   // Método para avanzar al siguiente paso
   siguientePaso() {
-    console.log('Datos personales capturados:', this.cliente);
-
-    // CAMBIO APLICADO: Navegamos hacia el paso 2 (Confirmación)
+    // Guardamos en el servicio en lugar de solo imprimir en consola
+    this.reclamoService.guardarDatosCliente(this.cliente);
     this.router.navigate(['/reclamo/evidencia']);
   }
 
