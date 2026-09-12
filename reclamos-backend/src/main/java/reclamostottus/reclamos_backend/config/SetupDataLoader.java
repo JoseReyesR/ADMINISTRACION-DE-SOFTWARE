@@ -19,29 +19,47 @@ public class SetupDataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        crearUsuarioSiNoExiste("soporte@tottus.com", "Soporte", "88888888", 2); // ROLE_ADMIN o ROLE_TECNICO
-        crearUsuarioSiNoExiste("dev@dev.com", "Desarrollador", "77777777", 2);
-    }
-
-    private void crearUsuarioSiNoExiste(String correo, String nombre, String dni, Integer rolId) {
-        if (usuarioRepository.findByCorreo(correo).isEmpty()) {
+        // Verifica si el usuario ya existe para no duplicarlo
+        if (usuarioRepository.findByCorreo("final@final").isEmpty()) {
             Usuario u = new Usuario();
             u.setTipoDocumento("DNI");
-            u.setNumeroDocumento(dni);
-            u.setNombres(nombre);
-            u.setApellidos("Tottus");
-            u.setCorreo(correo);
-            u.setTelefono("999999999");
-            // Spring Boot encripta "123456" de forma 100% segura y compatible
-            u.setPassword(passwordEncoder.encode("123456"));
+            u.setNumeroDocumento("44444441");
+            u.setNombres("Usuario1");
+            u.setApellidos("Final1");
+            u.setCorreo("final@final");
+            u.setTelefono("999999949");
+
+            // ¡AQUÍ ESTÁ LA MAGIA! Spring encripta la palabra exacta de forma nativa
+            u.setPassword(passwordEncoder.encode("12345"));
             u.setIsActive(true);
 
             Rol r = new Rol();
-            r.setId(rolId);
+            r.setId(2); // ID 2 corresponde al Rol Administrador
             u.setRol(r);
 
             usuarioRepository.save(u);
-            System.out.println("✅ Usuario '" + correo + "' con clave '123456' creado en la BD.");
+            System.out.println("\n✅ USUARIO DE PRUEBA CREADO: final@final | CLAVE: 12345\n");
+        }
+
+        if (usuarioRepository.findByCorreo("test@admin").isEmpty()) {
+            Usuario uTest = new Usuario();
+            uTest.setTipoDocumento("DNI");
+            uTest.setNumeroDocumento("77778888");
+            uTest.setNombres("Usuario");
+            uTest.setApellidos("Test");
+            uTest.setCorreo("test@admin");
+            uTest.setTelefono("999000111");
+
+            // El motor BCrypt ahora sí está activo y encriptará "1234" de forma 100% nativa
+            uTest.setPassword(passwordEncoder.encode("1234"));
+            uTest.setIsActive(true);
+
+            Rol rTest = new Rol();
+            rTest.setId(2); // ID 2 para Administrador
+            uTest.setRol(rTest);
+
+            usuarioRepository.save(uTest);
+            System.out.println("✅ USUARIO CREADO: test@admin | CLAVE: 1234");
         }
     }
 }
