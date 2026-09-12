@@ -12,16 +12,19 @@ import { ConsultainvitadoComponent } from './components/consultainvitado.compone
 
 export const routes: Routes = [
   // Ruta por defecto redirige al login
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+{ path: '', redirectTo: 'reclamo/datos', pathMatch: 'full' }, // El cliente entra directo a su formulario
 
   // Rutas públicas
-  { path: 'login', component: LoginComponent },
+
   { path: 'consulta', component: ConsultainvitadoComponent },
 
   // Flujo de Registro de Reclamo
   { path: 'reclamo/datos', component: ReclamodatosComponent },
   { path: 'reclamo/evidencia', component:  ReclamoevidenciaComponent },
   { path: 'reclamo/confirmacion', component: ReclamoconfirmacionComponent },
+
+  // RUTA PÚBLICA (Pero exclusiva para trabajadores)
+  { path: 'login', component: LoginComponent },
 
   // RUTAS PRIVADAS (PROTEGIDAS POR EL GUARD)
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },

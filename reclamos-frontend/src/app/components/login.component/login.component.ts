@@ -1,38 +1,42 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Necesario para ngModel
-import { Router } from '@angular/router'; // Para navegar entre pantallas
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Importamos los módulos aquí
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  // Objeto para capturar lo que el usuario escribe en la pantalla
   credenciales = {
     correo: '',
     password: ''
   };
 
-  constructor(private router: Router) {}
+  mensajeError: string = '';
 
-  // Método que se ejecuta al darle clic a "Iniciar Sesión"
-  onLogin() {
-    console.log('Datos enviados:', this.credenciales);
+  constructor(private authService: AuthService, private router: Router) {}
 
-    // Simulación temporal: si el correo es admin, vamos al panel. Si no, al registro de reclamos.
-    if(this.credenciales.correo === 'admin@tottus.com') {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.router.navigate(['/reclamo/datos']);
-    }
-  }
-
-  // Método para el RF07 (Ingreso como Invitado)
-  irAConsultaInvitado() {
-    this.router.navigate(['/consulta']);
+  iniciarSesion() {
+    this.authService.login(this.credenciales).subscribe({
+      next: (respuesta) => {
+        // El token ya se guardó en el localStorage gracias al AuthService
+        this.mensajeError = '';
+        this.router.navigate(['/dashboard']); // Redirigimos al área segura
+      },
+      error: (error) => {
+        console.error('Error de autenticación:', error);
+        // Validamos si el error es por credenciales incorrectas (401/403)
+        if (error.status === 401 || error.status === 403) {
+          this.mensajeError = 'Credenciales incorrectas. Verifique su correo y contraseña.';
+        } else {
+          this.mensajeError = 'Error de conexión con el servidor.';
+        }
+      }
+    });
   }
 }
