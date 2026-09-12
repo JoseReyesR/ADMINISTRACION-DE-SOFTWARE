@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 
 // Importamos los componentes
 import { LoginComponent } from './components/login.component/login.component';
@@ -22,9 +23,9 @@ export const routes: Routes = [
   { path: 'reclamo/evidencia', component:  ReclamoevidenciaComponent },
   { path: 'reclamo/confirmacion', component: ReclamoconfirmacionComponent },
 
-  // Panel de Usuario (Dashboard) - Más adelante protegeremos esto con un Guard
-  { path: 'dashboard', component: DashboardComponent },
-
+  // RUTAS PRIVADAS (PROTEGIDAS POR EL GUARD)
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  // ... aquí irán otras rutas de administración (ej. listado de reclamos)
   // Ruta comodín para manejar errores 404
   { path: '**', redirectTo: '/login' }
 ];

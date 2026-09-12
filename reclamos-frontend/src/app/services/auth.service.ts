@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  // Ruta de tu Backend para el login
   private apiUrl = 'http://localhost:8080/api/auth/login';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(credenciales: { correo: string; password: string }): Observable<any> {
     return this.http.post<any>(this.apiUrl, credenciales).pipe(
       tap(response => {
+        // Si el backend responde con un token válido, lo guardamos
         if (response && response.token) {
           localStorage.setItem('token', response.token);
         }
@@ -27,9 +28,5 @@ export class AuthService {
 
   cerrarSesion(): void {
     localStorage.removeItem('token');
-  }
-
-  estaAutenticado(): boolean {
-    return !!this.obtenerToken();
   }
 }
