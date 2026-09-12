@@ -24,17 +24,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
-        // 1. Spring Security valida el correo y la contraseña contra la Base de Datos
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getCorreo(), request.getPassword()));
 
-        // 2. Extraemos el Rol que Spring Security cargó desde la base de datos
         String rol = authentication.getAuthorities().iterator().next().getAuthority();
-
-        // 3. Generamos el Token JWT inyectándole el correo y el rol
         String token = jwtUtil.generarToken(request.getCorreo(), rol);
 
-        // 4. Devolvemos el token
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
 
