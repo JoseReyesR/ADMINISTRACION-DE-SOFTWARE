@@ -28,11 +28,13 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getCorreo(), request.getPassword()));
 
-        // 2. Si es exitoso, generamos el Token JWT
-        String token = jwtUtil.generarToken(request.getCorreo());
+        // 2. Extraemos el Rol que Spring Security cargó desde la base de datos
+        String rol = authentication.getAuthorities().iterator().next().getAuthority();
 
-        // 3. Devolvemos el token en un JSON para que Angular lo guarde en el
-        // LocalStorage
+        // 3. Generamos el Token JWT inyectándole el correo y el rol
+        String token = jwtUtil.generarToken(request.getCorreo(), rol);
+
+        // 4. Devolvemos el token
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
 

@@ -111,6 +111,7 @@
               class="form-control"
               name="numeroDocumento"
               [(ngModel)]="cliente.numeroDocumento"
+              (keyup)="buscarCliente()"
               required
               minlength="8"
               maxlength="20"

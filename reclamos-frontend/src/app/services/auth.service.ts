@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode'; // Importación de la librería
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,19 @@ export class AuthService {
 
   cerrarSesion(): void {
     localStorage.removeItem('token');
+  }
+
+  // Método que decodifica el token para saber quién inició sesión
+  obtenerRol(): string | null {
+    const token = this.obtenerToken();
+    if (token) {
+      try {
+        const decodificado: any = jwtDecode(token);
+        return decodificado.rol; // Extrae la variable "rol" que inyectamos en Java
+      } catch (Error) {
+        return null;
+      }
+    }
+    return null;
   }
 }

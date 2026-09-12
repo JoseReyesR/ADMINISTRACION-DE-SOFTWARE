@@ -15,8 +15,13 @@ public class JwtUtil {
     private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long TIEMPO_EXPIRACION = 1000 * 60 * 60 * 10;
 
-    public String generarToken(String correo) {
+    public String generarToken(String correo, String rol) {
+        // Agregamos el rol al "cuerpo" del token
+        java.util.Map<String, Object> claims = new java.util.HashMap<>();
+        claims.put("rol", rol);
+
         return Jwts.builder()
+                .setClaims(claims) // Inyectamos los datos extra
                 .setSubject(correo)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TIEMPO_EXPIRACION))
