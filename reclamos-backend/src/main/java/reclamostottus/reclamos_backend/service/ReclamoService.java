@@ -155,4 +155,19 @@ public class ReclamoService {
         // lo requieres)
         return reclamoRepository.findAll();
     }
+
+    // NUEVO: Método para el BackOffice - Actualizar Estado del Reclamo
+
+    public Reclamo actualizarEstadoReclamo(String codigo, Integer nuevoEstadoId) {
+        Reclamo reclamo = reclamoRepository.findByCodigoSeguimiento(codigo)
+                .orElseThrow(() -> new RuntimeException("Reclamo no encontrado"));
+
+        // Asignamos el nuevo estado
+        EstadoReclamo nuevoEstado = new EstadoReclamo();
+        nuevoEstado.setId(nuevoEstadoId);
+        reclamo.setEstado(nuevoEstado);
+
+        return reclamoRepository.save(reclamo);
+    }
+
 }

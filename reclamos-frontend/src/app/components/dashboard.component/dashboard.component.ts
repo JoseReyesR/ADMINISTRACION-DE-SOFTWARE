@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ReclamoService } from '../../services/reclamo.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,31 +10,64 @@ import { Router } from '@angular/router';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
 
-  // Datos simulados basados exactamente en tu diseño (RN-10 y RN-11)
-  reclamos = [
-    { codigo: 'REQ-2026-8927', fecha: '9/9/2026', motivo: '[Queja] Tienda - Información inc...', estado: 'En Proceso' },
-    { codigo: 'REQ-2026-3113', fecha: '6/9/2026', motivo: '[Queja] Tienda - Demora excesiv...', estado: 'En Proceso' },
-    { codigo: 'REQ-2025-245', fecha: '27/11/2025', motivo: '[Reclamo] Tienda - Cobro equivo...', estado: 'En Proceso' },
-    { codigo: 'REQ-2025-101', fecha: '01/10/2025', motivo: '[Reclamo] Web - Falta producto', estado: 'Vencido' },
-    { codigo: 'REQ-2025-402', fecha: '15/11/2025', motivo: '[Reclamo] Tienda - Producto ven...', estado: 'Resuelto' },
-    { codigo: 'REQ-2025-750', fecha: '20/11/2025', motivo: '[Queja] Web - Delivery no llegó', estado: 'En Análisis' },
-    { codigo: 'REQ-2025-889', fecha: '26/11/2025', motivo: '[Reclamo] Tienda - Cobro equivo...', estado: 'En Proceso' }
-  ];
+  reclamos: any[] = [];
 
-  constructor(private router: Router) {}
+  // Contadores para las tarjetas superiores (Resumen de Operaciones)
+  totalCasos: number = 0;
+  pendientes: number = 0;
+  urgentes: number = 0;
+  resueltos: number = 0;
 
-  nuevoReclamo() {
-    this.router.navigate(['/reclamo/datos']);
+  constructor(
+    private router: Router,
+    private reclamoService: ReclamoService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.cargarBandejaAdmin();
   }
 
-  verDetalle(codigo: string) {
-    console.log('Viendo detalle del caso:', codigo);
-    // Lógica futura para ver detalles del reclamo
+  cargarBandejaAdmin() {
+    this.reclamoService.obtenerCasosAdmin().subscribe({
+      next: (datosBackend: any[]) => {
+        if (datosBackend && datosBackend.length > 0) {
+          // Mapeamos los datos para la tabla del BackOffice
+          this.reclamos = datosBackend.map(reclamo => ({
+            codigo: reclamo.codigoSeguimiento,
+            dni: reclamo.usuario ? reclamo.usuario.numeroDocumento : 'Sin DNI',
+            fecha: reclamo.fechaRegistro ? reclamo.fechaRegistro.split('T')[0] : 'Reciente',
+            motivo: `[${reclamo.tipoSolicitud}] ${reclamo.canalCompra} - ${reclamo.productoImplicado || 'General'}`,
+            prioridad: reclamo.prioridad ? reclamo.prioridad.nombre.toUpperCase() : 'MEDIA',
+            estado: reclamo.estado ? reclamo.estado.nombre : 'Ingresado'
+          }));
+
+          this.calcularMetricas();
+          this.cdr.detectChanges();
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar la bandeja administrativa:', error);
+      }
+    });
   }
+
+  calcularMetricas() {
+    this.totalCasos = this.reclamos.length;
+    this.pendientes = this.reclamos.filter(r => r.estado !== 'Resuelto' && r.estado !== 'Cerrado').length;
+    this.urgentes = this.reclamos.filter(r => r.prioridad === 'ALTA').length;
+    this.resueltos = this.reclamos.filter(r => r.estado === 'Resuelto').length;
+  }
+verDetalle(codigo: string) {
+    // Redirige a la vista de detalle del caso seleccionado
+    this.router.navigate(['/dashboard/caso', codigo]);
+  }
+
 
   salir() {
+    localStorage.removeItem('token'); // Limpiamos la sesión
     this.router.navigate(['/login']);
   }
 }

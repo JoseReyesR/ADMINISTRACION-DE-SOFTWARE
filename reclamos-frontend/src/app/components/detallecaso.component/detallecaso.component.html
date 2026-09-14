@@ -1,0 +1,181 @@
+<div class="d-flex" style="min-height: 100vh; background-color: #f4f6f9">
+  <!-- BARRA LATERAL (SIDEBAR) -->
+  <div class="d-flex flex-column shadow" style="width: 250px; background-color: #212b36">
+    <div
+      class="p-3 text-white fw-bold fs-5 d-flex align-items-center"
+      style="background-color: #7bb32e; height: 60px"
+    >
+      TOTTUS <span class="fw-normal ms-1">ADMIN</span>
+    </div>
+    <ul class="nav nav-pills flex-column mb-auto mt-4 px-2">
+      <li class="nav-item mb-2">
+        <a
+          href="javascript:void(0)"
+          class="nav-link text-white opacity-75 d-flex align-items-center"
+          (click)="volverBandeja()"
+        >
+          <i class="bi bi-pie-chart-fill me-3"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a
+          href="javascript:void(0)"
+          class="nav-link active text-white fw-bold d-flex align-items-center"
+          style="background-color: #333f48; border-radius: 8px"
+        >
+          <i class="bi bi-inbox me-3"></i> Detalles de Caso
+        </a>
+      </li>
+    </ul>
+    <div
+      class="p-3 d-flex align-items-center mt-auto border-top border-secondary"
+      style="background-color: #1a222b; cursor: pointer"
+      (click)="salir()"
+    >
+      <div
+        class="rounded-circle text-white d-flex justify-content-center align-items-center fw-bold me-2 shadow-sm"
+        style="width: 38px; height: 38px; background-color: #28a745"
+      >
+        JD
+      </div>
+      <div>
+        <div class="fw-bold text-white small mb-0">Juan Diaz</div>
+        <div class="text-secondary" style="font-size: 0.75rem">
+          Analista Sr. - <span class="text-danger">Salir</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-grow-1 d-flex flex-column h-100">
+    <div
+      class="bg-white px-4 py-3 shadow-sm d-flex justify-content-between align-items-center"
+      style="height: 60px"
+    >
+      <div class="d-flex align-items-center">
+        <button class="btn btn-sm btn-outline-secondary me-3" (click)="volverBandeja()">
+          &#8592; Volver
+        </button>
+        <h5 class="fw-bold m-0 text-dark">
+          Gestión de Reclamo: <span class="text-primary">{{ codigoCaso }}</span>
+        </h5>
+      </div>
+    </div>
+
+    <div class="p-4 flex-grow-1 overflow-auto">
+      <div *ngIf="caso" class="row g-4">
+        <!-- Columna Izquierda: Información -->
+        <div class="col-lg-8">
+          <!-- Tarjeta Cliente -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom fw-bold py-3">Datos del Cliente</div>
+            <div class="card-body row p-4">
+              <div class="col-md-6 mb-3">
+                <label class="text-muted small fw-bold">Documento</label>
+                <p class="m-0 text-dark">
+                  {{ caso.usuario?.tipoDocumento }} - {{ caso.usuario?.numeroDocumento }}
+                </p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="text-muted small fw-bold">Nombres Completos</label>
+                <p class="m-0 text-dark">
+                  {{ caso.usuario?.nombres }} {{ caso.usuario?.apellidos }}
+                </p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="text-muted small fw-bold">Correo Electrónico</label>
+                <p class="m-0 text-dark">{{ caso.usuario?.correo }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="text-muted small fw-bold">Celular</label>
+                <p class="m-0 text-dark">{{ caso.usuario?.telefono }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta Incidente -->
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom fw-bold py-3">
+              Detalles del Incidente
+            </div>
+            <div class="card-body p-4">
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label class="text-muted small fw-bold">Tipo y Prioridad</label>
+                  <p class="m-0 text-dark">
+                    {{ caso.tipoSolicitud }} -
+                    <span class="badge bg-danger">{{ caso.prioridad?.nombre }}</span>
+                  </p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="text-muted small fw-bold">Canal / Tienda</label>
+                  <p class="m-0 text-dark">{{ caso.canalCompra }} / {{ caso.tienda || 'N/A' }}</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="text-muted small fw-bold">Fecha / N° Boleta</label>
+                  <p class="m-0 text-dark">
+                    {{ caso.fechaCompra || 'Sin registro' }} /
+                    {{ caso.numeroBoletaPedido || 'N/A' }}
+                  </p>
+                </div>
+                <div class="col-12 mt-3">
+                  <label class="text-muted small fw-bold">Descripción del Caso</label>
+                  <div class="p-3 bg-light rounded mt-1 border">
+                    {{ caso.descripcionCaso }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha: Acciones y Estado -->
+        <div class="col-lg-4">
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom fw-bold py-3 text-primary">
+              Gestión Administrativa
+            </div>
+            <div class="card-body p-4">
+              <div class="mb-4">
+                <label class="text-muted small fw-bold mb-2">Estado Actual del Reclamo</label>
+                <h4>
+                  <span class="badge bg-secondary text-white w-100 py-2">{{
+                    caso.estado?.nombre
+                  }}</span>
+                </h4>
+                <small class="text-danger fw-bold d-block mt-2"
+                  >Vence el: {{ caso.fechaVencimiento | date: 'mediumDate' }}</small
+                >
+              </div>
+
+              <hr />
+
+              <div class="mb-3 mt-4">
+                <label class="fw-bold mb-2">Actualizar Estado</label>
+
+                <select
+                  class="form-select mb-3"
+                  [(ngModel)]="nuevoEstadoId"
+                  data-cy="select-estado-admin"
+                >
+                  <option *ngFor="let estado of estados" [value]="estado.id">
+                    {{ estado.nombre }}
+                  </option>
+                </select>
+                <button class="btn btn-primary w-100 fw-bold" (click)="guardarCambioEstado()">
+                  Guardar Cambios
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!caso" class="text-center py-5">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="mt-3 text-muted">Cargando detalles del caso...</p>
+      </div>
+    </div>
+  </div>
+</div>

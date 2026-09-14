@@ -45,5 +45,31 @@ export class ReclamoService {
     return this.http.get<any>(`${this.apiUrl}/seguimiento/${codigo}/${dni}`);
   }
 
+  // ============================================================
+  // NUEVOS MÉTODOS PARA EL BACKOFFICE ADMINISTRATIVO (HU-09)
+  // ============================================================
+
+  // 1. Obtener la bandeja completa para el Dashboard Admin
+  obtenerCasosAdmin(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/todos`);
+  }
+
+  // 2. Obtener el detalle de un caso específico (sin exigir DNI)
+  obtenerDetalleCasoAdmin(codigo: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/admin/caso/${codigo}`);
+  }
+
+  // 3. Cambiar el estado de un reclamo
+  actualizarEstadoAdmin(codigo: string, idEstado: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/admin/caso/${codigo}/estado/${idEstado}`, {});
+  }
+
+  // 4. Obtener el catálogo dinámico de estados desde MySQL
+  obtenerCatálogoEstados(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/estados`);
+  }
+
+
+
 
 }

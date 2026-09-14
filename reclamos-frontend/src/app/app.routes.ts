@@ -11,6 +11,8 @@ import { ReclamoconfirmacionComponent } from './components/reclamoconfirmacion.c
 import { ConsultainvitadoComponent } from './components/consultainvitado.component/consultainvitado.component';
 import { IngresoClienteComponent } from './components/ingreso-cliente.component/ingreso-cliente.component';
 import { MiscasosComponent } from './components/miscasos.component/miscasos.component';
+import { DetallecasoComponent } from './components/detallecaso.component/detallecaso.component';
+
 export const routes: Routes = [
   // Ruta por defecto redirige al login
 { path: '', redirectTo: 'ingresar', pathMatch: 'full' }, // El cliente entra directo a su formulario
@@ -32,7 +34,9 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   // RUTAS PRIVADAS (PROTEGIDAS POR EL GUARD)
+  // RUTAS PRIVADAS (BackOffice)
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'dashboard/caso/:codigo', component: DetallecasoComponent },
   // ... aquí irán otras rutas de administración (ej. listado de reclamos)
   // Ruta comodín para manejar errores 404
   { path: '**', redirectTo: '/login' }
