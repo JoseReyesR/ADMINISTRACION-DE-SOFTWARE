@@ -135,6 +135,24 @@ public class ReclamoService {
     public List<Reclamo> obtenerMisCasos(String correoCliente) {
         return reclamoRepository.findByUsuarioCorreo(correoCliente);
     }
-}
 
-// NUEVO: Obtener historial exclusivo de un cliente
+    // NUEVO: Método para HU-08 con validación de privacidad estricta (RNF01)
+    public Optional<Reclamo> seguimientoSeguroInvitado(String codigo, String dni) {
+        Optional<Reclamo> reclamo = reclamoRepository.findByCodigoSeguimiento(codigo);
+
+        // Si el reclamo existe, verificamos que el DNI coincida exactamente
+        if (reclamo.isPresent() && reclamo.get().getUsuario().getNumeroDocumento().equals(dni)) {
+            return reclamo;
+        }
+
+        // Si el código no existe o el DNI es de otra persona, devolvemos vacío
+        return Optional.empty();
+    }
+
+    // NUEVO: Método exclusivo para el BackOffice (HU-09)
+    public List<Reclamo> obtenerTodosLosCasosAdmin() {
+        // Devuelve todos los reclamos (puedes ajustarlo luego con un findAll(Sort) si
+        // lo requieres)
+        return reclamoRepository.findAll();
+    }
+}

@@ -62,4 +62,14 @@ public class ReclamoController {
 
         return ResponseEntity.ok(historial);
     }
+
+    // GET /api/reclamos/seguimiento/REQ-2026-XXXX/88889999
+    @GetMapping("/seguimiento/{codigo}/{dni}")
+    public ResponseEntity<Reclamo> seguimientoInvitado(@PathVariable String codigo, @PathVariable String dni) {
+        Optional<Reclamo> reclamo = reclamoService.seguimientoSeguroInvitado(codigo, dni);
+
+        return reclamo.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }

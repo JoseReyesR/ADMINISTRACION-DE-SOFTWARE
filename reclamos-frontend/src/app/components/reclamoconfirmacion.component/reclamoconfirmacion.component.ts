@@ -18,8 +18,8 @@ export class ReclamoconfirmacionComponent {
   constructor(private router: Router) {}
 
   irAMisCasos() {
-    // Redirige al Dashboard (Panel administrativo / Mis casos)
-    this.router.navigate(['/dashboard']);
+    // Redirige al Dashboard (Panel cliente / Mis casos)
+    this.router.navigate(['/mis-casos']);
   }
 
   salir() {

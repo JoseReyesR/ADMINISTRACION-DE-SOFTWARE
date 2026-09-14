@@ -87,5 +87,10 @@ export class ReclamodatosComponent {
     this.router.navigate(['/mis-casos']);
   }
 
+irAConsulta() {
+    this.router.navigate(['/consulta']);
+  }
+
+
 
 }

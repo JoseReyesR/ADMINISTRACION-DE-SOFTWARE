@@ -40,5 +40,10 @@ export class ReclamoService {
     return this.http.get<any[]>(`${this.apiUrl}/mis-casos`);
   }
 
+  // NUEVO: Método para Seguimiento Invitado
+  consultarSeguimiento(codigo: string, dni: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/seguimiento/${codigo}/${dni}`);
+  }
+
 
 }
