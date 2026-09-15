@@ -1,36 +1,45 @@
 <!-- Barra Superior Nav -->
 <nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7bb32e">
   <div class="container-fluid px-4 py-1">
+    <!-- Lado Izquierdo (Logo) -->
     <div class="d-flex align-items-center">
       <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
       <span class="text-white fw-bold me-2">Centro de Ayuda</span>
-      <a
-        href="javascript:void(0)"
-        class="text-white text-decoration-none ms-2"
-        (click)="volver()"
-        data-cy="nav-salir"
-        >> Salir</a
-      >
     </div>
+
+    <!-- Lado Derecho (Botones y Salir) -->
     <div class="d-flex align-items-center">
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small"
+        (click)="nuevoReclamo()"
         data-cy="nav-nuevo-reclamo"
         >Nuevo Reclamo</a
       >
+      <!-- "Mis Casos" condicionado -->
       <a
+        *ngIf="esClienteRegistrado"
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small"
+        (click)="irAMisCasos()"
         data-cy="nav-mis-casos"
         >&#128193; Mis Casos</a
       >
       <button
         class="btn btn-sm btn-outline-light d-flex align-items-center fw-bold"
+        (click)="irAConsulta()"
         data-cy="nav-seguimiento-invitado"
       >
         &#128269; Seguimiento Invitado
       </button>
+      <!-- Botón Salir reubicado -->
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none ms-3"
+        (click)="salir()"
+        data-cy="nav-salir"
+        >> Salir</a
+      >
     </div>
   </div>
 </nav>

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ReclamoService } from '../../services/reclamo.service'; // Importamos el servicio
+import { ReclamoService } from '../../services/reclamo.service';
+
 @Component({
   selector: 'app-reclamoevidencia',
   standalone: true,
@@ -10,16 +11,16 @@ import { ReclamoService } from '../../services/reclamo.service'; // Importamos e
   templateUrl: './reclamoevidencia.component.html',
   styleUrls: ['./reclamoevidencia.component.css']
 })
-export class ReclamoevidenciaComponent {
+export class ReclamoevidenciaComponent implements OnInit {
   // Datos combinados del incidente
   incidente = {
     tipoSolicitud: 'Reclamo',
-    canalCompra: 'Tienda Física', // Nuevo
+    canalCompra: 'Tienda Física',
     tienda: '',
     numeroBoleta: '',
-    fechaCompra: '', // NUEVO CAMPO
-    motivo: '',                   // Nuevo
-    producto: '',                 // Nuevo
+    fechaCompra: '',
+    motivo: '',
+    producto: '',
     descripcion: ''
   };
 
@@ -27,8 +28,18 @@ export class ReclamoevidenciaComponent {
   archivoSeleccionado: File | null = null;
   mensajeError: string = '';
 
+  // Variable para controlar la vista del cliente
+  esClienteRegistrado: boolean = false;
+
   // Inyectamos el servicio
   constructor(private router: Router, private reclamoService: ReclamoService) {}
+
+  ngOnInit(): void {
+    // Verificamos si el cliente está logueado para mostrar "Mis Casos"
+    if (typeof window !== 'undefined' && localStorage.getItem('token_cliente')) {
+      this.esClienteRegistrado = true;
+    }
+  }
 
   // Validación de 10 MB para la evidencia
   onArchivoSeleccionado(event: any) {
@@ -46,7 +57,6 @@ export class ReclamoevidenciaComponent {
   }
 
   siguientePaso() {
-    // AHORA PASAMOS EL ARCHIVO AL SERVICIO
     this.reclamoService.enviarReclamoTotal(this.incidente, this.archivoSeleccionado).subscribe({
       next: (respuesta) => {
         this.router.navigate(['/reclamo/confirmacion']);
@@ -60,5 +70,26 @@ export class ReclamoevidenciaComponent {
 
   volver() {
     this.router.navigate(['/reclamo/datos']);
+  }
+
+  // --- NUEVAS FUNCIONES DE NAVEGACIÓN SUPERIOR ---
+
+  nuevoReclamo() {
+    // Redirige al paso 1 para limpiar todo e iniciar de nuevo
+    this.router.navigate(['/reclamo/datos']);
+  }
+
+  irAMisCasos() {
+    this.router.navigate(['/mis-casos']);
+  }
+
+  irAConsulta() {
+    this.router.navigate(['/consulta']);
+  }
+
+  salir() {
+    localStorage.removeItem('token_cliente');
+    localStorage.removeItem('cliente_datos');
+    this.router.navigate(['/ingresar']);
   }
 }

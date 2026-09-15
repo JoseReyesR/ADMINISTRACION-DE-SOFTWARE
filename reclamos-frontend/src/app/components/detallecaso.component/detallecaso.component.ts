@@ -108,6 +108,7 @@ export class DetallecasoComponent implements OnInit {
 
   volverBandeja() {
     this.router.navigate(['/dashboard']);
+
   }
 
   salir() {
