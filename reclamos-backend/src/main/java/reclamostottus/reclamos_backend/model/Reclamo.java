@@ -31,16 +31,23 @@ public class Reclamo {
     @JoinColumn(name = "estado_id", nullable = false)
     private EstadoReclamo estado;
 
-    // --- NUEVOS CAMPOS DEL FRONTEND ---
+    // --- NUEVOS CAMPOS DEL FRONTEND --- // --- NUEVOS CAMPOS ADAPTADOS A TU SQL
+    // ---
     @Column(name = "tipo_solicitud", nullable = false, length = 50)
     private String tipoSolicitud;
 
     @Column(name = "canal_compra", length = 50)
     private String canalCompra;
 
-    @Column(name = "tienda", length = 100)
-    private String tienda;
+    // RELACIÓN CON LA NUEVA TABLA TIENDAS
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tienda_id", nullable = false)
+    private Tienda tienda;
     // ----------------------------------
+    // RELACIÓN CON LA NUEVA TABLA MOTIVOS
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "motivo_id", nullable = false)
+    private CatalogoMotivo motivo;
 
     @Column(name = "numero_boleta_pedido", length = 100)
     private String numeroBoletaPedido;
@@ -128,14 +135,24 @@ public class Reclamo {
         this.canalCompra = canalCompra;
     }
 
-    public String getTienda() {
+    // agregado nuevo
+    public Tienda getTienda() {
         return tienda;
     }
 
-    public void setTienda(String tienda) {
+    public void setTienda(Tienda tienda) {
         this.tienda = tienda;
     }
 
+    public CatalogoMotivo getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(CatalogoMotivo motivo) {
+        this.motivo = motivo;
+    }
+
+    // ----------------------------------------------------------
     public String getNumeroBoletaPedido() {
         return numeroBoletaPedido;
     }

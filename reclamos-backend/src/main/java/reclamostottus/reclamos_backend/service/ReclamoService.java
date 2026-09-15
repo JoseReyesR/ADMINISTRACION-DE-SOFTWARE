@@ -82,7 +82,7 @@ public class ReclamoService {
         // 3. Mapear datos del incidente (DTO -> Entidad)
         nuevoReclamo.setTipoSolicitud(dto.getTipoSolicitud());
         nuevoReclamo.setCanalCompra(dto.getCanalCompra());
-        nuevoReclamo.setTienda(dto.getTienda());
+        // nuevoReclamo.setTienda(dto.getTienda());
         nuevoReclamo.setNumeroBoletaPedido(dto.getNumeroBoleta());
 
         // Convertimos el String de la fecha a LocalDate para que MySQL lo entienda
@@ -92,6 +92,19 @@ public class ReclamoService {
 
         nuevoReclamo.setProductoImplicado(dto.getProducto());
         nuevoReclamo.setDescripcionCaso(dto.getDescripcion());
+
+        // --- CORRECCIÓN DE LLAVES FORÁNEAS (TIENDA Y MOTIVO) ---
+        // Asignamos objetos fijos (ID 1) de forma temporal para que el código compile.
+        // Hacemos esto porque tu HTML de Angular aún está enviando textos
+        // (ej. "Trujillo Centro") en lugar de los IDs reales de la base de datos.
+        Tienda tiendaVinculada = new Tienda();
+        tiendaVinculada.setId(1);
+        nuevoReclamo.setTienda(tiendaVinculada);
+
+        CatalogoMotivo motivoVinculado = new CatalogoMotivo();
+        motivoVinculado.setId(1);
+        nuevoReclamo.setMotivo(motivoVinculado);
+        // --------------------------------------------------------
 
         // 4. Regla de Negocio: 15 días hábiles (Sumamos 21 días naturales por fines de
         // semana)
