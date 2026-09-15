@@ -89,8 +89,17 @@ ngOnInit(): void {
           }
         },
         error: (err) => {
-          console.error('Error de conexión:', err);
-          this.limpiarCampos();
+
+
+          if (err.status === 404) {
+            // COMPORTAMIENTO ESPERADO: DNI no existe (Invitado).
+            // Limpiamos los campos en silencio sin asustar en la consola.
+            this.limpiarCampos();
+          } else {
+            // SOLO imprimimos si el servidor realmente falló (ej. Error 500)
+            console.error('Error real de conexión con el servidor:', err);
+            this.limpiarCampos();
+          }
         }
       });
     } else {

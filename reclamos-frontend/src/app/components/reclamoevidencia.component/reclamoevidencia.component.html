@@ -32,7 +32,7 @@
       >
         &#128269; Seguimiento Invitado
       </button>
-      <!-- Botón Salir reubicado -->
+      <!-- Botón Salir -->
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none ms-3"
@@ -47,16 +47,16 @@
 <div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
   <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px">
     <div class="card-body p-5">
-      <!-- Stepper Visual (Igual a la imagen: 4 pasos visuales) -->
+      <!-- Stepper Visual (3 Pasos Exactos como la imagen) -->
       <div class="position-relative mb-5">
         <div
           class="progress position-absolute top-50 start-50 translate-middle"
-          style="height: 2px; width: 80%; z-index: 1"
+          style="height: 2px; width: 66%; z-index: 1"
         >
           <div class="progress-bar bg-light" role="progressbar" style="width: 100%"></div>
         </div>
         <div class="d-flex justify-content-between position-relative" style="z-index: 2">
-          <!-- Paso 1 -->
+          <!-- Paso 1 (Completado) -->
           <div class="text-center bg-white px-2">
             <div
               class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1"
@@ -66,6 +66,7 @@
             </div>
             <p class="fw-bold small mb-0" style="color: #7bb32e">Datos</p>
           </div>
+
           <!-- Paso 2 (Activo) -->
           <div class="text-center bg-white px-2">
             <div
@@ -74,25 +75,16 @@
             >
               2
             </div>
-            <p class="fw-bold small mb-0" style="color: #7bb32e">Incidente</p>
+            <p class="fw-bold small mb-0" style="color: #7bb32e">Incidente y Evidencia</p>
           </div>
-          <!-- Paso 3 -->
+
+          <!-- Paso 3 (Pendiente) -->
           <div class="text-center bg-white px-2">
             <div
               class="bg-white text-secondary rounded-circle d-inline-flex align-items-center justify-content-center border mb-1"
               style="width: 40px; height: 40px"
             >
               3
-            </div>
-            <p class="text-muted small mb-0">Evidencia</p>
-          </div>
-          <!-- Paso 4 -->
-          <div class="text-center bg-white px-2">
-            <div
-              class="bg-white text-secondary rounded-circle d-inline-flex align-items-center justify-content-center border mb-1"
-              style="width: 40px; height: 40px"
-            >
-              &#10003;
             </div>
             <p class="text-muted small mb-0">Fin</p>
           </div>
@@ -254,7 +246,7 @@
           </div>
         </div>
 
-        <!-- Zona de Evidencia (Anclada al final para mantener el flujo de 3 vistas) -->
+        <!-- Zona de Evidencia -->
         <div
           class="mt-4 border border-2 border-success rounded p-4 text-center bg-light position-relative"
           style="border-style: dashed !important"
