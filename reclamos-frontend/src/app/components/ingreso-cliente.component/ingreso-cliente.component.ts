@@ -21,8 +21,13 @@ export class IngresoClienteComponent {
 
   constructor(private authService: AuthService, private router: Router,private cdr: ChangeDetectorRef) {}
 
-  iniciarSesion() {
+
+
+iniciarSesion() {
     this.authService.cerrarSesion(); // Limpiamos sesiones previas
+    // Limpiamos también las variables específicas del cliente
+    localStorage.removeItem('token_cliente');
+    localStorage.removeItem('cliente_datos');
 
     this.authService.login(this.credenciales).subscribe({
       next: () => {
@@ -31,8 +36,28 @@ export class IngresoClienteComponent {
 
         // Validamos que sea estrictamente un Cliente
         if (rol === 'ROLE_CLIENTE' || rol === 'Cliente') {
-          // Si implementas la vista de "Mis Casos", la ruta iría aquí
+
+          // 1. GUARDAMOS LA LLAVE ESPECÍFICA DEL CLIENTE
+          const tokenReal = this.authService.obtenerToken();
+          if (tokenReal) {
+             localStorage.setItem('token_cliente', tokenReal);
+          }
+
+          // 2. GUARDAMOS SUS DATOS BÁSICOS EN MEMORIA
+          // Guardamos el correo que usó para loguearse. Si falta el DNI,
+          // el formulario del Paso 1 lo pedirá y buscará el resto.
+          localStorage.setItem('cliente_datos', JSON.stringify({
+            tipoDocumento: 'DNI',
+            numeroDocumento: '',
+            nombres: 'Cliente Registrado',
+            apellidos: '',
+            correo: this.credenciales.correo,
+            telefono: ''
+          }));
+
+          // 3. Redirigimos al formulario (o a /mis-casos si prefieres)
           this.router.navigate(['/reclamo/datos']);
+
         } else {
           this.authService.cerrarSesion();
           this.mensajeError = 'Esta cuenta pertenece al BackOffice. Utilice el acceso administrativo.';

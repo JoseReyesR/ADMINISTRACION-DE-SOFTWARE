@@ -9,10 +9,13 @@
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small"
+        (click)="nuevoReclamo()"
         data-cy="nav-nuevo-reclamo"
         >Nuevo Reclamo</a
       >
-      <<a
+      <!-- "Mis Casos" solo se muestra si el cliente está logueado -->
+      <a
+        *ngIf="esClienteRegistrado"
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small"
         (click)="irAMisCasos()"
@@ -29,7 +32,7 @@
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none ms-3"
-        (click)="volver()"
+        (click)="salir()"
         data-cy="nav-salir"
         >> Salir</a
       >
