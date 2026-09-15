@@ -47,7 +47,7 @@
 <div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
   <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px">
     <div class="card-body p-5">
-      <!-- Stepper Visual (3 Pasos Exactos como la imagen) -->
+      <!-- Stepper Visual (3 Pasos Exactos) -->
       <div class="position-relative mb-5">
         <div
           class="progress position-absolute top-50 start-50 translate-middle"
@@ -174,8 +174,10 @@
               required
             >
               <option value="" disabled>-- Tienda --</option>
-              <option value="Trujillo Centro">Trujillo Centro</option>
-              <option value="Mall Aventura">Mall Aventura</option>
+              <!-- DIBUJO DINÁMICO DE TIENDAS -->
+              <option *ngFor="let t of listaTiendas" [value]="t.id">
+                {{ t.nombre }}
+              </option>
             </select>
           </div>
           <div class="col-md-4">
@@ -212,12 +214,13 @@
               required
             >
               <option value="" disabled>Seleccione...</option>
-              <option value="Cobro equivocado en caja">Cobro equivocado en caja</option>
-              <option value="Producto vencido">Producto vencido</option>
+              <!-- DIBUJO DINÁMICO DE MOTIVOS -->
+              <ng-container *ngFor="let m of listaMotivos">
+                <option *ngIf="m.tipoSolicitud === incidente.tipoSolicitud" [value]="m.id">
+                  {{ m.nombre }}
+                </option>
+              </ng-container>
             </select>
-            <small class="text-danger fw-bold d-block mt-1" style="font-size: 0.75rem"
-              >&#9888; Caso de Alta Prioridad</small
-            >
           </div>
           <div class="col-md-6 mt-3">
             <label class="form-label fw-bold small">Producto (Opcional)</label>

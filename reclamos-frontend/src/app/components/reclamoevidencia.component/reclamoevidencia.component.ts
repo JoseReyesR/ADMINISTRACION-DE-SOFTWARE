@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReclamoService } from '../../services/reclamo.service';
+import { CatalogoService } from '../../services/catalogo.service'; // <-- NUEVO SERVICIO
 
 @Component({
   selector: 'app-reclamoevidencia',
@@ -16,32 +17,40 @@ export class ReclamoevidenciaComponent implements OnInit {
   incidente = {
     tipoSolicitud: 'Reclamo',
     canalCompra: 'Tienda Física',
-    tienda: '',
+    tienda: '', // Ahora guardará el ID de la tienda
     numeroBoleta: '',
     fechaCompra: '',
-    motivo: '',
+    motivo: '', // Ahora guardará el ID del motivo
     producto: '',
     descripcion: ''
   };
 
+  // Arreglos para guardar los datos de la Base de Datos
+  listaTiendas: any[] = [];
+  listaMotivos: any[] = [];
+
   // Variables para la evidencia
   archivoSeleccionado: File | null = null;
   mensajeError: string = '';
-
-  // Variable para controlar la vista del cliente
   esClienteRegistrado: boolean = false;
 
-  // Inyectamos el servicio
-  constructor(private router: Router, private reclamoService: ReclamoService) {}
+  // Inyectamos ambos servicios
+  constructor(
+    private router: Router,
+    private reclamoService: ReclamoService,
+    private catalogoService: CatalogoService
+  ) {}
 
   ngOnInit(): void {
-    // Verificamos si el cliente está logueado para mostrar "Mis Casos"
     if (typeof window !== 'undefined' && localStorage.getItem('token_cliente')) {
       this.esClienteRegistrado = true;
     }
+
+    // DESCARGAMOS LOS CATÁLOGOS AL ABRIR LA PANTALLA
+    this.catalogoService.obtenerTiendas().subscribe(data => this.listaTiendas = data);
+    this.catalogoService.obtenerMotivos().subscribe(data => this.listaMotivos = data);
   }
 
-  // Validación de 10 MB para la evidencia
   onArchivoSeleccionado(event: any) {
     const file: File = event.target.files[0];
     if (file) {
@@ -72,10 +81,7 @@ export class ReclamoevidenciaComponent implements OnInit {
     this.router.navigate(['/reclamo/datos']);
   }
 
-  // --- NUEVAS FUNCIONES DE NAVEGACIÓN SUPERIOR ---
-
   nuevoReclamo() {
-    // Redirige al paso 1 para limpiar todo e iniciar de nuevo
     this.router.navigate(['/reclamo/datos']);
   }
 
