@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,7 +16,7 @@ export class LoginComponent {
   credenciales = { correo: '', password: '' };
   mensajeError: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   iniciarSesion() {
     this.authService.cerrarSesion(); // Limpiamos basuras previas
@@ -29,11 +30,14 @@ export class LoginComponent {
           this.router.navigate(['/dashboard']);
         } else {
           this.mensajeError = 'Rol no autorizado para el BackOffice.';
+          this.cdr.detectChanges();
           this.authService.cerrarSesion();
+
         }
       },
       error: () => {
         this.mensajeError = 'Credenciales incorrectas. Verifique su correo y contraseña.';
+        this.cdr.detectChanges();
       }
     });
   }

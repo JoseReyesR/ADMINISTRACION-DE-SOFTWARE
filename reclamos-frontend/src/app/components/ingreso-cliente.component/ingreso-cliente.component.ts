@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,7 +19,7 @@ export class IngresoClienteComponent {
 
   mensajeError: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router,private cdr: ChangeDetectorRef) {}
 
   iniciarSesion() {
     this.authService.cerrarSesion(); // Limpiamos sesiones previas
@@ -36,13 +36,16 @@ export class IngresoClienteComponent {
         } else {
           this.authService.cerrarSesion();
           this.mensajeError = 'Esta cuenta pertenece al BackOffice. Utilice el acceso administrativo.';
+          this.cdr.detectChanges();
         }
       },
       error: (error) => {
         if (error.status === 401 || error.status === 403) {
           this.mensajeError = 'Credenciales incorrectas. Verifique su correo y contraseña.';
+          this.cdr.detectChanges();
         } else {
           this.mensajeError = 'Error de conexión con el servidor.';
+          this.cdr.detectChanges();
         }
       }
     });
