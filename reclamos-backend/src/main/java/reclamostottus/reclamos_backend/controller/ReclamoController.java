@@ -12,6 +12,7 @@ import reclamostottus.reclamos_backend.model.Reclamo;
 import reclamostottus.reclamos_backend.repository.EstadoReclamoRepository;
 import reclamostottus.reclamos_backend.repository.PrioridadRepository;
 import reclamostottus.reclamos_backend.service.ReclamoService;
+import org.springframework.security.core.Authentication; // Asegúrate de importar esto
 
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,25 @@ public class ReclamoController {
         Optional<Reclamo> reclamo = reclamoService.seguimientoSeguroInvitado(codigo, dni);
         return reclamo.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // NUEVO: GET /api/reclamos/mis-casos -> Devuelve el historial del cliente
+    // logueado
+    @GetMapping("/mis-casos")
+    public ResponseEntity<List<Reclamo>> listarMisCasos(Authentication authentication) {
+        // Extraemos el correo directamente del Token JWT por seguridad
+        String correoCliente = authentication.getName();
+        // --- INICIO DE RASTREO ---
+        System.out.println("\n=== DEBUG PANEL MIS CASOS ===");
+        System.out.println("1. Correo extraído del Token JWT: [" + correoCliente + "]");
+
+        List<Reclamo> historial = reclamoService.obtenerMisCasos(correoCliente);
+
+        System.out.println("2. Cantidad de reclamos encontrados en MySQL: " + historial.size());
+        System.out.println("===============================\n");
+        // --- FIN DE RASTREO ---
+
+        return ResponseEntity.ok(historial);
     }
 
     // ============================================================

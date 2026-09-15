@@ -12,4 +12,7 @@ public interface ReclamoRepository extends JpaRepository<Reclamo, Integer> {
 
     // NUEVO: Busca todos los reclamos asociados a un correo específico
     List<Reclamo> findByUsuarioCorreo(String correo);
+
+    // Buscar todos los reclamos asociados a un DNI específico
+    List<Reclamo> findByUsuarioNumeroDocumento(String numeroDocumento);
 }
