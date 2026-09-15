@@ -18,6 +18,11 @@ export class ReclamoService {
     this.datosCliente = datos;
   }
 
+  // --- NUEVO MÉTODO PARA LEER EL CORREO ---
+  obtenerCorreoCliente(): string {
+    return this.datosCliente.correo || '';
+  }
+
   enviarReclamoTotal(datosIncidente: any, archivo: File | null): Observable<any> {
     const payload = {
       ...this.datosCliente,

@@ -72,7 +72,12 @@ export class ReclamoevidenciaComponent implements OnInit {
   siguientePaso() {
     this.reclamoService.enviarReclamoTotal(this.incidente, this.archivoSeleccionado).subscribe({
       next: (respuesta) => {
-        this.router.navigate(['/reclamo/confirmacion']);
+       this.router.navigate(['/reclamo/confirmacion'], {
+          state: {
+            codigo: respuesta.codigoSeguimiento,
+            correo: this.reclamoService.obtenerCorreoCliente()
+          }
+        });
       },
       error: (error) => {
         console.error('Error del servidor:', error);
