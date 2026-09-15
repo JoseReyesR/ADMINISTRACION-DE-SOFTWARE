@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reclamostottus.reclamos_backend.dto.ReclamoRequestDTO;
 import reclamostottus.reclamos_backend.model.EstadoReclamo;
+import reclamostottus.reclamos_backend.model.Prioridad;
 import reclamostottus.reclamos_backend.model.Reclamo;
 import reclamostottus.reclamos_backend.repository.EstadoReclamoRepository;
+import reclamostottus.reclamos_backend.repository.PrioridadRepository;
 import reclamostottus.reclamos_backend.service.ReclamoService;
 
 import java.util.List;
@@ -24,6 +26,9 @@ public class ReclamoController {
     // INYECCIÓN CLAVE: Esto evita el Error 500 al buscar los estados
     @Autowired
     private EstadoReclamoRepository estadoRepository;
+
+    @Autowired
+    private PrioridadRepository prioridadRepository;
 
     // POST /api/reclamos -> Recibe el formulario del Cliente
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -80,5 +85,16 @@ public class ReclamoController {
     public ResponseEntity<List<EstadoReclamo>> listarEstados() {
         List<EstadoReclamo> estados = estadoRepository.findAll();
         return ResponseEntity.ok(estados);
+    }
+
+    @GetMapping("/admin/prioridades")
+    public ResponseEntity<List<Prioridad>> listarPrioridades() {
+        return ResponseEntity.ok(prioridadRepository.findAll());
+    }
+
+    @PutMapping("/admin/caso/{codigo}/prioridad/{idPrioridad}")
+    public ResponseEntity<Reclamo> cambiarPrioridad(@PathVariable String codigo, @PathVariable Integer idPrioridad) {
+        Reclamo actualizado = reclamoService.actualizarPrioridadReclamo(codigo, idPrioridad);
+        return ResponseEntity.ok(actualizado);
     }
 }

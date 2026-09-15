@@ -69,7 +69,13 @@ export class ReclamoService {
     return this.http.get<any[]>(`${this.apiUrl}/admin/estados`);
   }
 
+  obtenerCatalogoPrioridades(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/prioridades`);
+  }
 
+  actualizarPrioridadAdmin(codigo: string, idPrioridad: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/admin/caso/${codigo}/prioridad/${idPrioridad}`, {});
+  }
 
 
 }

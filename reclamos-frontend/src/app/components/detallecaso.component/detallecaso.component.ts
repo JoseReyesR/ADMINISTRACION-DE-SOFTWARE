@@ -15,7 +15,12 @@ export class DetallecasoComponent implements OnInit {
 
   codigoCaso: string = '';
   caso: any = null;
+
   nuevoEstadoId: number = 1; // Por defecto
+  estados: any[] = []; // Arreglo para llenar el select dinámicamente
+
+  nuevaPrioridadId: number = 2; // Media por defecto
+  prioridades: any[] = []; // Arreglo para prioridades
 
   constructor(
     private route: ActivatedRoute,
@@ -24,15 +29,16 @@ export class DetallecasoComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-
-  estados: any[] = []; // Arreglo para llenar el select dinámicamente
-
   ngOnInit(): void {
     this.codigoCaso = this.route.snapshot.paramMap.get('codigo') || '';
-    this.cargarCatalogoEstados(); // 1. Cargamos el catálogo primero
 
+    // 1. Cargamos TODOS los catálogos primero
+    this.cargarCatalogoEstados();
+    this.cargarCatalogoPrioridades(); // <--- ¡ESTA ERA LA LÍNEA FALTANTE!
+
+    // 2. Luego cargamos el caso
     if (this.codigoCaso) {
-      this.cargarDetalleCaso();   // 2. Luego cargamos el caso
+      this.cargarDetalleCaso();
     }
   }
 
@@ -46,12 +52,23 @@ export class DetallecasoComponent implements OnInit {
     });
   }
 
+  cargarCatalogoPrioridades() {
+    this.reclamoService.obtenerCatalogoPrioridades().subscribe({
+      next: (data) => {
+        this.prioridades = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error cargando prioridades:', err)
+    });
+  }
+
   cargarDetalleCaso() {
-    // AHORA: Usamos la ruta exclusiva de administrador que no exige DNI
+    // Usamos la ruta exclusiva de administrador que no exige DNI
     this.reclamoService.obtenerDetalleCasoAdmin(this.codigoCaso).subscribe({
       next: (datos) => {
         this.caso = datos;
         this.nuevoEstadoId = datos.estado?.id || 1;
+        this.nuevaPrioridadId = datos.prioridad?.id || 2;
 
         // Obligamos a Angular a quitar el mensaje de "Cargando" y pintar los datos
         this.cdr.detectChanges();
@@ -70,8 +87,21 @@ export class DetallecasoComponent implements OnInit {
         this.cargarDetalleCaso(); // Recargamos para ver los cambios
       },
       error: (err) => {
-        console.error('Error al actualizar:', err);
+        console.error('Error al actualizar estado:', err);
         alert('Hubo un error al actualizar el estado.');
+      }
+    });
+  }
+
+  guardarCambioPrioridad() {
+    this.reclamoService.actualizarPrioridadAdmin(this.codigoCaso, Number(this.nuevaPrioridadId)).subscribe({
+      next: (res) => {
+        alert('¡Prioridad actualizada correctamente!');
+        this.cargarDetalleCaso(); // Recargamos para ver los cambios
+      },
+      error: (err) => {
+        console.error('Error al actualizar prioridad:', err);
+        alert('Hubo un error al actualizar la prioridad.');
       }
     });
   }
@@ -79,8 +109,6 @@ export class DetallecasoComponent implements OnInit {
   volverBandeja() {
     this.router.navigate(['/dashboard']);
   }
-
-
 
   salir() {
     localStorage.removeItem('token');

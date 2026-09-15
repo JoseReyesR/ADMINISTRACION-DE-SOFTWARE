@@ -65,7 +65,7 @@
 
     <div class="p-4 flex-grow-1 overflow-auto">
       <div *ngIf="caso" class="row g-4">
-        <!-- Columna Izquierda: Información -->
+        <!-- Columna Izquierda: Información del Cliente e Incidente -->
         <div class="col-lg-8">
           <!-- Tarjeta Cliente -->
           <div class="card border-0 shadow-sm mb-4">
@@ -102,11 +102,8 @@
             <div class="card-body p-4">
               <div class="row">
                 <div class="col-md-4 mb-3">
-                  <label class="text-muted small fw-bold">Tipo y Prioridad</label>
-                  <p class="m-0 text-dark">
-                    {{ caso.tipoSolicitud }} -
-                    <span class="badge bg-danger">{{ caso.prioridad?.nombre }}</span>
-                  </p>
+                  <label class="text-muted small fw-bold">Tipo Solicitud</label>
+                  <p class="m-0 text-dark">{{ caso.tipoSolicitud }}</p>
                 </div>
                 <div class="col-md-4 mb-3">
                   <label class="text-muted small fw-bold">Canal / Tienda</label>
@@ -130,35 +127,29 @@
           </div>
         </div>
 
-        <!-- Columna Derecha: Acciones y Estado -->
+        <!-- Columna Derecha: Acciones, Estado y Prioridad -->
         <div class="col-lg-4">
           <div class="card border-0 shadow-sm mb-4">
+            <!-- Título idéntico a tu imagen -->
             <div class="card-header bg-white border-bottom fw-bold py-3 text-primary">
               Gestión Administrativa
             </div>
+
             <div class="card-body p-4">
+              <!-- BLOQUE: ESTADO (Basado en la imagen dcf006.png) -->
               <div class="mb-4">
                 <label class="text-muted small fw-bold mb-2">Estado Actual del Reclamo</label>
-                <h4>
-                  <span class="badge bg-secondary text-white w-100 py-2">{{
-                    caso.estado?.nombre
-                  }}</span>
-                </h4>
-                <small class="text-danger fw-bold d-block mt-2"
-                  >Vence el: {{ caso.fechaVencimiento | date: 'mediumDate' }}</small
-                >
-              </div>
+                <div class="bg-secondary text-white text-center rounded py-2 fw-bold mb-2">
+                  {{ caso.estado?.nombre || 'Ingresado' }}
+                </div>
+                <small class="text-danger fw-bold d-block mb-3">
+                  Vence el: {{ caso.fechaVencimiento | date: 'mediumDate' }}
+                </small>
 
-              <hr />
+                <hr class="text-muted opacity-25 my-3" />
 
-              <div class="mb-3 mt-4">
-                <label class="fw-bold mb-2">Actualizar Estado</label>
-
-                <select
-                  class="form-select mb-3"
-                  [(ngModel)]="nuevoEstadoId"
-                  data-cy="select-estado-admin"
-                >
+                <label class="fw-bold mb-2 small text-dark">Actualizar Estado</label>
+                <select class="form-select mb-3" [(ngModel)]="nuevoEstadoId">
                   <option *ngFor="let estado of estados" [value]="estado.id">
                     {{ estado.nombre }}
                   </option>
@@ -167,11 +158,35 @@
                   Guardar Cambios
                 </button>
               </div>
+
+              <!-- Separador grueso entre bloques -->
+              <hr class="my-4" />
+
+              <!-- BLOQUE: PRIORIDAD (Con el mismo diseño visual) -->
+              <div class="mb-3">
+                <label class="text-muted small fw-bold mb-2">Prioridad Actual del Reclamo</label>
+                <div class="bg-dark text-white text-center rounded py-2 fw-bold mb-3">
+                  {{ caso.prioridad?.nombre || 'No asignada' }}
+                </div>
+
+                <hr class="text-muted opacity-25 my-3" />
+
+                <label class="fw-bold mb-2 small text-dark">Actualizar Prioridad</label>
+                <select class="form-select mb-3" [(ngModel)]="nuevaPrioridadId">
+                  <option *ngFor="let prioridad of prioridades" [value]="prioridad.id">
+                    {{ prioridad.nombre }}
+                  </option>
+                </select>
+                <button class="btn btn-primary w-100 fw-bold" (click)="guardarCambioPrioridad()">
+                  Actualizar Prioridad
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Loader -->
       <div *ngIf="!caso" class="text-center py-5">
         <div class="spinner-border text-success" role="status"></div>
         <p class="mt-3 text-muted">Cargando detalles del caso...</p>

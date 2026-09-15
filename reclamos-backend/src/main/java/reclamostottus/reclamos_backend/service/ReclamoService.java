@@ -170,4 +170,15 @@ public class ReclamoService {
         return reclamoRepository.save(reclamo);
     }
 
+    public Reclamo actualizarPrioridadReclamo(String codigo, Integer nuevaPrioridadId) {
+        Reclamo reclamo = reclamoRepository.findByCodigoSeguimiento(codigo)
+                .orElseThrow(() -> new RuntimeException("Reclamo no encontrado"));
+
+        Prioridad nuevaPrioridad = new Prioridad();
+        nuevaPrioridad.setId(nuevaPrioridadId);
+        reclamo.setPrioridad(nuevaPrioridad);
+
+        return reclamoRepository.save(reclamo);
+    }
+
 }
