@@ -107,6 +107,11 @@ export class ReclamoService {
     return this.http.post<any>(this.historialUrl, nota);
   }
 
+  // --- NUEVO: Obtener historial público para el invitado ---
+  obtenerHistorialPublico(reclamoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.historialUrl}/${reclamoId}/publico`);
+  }
+
 
 
 }

@@ -21,14 +21,20 @@ export class ConsultainvitadoComponent {
   resultado: any = null;
   buscado: boolean = false;
 
+  // ==========================================
+  // NUEVO: Variables para controlar el Popup
+  // ==========================================
+  mostrarModal: boolean = false;
+  historial: any[] = [];
+  // ==========================================
+
   constructor(
     private router: Router,
     private reclamoService: ReclamoService,
-    private cdr: ChangeDetectorRef // 1. Inyectamos el detector de cambios
+    private cdr: ChangeDetectorRef
   ) {}
 
   consultarCaso() {
-    // 2. Reiniciamos la vista para ocultar mensajes viejos mientras el servidor piensa
     this.buscado = false;
     this.resultado = null;
 
@@ -36,26 +42,46 @@ export class ConsultainvitadoComponent {
       .subscribe({
         next: (datosBackend) => {
           this.resultado = {
+            id: datosBackend.id, // NUEVO: Guardamos el ID real de la BD para buscar su historial
             codigo: datosBackend.codigoSeguimiento,
             estado: datosBackend.estado ? datosBackend.estado.nombre : 'Ingresado',
             fecha: datosBackend.fechaRegistro || 'Reciente',
             motivo: `[${datosBackend.tipoSolicitud}] - ${datosBackend.productoImplicado || 'General'}`
           };
 
-          // 3. Activamos la vista y forzamos a Angular a pintar el éxito
           this.buscado = true;
           this.cdr.detectChanges();
         },
         error: (err) => {
           this.resultado = null;
-
-          // 4. Activamos la vista y forzamos a Angular a pintar el error 404
           this.buscado = true;
           this.cdr.detectChanges();
           console.error('Consulta fallida (No encontrado o DNI incorrecto)');
         }
       });
   }
+
+  // ==========================================
+  // NUEVO: Métodos para la Trazabilidad
+  // ==========================================
+  abrirModalDetalles() {
+    if (!this.resultado || !this.resultado.id) return;
+
+    // Llamamos a la ruta pública que NO trae las notas marcadas como "esInterno"
+    this.reclamoService.obtenerHistorialPublico(this.resultado.id).subscribe({
+      next: (data) => {
+        this.historial = data;
+        this.mostrarModal = true; // Mostramos el popup
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error al cargar la trazabilidad', err)
+    });
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false; // Ocultamos el popup
+  }
+  // ==========================================
 
   volver() {
     this.router.navigate(['/login']);

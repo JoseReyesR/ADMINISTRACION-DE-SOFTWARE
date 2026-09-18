@@ -11,8 +11,9 @@
         class="text-white text-decoration-none ms-3"
         (click)="volver()"
         data-cy="nav-salir"
-        >> Salir</a
       >
+        > Salir
+      </a>
     </div>
   </div>
 </nav>
@@ -90,21 +91,118 @@
 
       <!-- Resultados de la consulta -->
       <div *ngIf="buscado" class="mt-5">
+        <!-- NUEVO: Tarjeta de éxito rediseñada con el botón del Modal -->
         <div *ngIf="resultado" class="alert alert-success border-0 shadow-sm p-4">
-          <h5 class="fw-bold text-success mb-2">&#10003; Caso Encontrado</h5>
-          <p class="mb-1 small"><strong>Código:</strong> {{ resultado.codigo }}</p>
-          <p class="mb-1 small"><strong>Motivo:</strong> {{ resultado.motivo }}</p>
-          <p class="mb-1 small"><strong>Fecha:</strong> {{ resultado.fecha }}</p>
-          <p class="mb-0 small">
-            <strong>Estado:</strong>
-            <span class="badge bg-warning text-dark">{{ resultado.estado }}</span>
-          </p>
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+              <h5 class="fw-bold text-success mb-2">&#10003; Caso Encontrado</h5>
+              <p class="mb-1 small"><strong>Código:</strong> {{ resultado.codigo }}</p>
+              <p class="mb-1 small"><strong>Motivo:</strong> {{ resultado.motivo }}</p>
+              <p class="mb-1 small">
+                <strong>Fecha:</strong> {{ resultado.fecha | date: 'dd/MM/yyyy' }}
+              </p>
+              <p class="mb-0 small">
+                <strong>Estado:</strong>
+                <span class="badge bg-warning text-dark">{{ resultado.estado }}</span>
+              </p>
+            </div>
+            <div class="mt-3 mt-md-0">
+              <button
+                class="btn btn-success fw-bold px-4 rounded-pill shadow-sm"
+                (click)="abrirModalDetalles()"
+              >
+                <i class="bi bi-search me-1"></i> Ver Trazabilidad
+              </button>
+            </div>
+          </div>
         </div>
+
         <div *ngIf="!resultado" class="alert alert-danger border-0 shadow-sm p-4 text-center">
           <p class="mb-0 fw-bold small">
             &#9888; No se encontró ningún reclamo registrado con estos datos de verificación.
           </p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- NUEVO: POPUP / MODAL DE TRAZABILIDAD                      -->
+<!-- ========================================================= -->
+
+<!-- Fondo oscuro (Backdrop) -->
+<div
+  *ngIf="mostrarModal"
+  class="modal-backdrop fade show"
+  style="
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1040;
+  "
+></div>
+
+<!-- Contenedor del Modal -->
+<div
+  *ngIf="mostrarModal"
+  class="modal fade show d-block"
+  tabindex="-1"
+  role="dialog"
+  style="z-index: 1050"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg">
+      <!-- Cabecera -->
+      <div class="modal-header text-white" style="background-color: #7bb32e">
+        <h5 class="modal-title fw-bold">Historial de Seguimiento</h5>
+        <!-- Botón X para cerrar -->
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="cerrarModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Cuerpo (Timeline) -->
+      <div class="modal-body p-4" style="background-color: #f8f9fa">
+        <div *ngIf="historial.length === 0" class="text-center text-muted small py-4">
+          Aún no hay actualizaciones públicas para este caso.
+        </div>
+
+        <!-- Ciclo de notas (Línea de tiempo) -->
+        <div
+          *ngFor="let nota of historial"
+          class="mb-3 p-3 rounded border border-start border-4 border-success bg-white shadow-sm"
+        >
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-dark">Actualización del Caso</span>
+            <small class="text-muted" style="font-size: 0.75rem">{{
+              nota.fechaRegistro | date: 'dd/MM/yyyy HH:mm'
+            }}</small>
+          </div>
+          <p class="small text-muted mb-0">{{ nota.comentario }}</p>
+
+          <!-- Si hubo cambio de estado -->
+          <div *ngIf="nota.estadoNuevo" class="mt-2 pt-2 border-top small fw-bold text-success">
+            &#8594; Estado actualizado a: {{ nota.estadoNuevo.nombre }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie (Botón Cerrar) -->
+      <div class="modal-footer bg-white border-top-0">
+        <button
+          type="button"
+          class="btn btn-outline-secondary fw-bold rounded-pill px-4"
+          (click)="cerrarModal()"
+        >
+          Cerrar
+        </button>
       </div>
     </div>
   </div>
