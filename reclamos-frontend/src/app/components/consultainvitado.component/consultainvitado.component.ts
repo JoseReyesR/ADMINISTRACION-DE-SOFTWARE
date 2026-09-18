@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core'; // MEJORA DE RAPIDEZ: Importamos NgZone
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,17 +21,17 @@ export class ConsultainvitadoComponent {
   resultado: any = null;
   buscado: boolean = false;
 
-  // ==========================================
+    // ==========================================
   // NUEVO: Variables para controlar el Popup
   // ==========================================
   mostrarModal: boolean = false;
   historial: any[] = [];
-  // ==========================================
 
   constructor(
     private router: Router,
     private reclamoService: ReclamoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone // MEJORA DE RAPIDEZ: Inyectamos NgZone en el constructor
   ) {}
 
   consultarCaso() {
@@ -41,38 +41,47 @@ export class ConsultainvitadoComponent {
     this.reclamoService.consultarSeguimiento(this.consulta.codigoSeguimiento, this.consulta.numeroDocumento)
       .subscribe({
         next: (datosBackend) => {
-          this.resultado = {
-            id: datosBackend.id, // NUEVO: Guardamos el ID real de la BD para buscar su historial
-            codigo: datosBackend.codigoSeguimiento,
-            estado: datosBackend.estado ? datosBackend.estado.nombre : 'Ingresado',
-            fecha: datosBackend.fechaRegistro || 'Reciente',
-            motivo: `[${datosBackend.tipoSolicitud}] - ${datosBackend.productoImplicado || 'General'}`
-          };
+          // MEJORA DE RAPIDEZ: Obligamos a Angular a procesar la respuesta instantáneamente
+          this.ngZone.run(() => {
+            this.resultado = {
+              id: datosBackend.id,
+              codigo: datosBackend.codigoSeguimiento,
+              estado: datosBackend.estado ? datosBackend.estado.nombre : 'Ingresado',
+              fecha: datosBackend.fechaRegistro || 'Reciente',
+              motivo: `[${datosBackend.tipoSolicitud}] - ${datosBackend.productoImplicado || 'General'}`
+            };
 
-          this.buscado = true;
-          this.cdr.detectChanges();
+            this.buscado = true;
+            this.cdr.detectChanges();
+          });
         },
         error: (err) => {
-          this.resultado = null;
-          this.buscado = true;
-          this.cdr.detectChanges();
-          console.error('Consulta fallida (No encontrado o DNI incorrecto)');
+          // MEJORA DE RAPIDEZ: Respuesta de error inmediata
+          this.ngZone.run(() => {
+            this.resultado = null;
+            this.buscado = true;
+            this.cdr.detectChanges();
+            console.error('Consulta fallida (No encontrado o DNI incorrecto)');
+          });
         }
       });
   }
 
-  // ==========================================
+ // ==========================================
   // NUEVO: Métodos para la Trazabilidad
   // ==========================================
   abrirModalDetalles() {
     if (!this.resultado || !this.resultado.id) return;
 
-    // Llamamos a la ruta pública que NO trae las notas marcadas como "esInterno"
+   // Llamamos a la ruta pública que NO trae las notas marcadas como "esInterno"
     this.reclamoService.obtenerHistorialPublico(this.resultado.id).subscribe({
       next: (data) => {
-        this.historial = data;
-        this.mostrarModal = true; // Mostramos el popup
-        this.cdr.detectChanges();
+        // MEJORA DE RAPIDEZ: Apertura del Popup instantánea sin doble clic
+        this.ngZone.run(() => {
+          this.historial = data;
+          this.mostrarModal = true; // Mostramos el popup
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => console.error('Error al cargar la trazabilidad', err)
     });
@@ -81,7 +90,6 @@ export class ConsultainvitadoComponent {
   cerrarModal() {
     this.mostrarModal = false; // Ocultamos el popup
   }
-  // ==========================================
 
   volver() {
     this.router.navigate(['/login']);
