@@ -1,11 +1,11 @@
 <div class="d-flex" style="min-height: 100vh; background-color: #f4f6f9">
-  <!-- (Aquí va exactamente el mismo SIDEBAR de tu dashboard para mantener el diseño) -->
+  <!-- SIDEBAR DEL BACKOFFICE -->
   <div class="d-flex flex-column shadow" style="width: 250px; background-color: #212b36">
     <div
       class="p-3 text-white fw-bold fs-5 d-flex align-items-center"
       style="background-color: #7bb32e; height: 60px"
     >
-      TOTTUS <span class="fw-normal ms-1">ADMIN</span>
+      TOTTUS <span class="fw-normal ms-1">ADMIN123</span>
     </div>
     <ul class="nav nav-pills flex-column mb-auto mt-4 px-2">
       <li class="nav-item mb-2">
@@ -29,7 +29,9 @@
     >
       <div class="d-flex align-items-center">
         <h5 class="fw-bold m-0 text-dark me-3">Caso: {{ reclamo.codigoSeguimiento }}</h5>
-        <span class="badge bg-danger rounded-pill px-3">{{ reclamo.prioridad.nombre }}</span>
+        <span class="badge bg-danger rounded-pill px-3">{{
+          reclamo.prioridad?.nombre || 'Normal'
+        }}</span>
       </div>
       <div class="fw-bold text-muted small">
         Vencimiento:
@@ -40,21 +42,21 @@
     <!-- Layout 2 Columnas -->
     <div class="p-4 flex-grow-1 overflow-auto">
       <div class="row g-4">
-        <!-- COLUMNA IZQUIERDA: Info del Reclamo -->
+        <!-- COLUMNA IZQUIERDA: Información Estática del Reclamo -->
         <div class="col-lg-5">
           <div class="card border-0 shadow-sm rounded mb-4">
             <div class="card-body p-4">
               <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">Datos del Cliente</h6>
               <p class="mb-1 small text-muted">
-                <strong>Nombre:</strong> {{ reclamo.usuario.nombres }}
-                {{ reclamo.usuario.apellidos }}
+                <strong>Nombre:</strong> {{ reclamo.usuario?.nombres }}
+                {{ reclamo.usuario?.apellidos }}
               </p>
               <p class="mb-1 small text-muted">
-                <strong>DNI:</strong> {{ reclamo.usuario.numeroDocumento }}
+                <strong>DNI:</strong> {{ reclamo.usuario?.numeroDocumento }}
               </p>
               <p class="mb-1 small text-muted">
-                <strong>Contacto:</strong> {{ reclamo.usuario.correo }} |
-                {{ reclamo.usuario.telefono }}
+                <strong>Contacto:</strong> {{ reclamo.usuario?.correo }} |
+                {{ reclamo.usuario?.telefono }}
               </p>
 
               <h6 class="fw-bold text-dark border-bottom pb-2 mb-3 mt-4">Detalles del Incidente</h6>
@@ -77,7 +79,7 @@
           </div>
         </div>
 
-        <!-- COLUMNA DERECHA: Timeline y Gestión -->
+        <!-- COLUMNA DERECHA: Trazabilidad y Muro de Notas -->
         <div class="col-lg-7">
           <div class="card border-0 shadow-sm rounded h-100">
             <div class="card-body p-4 d-flex flex-column">
@@ -95,7 +97,7 @@
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="fw-bold small text-dark">
                       <i class="bi bi-person-circle me-1"></i>
-                      {{ nota.usuarioResponsable.nombres }}
+                      {{ nota.usuarioResponsable?.nombres || 'Administrador' }}
                       <span *ngIf="nota.esInterno" class="badge bg-warning text-dark ms-2"
                         >Nota Interna</span
                       >
@@ -106,7 +108,7 @@
                   </div>
                   <p class="small text-muted mb-0">{{ nota.comentario }}</p>
 
-                  <!-- Si hubo cambio de estado -->
+                  <!-- Etiqueta si el agente cambió el estado -->
                   <div
                     *ngIf="nota.estadoNuevo"
                     class="mt-2 pt-2 border-top small fw-bold text-primary"
@@ -116,16 +118,19 @@
                   </div>
                 </div>
 
+                <!-- Mensaje vacío -->
                 <div *ngIf="historial.length === 0" class="text-center text-muted small py-4">
                   No hay registros en el historial todavía.
                 </div>
               </div>
 
-              <!-- Caja para agregar nota nueva -->
+              <!-- CAJA DE NUEVA NOTA Y ACTUALIZACIÓN -->
               <div class="bg-light p-3 rounded border">
                 <h6 class="fw-bold small text-dark mb-3">Actualizar Caso</h6>
+
                 <div class="row g-2 mb-3">
                   <div class="col-md-6">
+                    <label class="form-label small fw-bold text-muted">Estado del Reclamo</label>
                     <select
                       class="form-select form-select-sm"
                       [(ngModel)]="nuevaNota.estadoNuevoId"
@@ -135,31 +140,34 @@
                       </option>
                     </select>
                   </div>
-                  <div class="col-md-6 d-flex align-items-center">
-                    <div class="form-check form-switch ms-2">
+                  <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check form-switch ms-2 mb-1">
                       <input
                         class="form-check-input"
                         type="checkbox"
-                        id="flexSwitchCheckChecked"
+                        id="esInternoSwitch"
                         [(ngModel)]="nuevaNota.esInterno"
                       />
-                      <label
-                        class="form-check-label small fw-bold text-muted"
-                        for="flexSwitchCheckChecked"
+                      <label class="form-check-label small fw-bold text-muted" for="esInternoSwitch"
+                        >Nota Oculta al Cliente</label
                       >
-                        Nota Oculta al Cliente
-                      </label>
                     </div>
                   </div>
                 </div>
+
+                <!-- Área de texto para ingresar la nota -->
+                <label class="form-label small fw-bold text-muted"
+                  >Detalle de Gestión (Requerido)</label
+                >
                 <textarea
-                  class="form-control mb-2"
-                  rows="2"
-                  placeholder="Escribe un comentario o justificación..."
+                  class="form-control mb-3"
+                  rows="3"
+                  placeholder="Escribe tu justificación, llamada al cliente o acción realizada..."
                   [(ngModel)]="nuevaNota.comentario"
                 ></textarea>
+
                 <button class="btn btn-primary btn-sm w-100 fw-bold" (click)="guardarNota()">
-                  <i class="bi bi-send-fill me-1"></i> Guardar Actualización
+                  <i class="bi bi-send-fill me-1"></i> Guardar Actualización en Historial
                 </button>
               </div>
             </div>

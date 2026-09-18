@@ -22,6 +22,19 @@ export class DetallecasoComponent implements OnInit {
   nuevaPrioridadId: number = 2; // Media por defecto
   prioridades: any[] = []; // Arreglo para prioridades
 
+  // =========================================================
+  // NUEVO: Variables para el historial y notas
+  // =========================================================
+  historial: any[] = [];
+  nuevaNota = {
+    reclamoId: 0,
+    usuarioResponsableId: 2, // ID de un Administrador en BD
+    estadoNuevoId: null, // Dejamos null para no cruzarlo con tu cambio de estado principal
+    comentario: '',
+    esInterno: true
+  };
+  // =========================================================
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -34,7 +47,7 @@ export class DetallecasoComponent implements OnInit {
 
     // 1. Cargamos TODOS los catálogos primero
     this.cargarCatalogoEstados();
-    this.cargarCatalogoPrioridades(); // <--- ¡ESTA ERA LA LÍNEA FALTANTE!
+    this.cargarCatalogoPrioridades();
 
     // 2. Luego cargamos el caso
     if (this.codigoCaso) {
@@ -70,6 +83,12 @@ export class DetallecasoComponent implements OnInit {
         this.nuevoEstadoId = datos.estado?.id || 1;
         this.nuevaPrioridadId = datos.prioridad?.id || 2;
 
+        // NUEVO: Asignamos el ID numérico real del caso y cargamos su historial
+        if (datos.id) {
+          this.nuevaNota.reclamoId = datos.id;
+          this.cargarHistorial();
+        }
+
         // Obligamos a Angular a quitar el mensaje de "Cargando" y pintar los datos
         this.cdr.detectChanges();
       },
@@ -79,6 +98,40 @@ export class DetallecasoComponent implements OnInit {
       }
     });
   }
+
+  // =========================================================
+  // NUEVO: Métodos para cargar y guardar notas en el historial
+  // =========================================================
+  cargarHistorial() {
+    if (!this.caso || !this.caso.id) return;
+    this.reclamoService.obtenerHistorialInterno(this.caso.id).subscribe({
+      next: (data) => {
+        this.historial = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error cargando historial:', err)
+    });
+  }
+
+  guardarNota() {
+    if (!this.nuevaNota.comentario.trim()) {
+      alert('Debe escribir un comentario antes de guardar.');
+      return;
+    }
+
+    this.reclamoService.registrarNotaHistorial(this.nuevaNota).subscribe({
+      next: () => {
+        alert('Nota guardada correctamente.');
+        this.nuevaNota.comentario = ''; // Limpiar textarea
+        this.cargarHistorial(); // Recargamos solo la línea de tiempo
+      },
+      error: (err) => {
+        console.error('Error al guardar la nota:', err);
+        alert('Hubo un error al intentar guardar la nota.');
+      }
+    });
+  }
+  // =========================================================
 
   guardarCambioEstado() {
     this.reclamoService.actualizarEstadoAdmin(this.codigoCaso, Number(this.nuevoEstadoId)).subscribe({
@@ -108,7 +161,6 @@ export class DetallecasoComponent implements OnInit {
 
   volverBandeja() {
     this.router.navigate(['/dashboard']);
-
   }
 
   salir() {

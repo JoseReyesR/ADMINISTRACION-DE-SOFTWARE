@@ -12,6 +12,7 @@ import { ConsultainvitadoComponent } from './components/consultainvitado.compone
 import { IngresoClienteComponent } from './components/ingreso-cliente.component/ingreso-cliente.component';
 import { MiscasosComponent } from './components/miscasos.component/miscasos.component';
 import { DetallecasoComponent } from './components/detallecaso.component/detallecaso.component';
+//import { DetalleCasoComponent } from './components/detalle-caso.component/detalle-caso.component';
 
 export const routes: Routes = [
   // Ruta por defecto redirige al login

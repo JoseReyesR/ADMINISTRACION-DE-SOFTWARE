@@ -66,14 +66,22 @@ export class DetalleCasoComponent implements OnInit {
   }
 
   guardarNota() {
-    if (!this.nuevaNota.comentario.trim()) return;
+    // NUEVO: Alerta visual si intenta enviar un comentario vacío
+    if (!this.nuevaNota.comentario.trim()) {
+      alert('Por favor, ingresa un comentario o justificación.');
+      return;
+    }
 
     this.reclamoService.registrarNotaHistorial(this.nuevaNota).subscribe({
       next: () => {
         this.nuevaNota.comentario = ''; // Limpiamos la caja de texto
+        alert('Actualización guardada en el historial correctamente.'); // NUEVO: Feedback de éxito
         this.cargarDatos(); // Recargamos para ver la nota inmediatamente
       },
-      error: (err) => console.error('Error al guardar la nota', err)
+      error: (err) => {
+        console.error('Error al guardar la nota', err);
+        alert('Hubo un error al intentar guardar la nota.'); // NUEVO: Feedback de error
+      }
     });
   }
 

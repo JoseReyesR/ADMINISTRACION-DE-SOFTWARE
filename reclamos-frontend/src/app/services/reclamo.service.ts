@@ -9,6 +9,9 @@ export class ReclamoService {
   // Ruta de tu Backend en Spring Boot
   private apiUrl = 'http://localhost:8080/api/reclamos';
 
+  // NUEVO: Variable para la ruta del historial
+  private historialUrl = 'http://localhost:8080/api/historial';
+
   // Objeto temporal para guardar los datos del Paso 1
   private datosCliente: any = {};
 
@@ -93,12 +96,17 @@ export class ReclamoService {
     return this.http.get<any>(`${this.apiUrl}/admin/caso/${id}`);
   }
 
+ // --- MÉTODOS PARA EL HISTORIAL MODIFICADOS ---
   obtenerHistorialInterno(reclamoId: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/api/historial/${reclamoId}/interno`);
+    // NUEVO: Usando la variable historialUrl
+    return this.http.get<any[]>(`${this.historialUrl}/${reclamoId}/interno`);
   }
 
   registrarNotaHistorial(nota: any): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/historial', nota);
+    // NUEVO: Usando la variable historialUrl
+    return this.http.post<any>(this.historialUrl, nota);
   }
+
+
 
 }
