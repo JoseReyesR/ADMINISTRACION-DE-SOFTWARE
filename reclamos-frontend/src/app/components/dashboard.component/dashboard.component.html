@@ -42,6 +42,7 @@
           href="javascript:void(0)"
           class="nav-link text-success border border-success opacity-75 d-flex align-items-center"
           style="border-radius: 8px"
+          (click)="salir()"
         >
           <i class="bi bi-box-arrow-up-right me-3"></i> Ir a Vista Cliente
         </a>
@@ -231,7 +232,8 @@
                         <span
                           class="badge rounded px-2 py-1 fw-bold"
                           [ngClass]="{
-                            'bg-danger bg-opacity-10 text-danger': caso.prioridad === 'ALTA',
+                            'bg-danger bg-opacity-10 text-danger':
+                              caso.prioridad === 'ALTA' || caso.prioridad === 'CRÍTICA',
                             'bg-warning bg-opacity-10 text-dark': caso.prioridad === 'MEDIA',
                             'bg-secondary bg-opacity-10 text-secondary': caso.prioridad === 'BAJA',
                           }"
@@ -242,18 +244,20 @@
                         <span
                           [ngClass]="{
                             'text-warning': caso.estado === 'En Proceso',
-                            'text-success': caso.estado === 'Resuelto',
+                            'text-success': caso.estado === 'Resuelto' || caso.estado === 'Cerrado',
                             'text-danger': caso.estado === 'Vencido',
-                            'text-primary': caso.estado === 'En Análisis',
+                            'text-primary':
+                              caso.estado === 'En Análisis' || caso.estado === 'Ingresado',
                           }"
                           >&#9679;</span
                         >
                         <span class="text-secondary fw-normal ms-1">{{ caso.estado }}</span>
                       </td>
                       <td class="text-center">
+                        <!-- EL CAMBIO CLAVE: Usamos caso.id para poder consultar la base de datos -->
                         <button
                           class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold"
-                          (click)="verDetalle(caso.codigo)"
+                          (click)="verDetalle(caso.id)"
                         >
                           Ver Detalles
                         </button>

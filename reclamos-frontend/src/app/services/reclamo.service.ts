@@ -82,5 +82,23 @@ export class ReclamoService {
     return this.http.put<any>(`${this.apiUrl}/admin/caso/${codigo}/prioridad/${idPrioridad}`, {});
   }
 
+  // --- NUEVO MÉTODO PARA EL BACKOFFICE ---
+  listarReclamosBackOffice(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/todos`);
+  }
+
+
+  // --- NUEVOS MÉTODOS PARA EL DETALLE Y EL HISTORIAL ---
+  obtenerCasoAdmin(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/admin/caso/${id}`);
+  }
+
+  obtenerHistorialInterno(reclamoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:8080/api/historial/${reclamoId}/interno`);
+  }
+
+  registrarNotaHistorial(nota: any): Observable<any> {
+    return this.http.post<any>('http://localhost:8080/api/historial', nota);
+  }
 
 }

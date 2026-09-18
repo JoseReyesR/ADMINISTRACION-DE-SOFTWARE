@@ -11,8 +11,9 @@ import reclamostottus.reclamos_backend.model.Prioridad;
 import reclamostottus.reclamos_backend.model.Reclamo;
 import reclamostottus.reclamos_backend.repository.EstadoReclamoRepository;
 import reclamostottus.reclamos_backend.repository.PrioridadRepository;
+import reclamostottus.reclamos_backend.repository.ReclamoRepository;
 import reclamostottus.reclamos_backend.service.ReclamoService;
-import org.springframework.security.core.Authentication; // Asegúrate de importar esto
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +25,14 @@ public class ReclamoController {
     @Autowired
     private ReclamoService reclamoService;
 
-    // INYECCIÓN CLAVE: Esto evita el Error 500 al buscar los estados
     @Autowired
     private EstadoReclamoRepository estadoRepository;
 
     @Autowired
     private PrioridadRepository prioridadRepository;
+
+    @Autowired
+    private ReclamoRepository reclamoRepository;
 
     // POST /api/reclamos -> Recibe el formulario del Cliente
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -55,8 +58,7 @@ public class ReclamoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // NUEVO: GET /api/reclamos/mis-casos -> Devuelve el historial del cliente
-    // logueado
+    // GET /api/reclamos/mis-casos -> Devuelve el historial del cliente logueado
     @GetMapping("/mis-casos")
     public ResponseEntity<List<Reclamo>> listarMisCasos(Authentication authentication) {
         // Extraemos el correo directamente del Token JWT por seguridad
@@ -85,19 +87,28 @@ public class ReclamoController {
         return ResponseEntity.ok(todosLosCasos);
     }
 
-    // GET /api/reclamos/admin/caso/{codigo} -> Ver Detalle Administrativo
-    @GetMapping("/admin/caso/{codigo}")
-    public ResponseEntity<Reclamo> obtenerCasoAdmin(@PathVariable String codigo) {
-        Optional<Reclamo> reclamo = reclamoService.buscarPorCodigo(codigo);
-        return reclamo.map(ResponseEntity::ok)
+    // ÚNICO ENDPOINT PARA OBTENER EL CASO POR ID
+    @GetMapping("/admin/caso/{id}")
+    public ResponseEntity<Reclamo> obtenerCasoAdmin(@PathVariable Integer id) {
+        return reclamoRepository.findById(id)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // PUT /api/reclamos/admin/caso/{codigo}/estado/{idEstado} -> Cambiar Estado
-    @PutMapping("/admin/caso/{codigo}/estado/{idEstado}")
-    public ResponseEntity<Reclamo> cambiarEstado(@PathVariable String codigo, @PathVariable Integer idEstado) {
-        Reclamo reclamoActualizado = reclamoService.actualizarEstadoReclamo(codigo, idEstado);
+    // PUT /api/reclamos/admin/caso/{id}/estado/{idEstado} -> Cambiar Estado
+    // (CORREGIDO A ID NUMÉRICO)
+    @PutMapping("/admin/caso/{id}/estado/{idEstado}")
+    public ResponseEntity<Reclamo> cambiarEstado(@PathVariable Integer id, @PathVariable Integer idEstado) {
+        Reclamo reclamoActualizado = reclamoService.actualizarEstadoReclamo(id, idEstado);
         return ResponseEntity.ok(reclamoActualizado);
+    }
+
+    // PUT /api/reclamos/admin/caso/{id}/prioridad/{idPrioridad} -> Cambiar
+    // Prioridad (CORREGIDO A ID NUMÉRICO)
+    @PutMapping("/admin/caso/{id}/prioridad/{idPrioridad}")
+    public ResponseEntity<Reclamo> cambiarPrioridad(@PathVariable Integer id, @PathVariable Integer idPrioridad) {
+        Reclamo actualizado = reclamoService.actualizarPrioridadReclamo(id, idPrioridad);
+        return ResponseEntity.ok(actualizado);
     }
 
     // GET /api/reclamos/admin/estados -> El Catálogo para tu Menú Desplegable
@@ -112,9 +123,9 @@ public class ReclamoController {
         return ResponseEntity.ok(prioridadRepository.findAll());
     }
 
-    @PutMapping("/admin/caso/{codigo}/prioridad/{idPrioridad}")
-    public ResponseEntity<Reclamo> cambiarPrioridad(@PathVariable String codigo, @PathVariable Integer idPrioridad) {
-        Reclamo actualizado = reclamoService.actualizarPrioridadReclamo(codigo, idPrioridad);
-        return ResponseEntity.ok(actualizado);
+    // Endpoint para el BackOffice: Listar TODOS los reclamos
+    @GetMapping("/todos")
+    public ResponseEntity<List<Reclamo>> listarTodos() {
+        return ResponseEntity.ok(reclamoRepository.findAll());
     }
 }

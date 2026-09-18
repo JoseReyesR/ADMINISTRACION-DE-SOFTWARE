@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit {
         if (datosBackend && datosBackend.length > 0) {
           // Mapeamos los datos para la tabla del BackOffice
           this.reclamos = datosBackend.map(reclamo => ({
+            id: reclamo.id, // <-- AGREGADO: Necesario para consultar el historial en la base de datos
             codigo: reclamo.codigoSeguimiento,
             dni: reclamo.usuario ? reclamo.usuario.numeroDocumento : 'Sin DNI',
             fecha: reclamo.fechaRegistro ? reclamo.fechaRegistro.split('T')[0] : 'Reciente',
@@ -60,11 +61,12 @@ export class DashboardComponent implements OnInit {
     this.urgentes = this.reclamos.filter(r => r.prioridad === 'ALTA').length;
     this.resueltos = this.reclamos.filter(r => r.estado === 'Resuelto').length;
   }
-verDetalle(codigo: string) {
-    // Redirige a la vista de detalle del caso seleccionado
-    this.router.navigate(['/dashboard/caso', codigo]);
-  }
 
+  // MODIFICADO: Ahora recibe el ID (number) en lugar del código (string)
+  verDetalle(id: number) {
+    // Redirige a la vista de detalle del caso seleccionado
+    this.router.navigate(['/dashboard/caso', id]);
+  }
 
   salir() {
     localStorage.removeItem('token'); // Limpiamos la sesión
