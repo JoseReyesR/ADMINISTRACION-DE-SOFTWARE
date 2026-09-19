@@ -113,6 +113,6 @@ export class MiscasosComponent implements OnInit {
 
   salir() {
     localStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/ingresar']);
   }
 }

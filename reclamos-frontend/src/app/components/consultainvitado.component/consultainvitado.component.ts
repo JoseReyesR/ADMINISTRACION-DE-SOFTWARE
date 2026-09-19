@@ -132,6 +132,7 @@ export class ConsultainvitadoComponent {
   }
 
   volver() {
+    localStorage.removeItem('token');
     this.router.navigate(['/ingresar']);
   }
 }
