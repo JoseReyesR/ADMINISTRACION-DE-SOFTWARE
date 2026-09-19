@@ -17,7 +17,11 @@ public class HistorialSeguimientoService {
     @Autowired
     private ReclamoRepository reclamoRepo;
 
-    // 1. Guardar un nuevo comentario o cambio de estado
+    // 1. Inyectamos tu nuevo servicio de correos
+    @Autowired
+    private EmailService emailService;
+
+    // 2. Guardar un nuevo comentario o cambio de estado
     public HistorialSeguimiento registrarHistorial(HistorialRequestDTO dto) {
         Reclamo reclamo = reclamoRepo.findById(dto.getReclamoId())
                 .orElseThrow(() -> new RuntimeException("Reclamo no encontrado"));
@@ -44,15 +48,31 @@ public class HistorialSeguimientoService {
             reclamoRepo.save(reclamo); // Actualiza la tabla reclamos
         }
 
-        return historialRepo.save(historial);
+        // Guardamos el historial en la base de datos
+        HistorialSeguimiento historialGuardado = historialRepo.save(historial);
+
+        // 3. LÓGICA DE CORREO: Solo enviamos si NO es una nota interna
+        if (dto.getEsInterno() != null && !dto.getEsInterno()) {
+            String detalleCorreo = "Se ha agregado una nueva nota pública a tu caso:\n\n\"" + dto.getComentario()
+                    + "\"";
+
+            // Si además se cambió el estado, lo mencionamos en el correo
+            if (dto.getEstadoNuevoId() != null) {
+                detalleCorreo += "\n\nAdemás, el estado de tu reclamo ha sido actualizado.";
+            }
+
+            emailService.enviarCorreoActualizacion(reclamo.getCodigoSeguimiento(), detalleCorreo);
+        }
+
+        return historialGuardado;
     }
 
-    // 2. Leer historial para el BackOffice (Todo)
+    // 3. Leer historial para el BackOffice (Todo)
     public List<HistorialSeguimiento> obtenerHistorialCompleto(Integer reclamoId) {
         return historialRepo.findByReclamoIdOrderByFechaRegistroAsc(reclamoId);
     }
 
-    // 3. Leer historial para el Cliente (Solo lo público)
+    // 4. Leer historial para el Cliente (Solo lo público)
     public List<HistorialSeguimiento> obtenerHistorialPublico(Integer reclamoId) {
         return historialRepo.findByReclamoIdAndEsInternoFalseOrderByFechaRegistroAsc(reclamoId);
     }
