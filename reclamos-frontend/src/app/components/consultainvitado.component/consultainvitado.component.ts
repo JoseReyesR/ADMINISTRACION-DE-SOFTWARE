@@ -21,15 +21,12 @@ export class ConsultainvitadoComponent {
   resultado: any = null;
   buscado: boolean = false;
 
-  // Variables para controlar el Popup de Trazabilidad
   mostrarModal: boolean = false;
   historial: any[] = [];
 
-  // NUEVO: Variables para controlar el Popup de Detalles
   mostrarModalDetalles: boolean = false;
   casoSeleccionado: any = null;
 
-  // NUEVO: Variables para el Visor de Imágenes
   mostrarModalImagen: boolean = false;
   imagenSeleccionada: string = '';
   private backendUrl = 'http://localhost:8080';
@@ -41,7 +38,35 @@ export class ConsultainvitadoComponent {
     private ngZone: NgZone
   ) {}
 
+  // =========================================================
+  // NUEVO: GETTERS PARA VALIDACIONES REGEX DINÁMICAS
+  // =========================================================
+  get documentoPattern(): string {
+    if (this.consulta.tipoDocumento === 'DNI') return '^[0-9]{8}$';
+    if (this.consulta.tipoDocumento === 'CE') return '^[0-9]{9}$';
+    if (this.consulta.tipoDocumento === 'PASAPORTE') return '^[A-Za-z]{1}[0-9]{8}$';
+    return '.*';
+  }
+
+  get mensajeErrorDocumento(): string {
+    if (this.consulta.tipoDocumento === 'DNI') return 'El DNI debe tener exactamente 8 números.';
+    if (this.consulta.tipoDocumento === 'CE') return 'El Carnet de Extranjería debe tener exactamente 9 números.';
+    if (this.consulta.tipoDocumento === 'PASAPORTE') return 'El Pasaporte debe tener 1 letra seguida de 8 números.';
+    return 'Documento inválido.';
+  }
+  // =========================================================
+
   consultarCaso() {
+    // Doble validación de seguridad por si vulneran el HTML
+    if (!new RegExp(this.documentoPattern).test(this.consulta.numeroDocumento)) {
+      alert(`Error: ${this.mensajeErrorDocumento}`);
+      return;
+    }
+    if (!this.consulta.codigoSeguimiento.trim()) {
+      alert('Error: El código de seguimiento es obligatorio.');
+      return;
+    }
+
     this.buscado = false;
     this.resultado = null;
 
@@ -55,7 +80,6 @@ export class ConsultainvitadoComponent {
               estado: datosBackend.estado ? datosBackend.estado.nombre : 'Ingresado',
               fecha: datosBackend.fechaRegistro || 'Reciente',
               motivo: `[${datosBackend.tipoSolicitud}] - ${datosBackend.productoImplicado || 'General'}`,
-              // NUEVO: Guardamos el objeto completo devuelto por Spring Boot para el Modal de Detalles
               detalleCompleto: datosBackend
             };
 
@@ -97,7 +121,7 @@ export class ConsultainvitadoComponent {
     });
   }
 
-  // --- NUEVO: MÉTODOS PARA EL POPUP DE DETALLES ---
+  // --- MÉTODOS PARA EL POPUP DE DETALLES ---
   abrirModalDetalles() {
     this.ngZone.run(() => {
       this.casoSeleccionado = this.resultado.detalleCompleto;
@@ -114,7 +138,7 @@ export class ConsultainvitadoComponent {
     });
   }
 
-  // --- NUEVO: MÉTODOS PARA EL VISOR DE IMÁGENES ---
+  // --- MÉTODOS PARA EL VISOR DE IMÁGENES ---
   abrirModalImagen(rutaArchivo: string) {
     this.ngZone.run(() => {
       this.imagenSeleccionada = this.backendUrl + encodeURI(rutaArchivo);
