@@ -45,6 +45,11 @@ public class ReclamoService {
     @Autowired
     private TiendaRepository tiendaRepository;
 
+    // 1. Añade esto en la parte superior de ReclamoService, debajo de tus otros
+    // @Autowired
+    @Autowired
+    private EmailService emailService;
+
     // Métodos para el Dashboard y Seguimiento
     public List<Reclamo> listarTodos() {
         return reclamoRepository.findAll();
@@ -203,7 +208,13 @@ public class ReclamoService {
             }
         }
 
+        // 2. Ve al final de tu método registrarReclamo, justo antes del "return
+        // reclamoGuardado;"
+        // y agrega esta línea:
+        emailService.enviarCorreoRegistro(reclamoGuardado);
         return reclamoGuardado;
+
+        // return reclamoGuardado;
     }
 
     // ============================================================
@@ -217,7 +228,13 @@ public class ReclamoService {
                 .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
 
         reclamo.setEstado(nuevoEstado);
-        return reclamoRepository.save(reclamo);
+
+        Reclamo guardado = reclamoRepository.save(reclamo);
+        emailService.enviarCorreoActualizacion(guardado.getCodigoSeguimiento(),
+                "El estado de tu caso ha cambiado a: " + nuevoEstado.getNombre());
+        return guardado;
+
+       // return reclamoRepository.save(reclamo);
     }
 
     public Reclamo actualizarPrioridadReclamo(Integer id, Integer idPrioridad) {
