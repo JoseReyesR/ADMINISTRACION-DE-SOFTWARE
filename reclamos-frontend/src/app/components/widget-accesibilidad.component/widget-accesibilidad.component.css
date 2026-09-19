@@ -1,0 +1,40 @@
+/* Botón Flotante Redondo */
+.widget-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  z-index: 9999;
+  background-color: #0d6efd; /* Azul de accesibilidad estándar */
+  border: none;
+}
+
+/* Panel Desplegable */
+.acc-panel {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  width: 320px;
+  z-index: 9998;
+  border: 1px solid #e0e0e0;
+}
+
+/* Diseño de los botones interiores */
+.acc-option-btn {
+  background-color: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.acc-option-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #ced4da;
+}
+
+/* Estado Activo cuando el usuario presiona un botón */
+.active-acc {
+  border: 2px solid #0d6efd !important;
+  background-color: #e9f2ff !important;
+}

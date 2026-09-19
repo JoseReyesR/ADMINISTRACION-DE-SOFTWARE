@@ -1,1 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
+/* =========================================
+   CLASES GLOBALES DE ACCESIBILIDAD (WCAG 2.1)
+   ========================================= */
+
+/* 1. Alto Contraste */
+body.acc-alto-contraste {
+  filter: contrast(150%) brightness(90%) !important;
+}
+
+/* 2. Escala de Grises para Daltonismo */
+body.acc-escala-grises {
+  filter: grayscale(100%) !important;
+}
+
+/* 3. Agrandar Texto un 20% */
+body.acc-texto-grande {
+  zoom: 1.2 !important; /* Zoom nativo que aumenta todo proporcionalmente un 20% */
+}
+
+/* 4. Resaltar Enlaces (Subrayado y fondo amarillo) */
+body.acc-resaltar-enlaces a,
+body.acc-resaltar-enlaces button {
+  text-decoration: underline !important;
+  text-decoration-thickness: 3px !important;
+  background-color: #ffeb3b !important;
+  color: #000 !important;
+}
+
+/* 5. Detener Animaciones */
+body.acc-sin-animaciones * {
+  animation: none !important;
+  transition: none !important;
+}

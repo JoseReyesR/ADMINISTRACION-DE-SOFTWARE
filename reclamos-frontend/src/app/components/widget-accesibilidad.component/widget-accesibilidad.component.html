@@ -1,0 +1,83 @@
+<!-- Botón Flotante Principal -->
+<button
+  class="btn btn-primary rounded-circle shadow-lg d-flex justify-content-center align-items-center widget-btn"
+  (click)="toggleMenu()"
+  title="Abrir Menú de Accesibilidad"
+>
+  <i class="bi bi-person-wheelchair fs-3 text-white">♿</i>
+</button>
+
+<!-- Panel de Accesibilidad -->
+<div class="acc-panel shadow-lg rounded-4 bg-light p-3" *ngIf="menuAbierto">
+  <div class="d-flex justify-content-between align-items-center mb-3 px-2">
+    <h6 class="fw-bold m-0 text-dark">Accesibilidad</h6>
+    <button class="btn-close text-secondary" (click)="toggleMenu()"></button>
+  </div>
+
+  <div class="row g-2">
+    <!-- Contraste -->
+    <div class="col-6">
+      <button
+        class="btn btn-white w-100 p-3 acc-option-btn shadow-sm"
+        [ngClass]="{ 'active-acc': accService.altoContraste }"
+        (click)="accService.toggleAltoContraste()"
+      >
+        <i class="bi bi-circle-half fs-4 d-block mb-1 text-dark"></i>
+        <small class="fw-bold text-dark">Contraste +</small>
+      </button>
+    </div>
+    <!-- Agrandar Texto -->
+    <div class="col-6">
+      <button
+        class="btn btn-white w-100 p-3 acc-option-btn shadow-sm"
+        [ngClass]="{ 'active-acc': accService.textoGrande }"
+        (click)="accService.toggleTextoGrande()"
+      >
+        <i class="bi bi-type fs-4 d-block mb-1 text-dark"></i>
+        <small class="fw-bold text-dark">Agrandar Texto</small>
+      </button>
+    </div>
+    <!-- Resaltar Links -->
+    <div class="col-6">
+      <button
+        class="btn btn-white w-100 p-3 acc-option-btn shadow-sm"
+        [ngClass]="{ 'active-acc': accService.resaltarEnlaces }"
+        (click)="accService.toggleResaltarEnlaces()"
+      >
+        <i class="bi bi-link-45deg fs-4 d-block mb-1 text-dark"></i>
+        <small class="fw-bold text-dark">Resaltar Links</small>
+      </button>
+    </div>
+    <!-- Escala de Grises -->
+    <div class="col-6">
+      <button
+        class="btn btn-white w-100 p-3 acc-option-btn shadow-sm"
+        [ngClass]="{ 'active-acc': accService.escalaGrises }"
+        (click)="accService.toggleEscalaGrises()"
+      >
+        <i class="bi bi-droplet-half fs-4 d-block mb-1 text-dark"></i>
+        <small class="fw-bold text-dark">Escala Grises</small>
+      </button>
+    </div>
+    <!-- Sin Animación -->
+    <div class="col-12">
+      <button
+        class="btn btn-white w-100 p-3 acc-option-btn shadow-sm"
+        [ngClass]="{ 'active-acc': accService.sinAnimaciones }"
+        (click)="accService.toggleSinAnimaciones()"
+      >
+        <i class="bi bi-stop-circle fs-4 d-block mb-1 text-dark"></i>
+        <small class="fw-bold text-dark">Sin Animación</small>
+      </button>
+    </div>
+  </div>
+
+  <hr class="text-muted" />
+
+  <button
+    class="btn w-100 fw-bold text-danger d-flex justify-content-center align-items-center"
+    (click)="accService.restablecerTodo()"
+  >
+    <i class="bi bi-arrow-counterclockwise me-2"></i> Restablecer todo
+  </button>
+</div>
