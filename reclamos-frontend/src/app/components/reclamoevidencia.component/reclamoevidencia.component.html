@@ -1,13 +1,10 @@
 <!-- Barra Superior Nav -->
 <nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7bb32e">
   <div class="container-fluid px-4 py-1">
-    <!-- Lado Izquierdo (Logo) -->
     <div class="d-flex align-items-center">
       <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
       <span class="text-white fw-bold me-2">Centro de Ayuda</span>
     </div>
-
-    <!-- Lado Derecho (Botones y Salir) -->
     <div class="d-flex align-items-center">
       <a
         href="javascript:void(0)"
@@ -16,7 +13,6 @@
         data-cy="nav-nuevo-reclamo"
         >Nuevo Reclamo</a
       >
-      <!-- "Mis Casos" condicionado -->
       <a
         *ngIf="esClienteRegistrado"
         href="javascript:void(0)"
@@ -32,7 +28,6 @@
       >
         &#128269; Seguimiento Invitado
       </button>
-      <!-- Botón Salir -->
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none ms-3"
@@ -47,7 +42,7 @@
 <div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
   <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px">
     <div class="card-body p-5">
-      <!-- Stepper Visual (3 Pasos Exactos) -->
+      <!-- Stepper Visual -->
       <div class="position-relative mb-5">
         <div
           class="progress position-absolute top-50 start-50 translate-middle"
@@ -56,7 +51,6 @@
           <div class="progress-bar bg-light" role="progressbar" style="width: 100%"></div>
         </div>
         <div class="d-flex justify-content-between position-relative" style="z-index: 2">
-          <!-- Paso 1 (Completado) -->
           <div class="text-center bg-white px-2">
             <div
               class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1"
@@ -66,8 +60,6 @@
             </div>
             <p class="fw-bold small mb-0" style="color: #7bb32e">Datos</p>
           </div>
-
-          <!-- Paso 2 (Activo) -->
           <div class="text-center bg-white px-2">
             <div
               class="rounded-circle d-inline-flex align-items-center justify-content-center mb-1 shadow-sm"
@@ -77,8 +69,6 @@
             </div>
             <p class="fw-bold small mb-0" style="color: #7bb32e">Incidente y Evidencia</p>
           </div>
-
-          <!-- Paso 3 (Pendiente) -->
           <div class="text-center bg-white px-2">
             <div
               class="bg-white text-secondary rounded-circle d-inline-flex align-items-center justify-content-center border mb-1"
@@ -163,58 +153,94 @@
 
         <!-- Formulario Principal -->
         <div class="row g-3">
-          <!-- Tienda y Boleta -->
+          <!-- Tienda -->
           <div class="col-md-6">
-            <label class="form-label fw-bold small">Tienda y Boleta</label>
+            <label class="form-label fw-bold small mb-0 text-dark">Tienda</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="tienda.invalid && (tienda.dirty || tienda.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+                >Debe seleccionar una tienda.</small
+              >
+            </div>
             <select
               class="form-select"
               name="tienda"
               [(ngModel)]="incidente.tienda"
+              #tienda="ngModel"
               data-cy="select-tienda"
               required
             >
-              <option value="" disabled>-- Tienda --</option>
-              <!-- DIBUJO DINÁMICO DE TIENDAS -->
-              <option *ngFor="let t of listaTiendas" [value]="t.id">
-                {{ t.nombre }}
-              </option>
+              <option value="" disabled>-- Seleccione una tienda --</option>
+              <option *ngFor="let t of listaTiendas" [value]="t.id">{{ t.nombre }}</option>
             </select>
           </div>
-          <div class="col-md-4">
-            <label class="form-label fw-bold small">Fecha de Compra</label>
+
+          <!-- Fecha de Compra -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold small mb-0 text-dark">Fecha de Compra</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="fechaCompra.invalid && (fechaCompra.dirty || fechaCompra.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+                >La fecha es obligatoria.</small
+              >
+            </div>
             <input
               type="date"
               class="form-control"
               name="fechaCompra"
               [(ngModel)]="incidente.fechaCompra"
+              #fechaCompra="ngModel"
               required
             />
           </div>
-          <div class="col-md-6">
-            <label class="form-label fw-bold small text-white d-none d-md-block">.</label>
+
+          <!-- N° Boleta -->
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold small mb-0 text-dark">Número de Boleta</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="numeroBoleta.invalid && (numeroBoleta.dirty || numeroBoleta.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+                >El N° de boleta es obligatorio.</small
+              >
+            </div>
             <input
               type="text"
               class="form-control"
               name="numeroBoleta"
               [(ngModel)]="incidente.numeroBoleta"
+              #numeroBoleta="ngModel"
               data-cy="input-boleta"
-              placeholder="N° Boleta (Ej: B001-123)"
+              placeholder="Ej: B001-123456"
               required
             />
           </div>
 
-          <!-- Motivo y Producto -->
+          <!-- Motivo -->
           <div class="col-md-6 mt-3">
-            <label class="form-label fw-bold small">Motivo</label>
+            <label class="form-label fw-bold small mb-0 text-dark">Motivo</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="motivo.invalid && (motivo.dirty || motivo.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+                >Debe seleccionar un motivo.</small
+              >
+            </div>
             <select
               class="form-select"
               name="motivo"
               [(ngModel)]="incidente.motivo"
+              #motivo="ngModel"
               data-cy="select-motivo"
               required
             >
               <option value="" disabled>Seleccione...</option>
-              <!-- DIBUJO DINÁMICO DE MOTIVOS -->
               <ng-container *ngFor="let m of listaMotivos">
                 <option *ngIf="m.tipoSolicitud === incidente.tipoSolicitud" [value]="m.id">
                   {{ m.nombre }}
@@ -222,8 +248,12 @@
               </ng-container>
             </select>
           </div>
+
+          <!-- Producto -->
           <div class="col-md-6 mt-3">
-            <label class="form-label fw-bold small">Producto (Opcional)</label>
+            <label class="form-label fw-bold small mb-0 text-dark">Producto (Opcional)</label>
+            <div style="min-height: 18px"></div>
+            <!-- Div vacío para alinear -->
             <input
               type="text"
               class="form-control"
@@ -236,11 +266,20 @@
 
           <!-- Descripción -->
           <div class="col-12 mt-3">
-            <label class="form-label fw-bold small">Descripción</label>
+            <label class="form-label fw-bold small mb-0 text-dark">Descripción</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="descripcion.invalid && (descripcion.dirty || descripcion.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+                >La descripción detallada es obligatoria.</small
+              >
+            </div>
             <textarea
               class="form-control"
               name="descripcion"
               [(ngModel)]="incidente.descripcion"
+              #descripcion="ngModel"
               data-cy="input-descripcion"
               rows="3"
               placeholder="Detalla lo sucedido..."
@@ -269,6 +308,7 @@
             &#10003; Archivo listo: {{ archivoSeleccionado.name }}
           </div>
         </div>
+
         <div *ngIf="mensajeError" class="alert alert-danger mt-2 small text-center fw-bold">
           &#9888; {{ mensajeError }}
         </div>
@@ -283,6 +323,8 @@
           >
             &#8592; Atrás
           </button>
+
+          <!-- Botón de Continuar (Se deshabilita nativamente si el form es inválido) -->
           <button
             type="submit"
             class="btn text-white px-5 fw-bold rounded-pill"
@@ -297,5 +339,3 @@
     </div>
   </div>
 </div>
-
-<!-- Widget Flotante Accesibilidad -->

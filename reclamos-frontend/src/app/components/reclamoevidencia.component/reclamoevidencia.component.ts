@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // <-- 1. Importamos
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -34,7 +34,7 @@ export class ReclamoevidenciaComponent implements OnInit {
     private router: Router,
     private reclamoService: ReclamoService,
     private catalogoService: CatalogoService,
-    private cdr: ChangeDetectorRef // <-- 2. Lo inyectamos aquí
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -42,15 +42,14 @@ export class ReclamoevidenciaComponent implements OnInit {
       this.esClienteRegistrado = true;
     }
 
-    // 3. ACTUALIZAMOS Y FORZAMOS EL RENDERIZADO INMEDIATO
     this.catalogoService.obtenerTiendas().subscribe(data => {
       this.listaTiendas = data;
-      this.cdr.detectChanges(); // <-- "¡Despierta y dibuja la pantalla!"
+      this.cdr.detectChanges();
     });
 
     this.catalogoService.obtenerMotivos().subscribe(data => {
       this.listaMotivos = data;
-      this.cdr.detectChanges(); // <-- "¡Despierta y dibuja la pantalla!"
+      this.cdr.detectChanges();
     });
   }
 
@@ -65,7 +64,7 @@ export class ReclamoevidenciaComponent implements OnInit {
         this.archivoSeleccionado = file;
         this.mensajeError = '';
       }
-      this.cdr.detectChanges(); // También forzamos al subir archivo
+      this.cdr.detectChanges();
     }
   }
 
@@ -73,10 +72,10 @@ export class ReclamoevidenciaComponent implements OnInit {
     this.reclamoService.enviarReclamoTotal(this.incidente, this.archivoSeleccionado).subscribe({
       next: (respuesta) => {
        this.router.navigate(['/reclamo/confirmacion'], {
-          state: {
-            codigo: respuesta.codigoSeguimiento,
-            correo: this.reclamoService.obtenerCorreoCliente()
-          }
+         state: {
+           codigo: respuesta.codigoSeguimiento,
+           correo: this.reclamoService.obtenerCorreoCliente()
+         }
         });
       },
       error: (error) => {
