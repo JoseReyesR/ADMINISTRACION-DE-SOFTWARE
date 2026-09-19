@@ -206,11 +206,27 @@
                     <option value="ASC">Más Antiguos</option>
                   </select>
 
-                  <button
+                  <!--<button
                     class="btn btn-sm btn-outline-primary fw-bold d-flex align-items-center"
                     (click)="cargarBandejaAdmin()"
+                    title="Actualizar Datos"
                   >
-                    <i class="bi bi-arrow-repeat me-1"></i>
+                    <i class="bi bi-arrow-repeat"></i>
+                  </button>-->
+                  <!-- NUEVOS BOTONES DE EXPORTACIÓN (Basados en tu diseño "Módulo de Reportes Gerenciales") -->
+                  <button
+                    class="btn btn-sm btn-success fw-bold d-flex align-items-center"
+                    (click)="exportarExcel()"
+                    title="Exportar a Excel"
+                  >
+                    <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                  </button>
+                  <button
+                    class="btn btn-sm btn-danger fw-bold d-flex align-items-center"
+                    (click)="exportarPDF()"
+                    title="Exportar a PDF"
+                  >
+                    <i class="bi bi-file-earmark-pdf me-1"></i> PDF
                   </button>
                 </div>
               </div>

@@ -4,6 +4,13 @@ import { FormsModule } from '@angular/forms'; // <-- AGREGADO PARA LOS FILTROS
 import { Router } from '@angular/router';
 import { ReclamoService } from '../../services/reclamo.service';
 
+
+// ---> NUEVO: Importaciones para los reportes
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -121,5 +128,66 @@ export class DashboardComponent implements OnInit {
   salir() {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
+  }
+
+
+  // =========================================================
+  // NUEVO: MÉTODOS DE EXPORTACIÓN DE REPORTES (RF08)
+  // =========================================================
+
+  exportarExcel() {
+    // 1. Preparamos los datos limpios para el Excel
+    const datosExcel = this.reclamosFiltrados.map(r => ({
+      'Código de Seguimiento': r.codigo,
+      'Documento (DNI/RUC)': r.dni,
+      'Fecha de Registro': r.fecha,
+      'Motivo y Canal': r.motivo,
+      'Nivel de Prioridad': r.prioridad,
+      'Estado Actual': r.estado
+    }));
+
+    // 2. Creamos el libro y la hoja de cálculo
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(datosExcel);
+    const workbook: XLSX.WorkBook = { Sheets: { 'Reclamos': worksheet }, SheetNames: ['Reclamos'] };
+
+    // 3. Generamos el archivo físico y forzamos la descarga
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, `Reporte_Reclamos_${new Date().getTime()}.xlsx`);
+  }
+
+  exportarPDF() {
+    // 1. Iniciamos el documento PDF en formato horizontal (landscape)
+    const doc = new jsPDF('landscape');
+
+    // 2. Título del Reporte
+    doc.setFontSize(18);
+    doc.text('Reporte Gerencial de Reclamos', 14, 22);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, 14, 30);
+
+    // 3. Preparamos las columnas y filas para la tabla
+    const columnas = [['CÓDIGO', 'DNI', 'FECHA', 'MOTIVO', 'PRIORIDAD', 'ESTADO']];
+    const filas = this.reclamosFiltrados.map(r => [
+      r.codigo,
+      r.dni,
+      r.fecha,
+      r.motivo,
+      r.prioridad,
+      r.estado
+    ]);
+
+    // 4. Dibujamos la tabla automáticamente
+    autoTable(doc, {
+      head: columnas,
+      body: filas,
+      startY: 40,
+      theme: 'grid',
+      headStyles: { fillColor: [123, 179, 46] } // Color Verde Tottus
+    });
+
+    // 5. Descargamos el archivo
+    doc.save(`Reporte_Reclamos_${new Date().getTime()}.pdf`);
   }
 }
