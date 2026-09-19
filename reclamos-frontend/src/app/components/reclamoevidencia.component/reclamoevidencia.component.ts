@@ -19,6 +19,7 @@ export class ReclamoevidenciaComponent implements OnInit {
     tienda: '',
     numeroBoleta: '',
     fechaCompra: '',
+    categoria: '', // <-- NUEVO: Se agregó categoría
     motivo: '',
     producto: '',
     descripcion: ''
@@ -26,6 +27,8 @@ export class ReclamoevidenciaComponent implements OnInit {
 
   listaTiendas: any[] = [];
   listaMotivos: any[] = [];
+  listaCategorias: any[] = []; // <-- NUEVO: Almacena las categorías
+
   archivoSeleccionado: File | null = null;
   mensajeError: string = '';
   esClienteRegistrado: boolean = false;
@@ -49,6 +52,12 @@ export class ReclamoevidenciaComponent implements OnInit {
 
     this.catalogoService.obtenerMotivos().subscribe(data => {
       this.listaMotivos = data;
+      this.cdr.detectChanges();
+    });
+
+    // NUEVO: Llamada para cargar las categorías de la BD
+    this.catalogoService.obtenerCategorias().subscribe(data => {
+      this.listaCategorias = data;
       this.cdr.detectChanges();
     });
   }

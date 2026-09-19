@@ -153,6 +153,7 @@
 
         <!-- Formulario Principal -->
         <div class="row g-3">
+          <!-- FILA 1 -->
           <!-- Tienda -->
           <div class="col-md-6">
             <label class="form-label fw-bold small mb-0 text-dark">Tienda</label>
@@ -198,6 +199,7 @@
             />
           </div>
 
+          <!-- FILA 2 -->
           <!-- N° Boleta -->
           <div class="col-md-6 mt-3">
             <label class="form-label fw-bold small mb-0 text-dark">Número de Boleta</label>
@@ -221,6 +223,31 @@
             />
           </div>
 
+          <!-- Categoría (NUEVO) -->
+          <div class="col-md-6 mt-3">
+            <label class="form-label fw-bold small mb-0 text-dark">Categoría</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="categoria.invalid && (categoria.dirty || categoria.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+                >Debe seleccionar una categoría.</small
+              >
+            </div>
+            <select
+              class="form-select"
+              name="categoria"
+              [(ngModel)]="incidente.categoria"
+              #categoria="ngModel"
+              data-cy="select-categoria"
+              required
+            >
+              <option value="" disabled>Seleccione...</option>
+              <option *ngFor="let c of listaCategorias" [value]="c.id">{{ c.nombre }}</option>
+            </select>
+          </div>
+
+          <!-- FILA 3 -->
           <!-- Motivo -->
           <div class="col-md-6 mt-3">
             <label class="form-label fw-bold small mb-0 text-dark">Motivo</label>
@@ -253,7 +280,7 @@
           <div class="col-md-6 mt-3">
             <label class="form-label fw-bold small mb-0 text-dark">Producto (Opcional)</label>
             <div style="min-height: 18px"></div>
-            <!-- Div vacío para alinear -->
+            <!-- Div vacío para mantener alineación -->
             <input
               type="text"
               class="form-control"
@@ -264,6 +291,7 @@
             />
           </div>
 
+          <!-- FILA 4 -->
           <!-- Descripción -->
           <div class="col-12 mt-3">
             <label class="form-label fw-bold small mb-0 text-dark">Descripción</label>
@@ -324,7 +352,6 @@
             &#8592; Atrás
           </button>
 
-          <!-- Botón de Continuar (Se deshabilita nativamente si el form es inválido) -->
           <button
             type="submit"
             class="btn text-white px-5 fw-bold rounded-pill"
