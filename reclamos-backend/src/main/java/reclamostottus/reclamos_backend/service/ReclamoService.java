@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+// modificado: Importaciones necesarias para manipular archivos y carpetas físicas
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 @Service
 public class ReclamoService {
 
@@ -153,18 +159,48 @@ public class ReclamoService {
 
         Reclamo reclamoGuardado = reclamoRepository.save(nuevoReclamo);
 
-        // 5. Guardar la Evidencia
+        // 5. Guardar la Evidencia Y EL ARCHIVO FÍSICO
         if (archivo != null && !archivo.isEmpty()) {
-            Evidencia evidencia = new Evidencia();
-            evidencia.setReclamo(reclamoGuardado);
-            evidencia.setNombreArchivo(archivo.getOriginalFilename());
-            evidencia.setRutaArchivo("/uploads/" + archivo.getOriginalFilename());
-            evidencia.setTipoArchivo(archivo.getContentType());
+            try {
+                // modificado: Paso A - Definimos la ruta de la carpeta "uploads" en la raíz del
+                // proyecto
+                String carpetaDestino = "uploads/";
+                Path directorioPath = Paths.get(carpetaDestino);
 
-            double sizeInMb = (double) archivo.getSize() / (1024 * 1024);
-            evidencia.setTamanioMb(java.math.BigDecimal.valueOf(sizeInMb));
+                // modificado: Paso B - Si la carpeta no existe, Spring Boot la crea físicamente
+                // ahora mismo
+                if (!Files.exists(directorioPath)) {
+                    Files.createDirectories(directorioPath);
+                }
 
-            evidenciaRepository.save(evidencia);
+                // modificado: Paso C - Extraemos el nombre de la imagen y construimos la ruta
+                // final
+                String nombreArchivo = archivo.getOriginalFilename();
+                Path rutaCompleta = directorioPath.resolve(nombreArchivo);
+
+                // modificado: Paso D - Copiamos la imagen física de la memoria RAM al disco
+                // duro
+                // Usamos REPLACE_EXISTING por si suben dos archivos que se llaman igual
+                Files.copy(archivo.getInputStream(), rutaCompleta, StandardCopyOption.REPLACE_EXISTING);
+
+                // Paso E - Guardamos los textos en MySQL (tu código original)
+                Evidencia evidencia = new Evidencia();
+                evidencia.setReclamo(reclamoGuardado);
+                evidencia.setNombreArchivo(nombreArchivo);
+                evidencia.setRutaArchivo("/uploads/" + nombreArchivo);
+                evidencia.setTipoArchivo(archivo.getContentType());
+
+                double sizeInMb = (double) archivo.getSize() / (1024 * 1024);
+                evidencia.setTamanioMb(java.math.BigDecimal.valueOf(sizeInMb));
+
+                evidenciaRepository.save(evidencia);
+
+            } catch (Exception e) {
+                // modificado: Capturamos cualquier error al guardar el archivo para que no
+                // rompa el sistema en silencio
+                throw new RuntimeException(
+                        "El reclamo se guardó, pero hubo un error al guardar la imagen física: " + e.getMessage());
+            }
         }
 
         return reclamoGuardado;

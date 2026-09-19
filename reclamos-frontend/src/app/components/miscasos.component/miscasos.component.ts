@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core'; // MEJORA DE RAPIDEZ: Importamos NgZone
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReclamoService } from '../../services/reclamo.service';
@@ -13,19 +13,22 @@ import { ReclamoService } from '../../services/reclamo.service';
 export class MiscasosComponent implements OnInit {
 
   reclamos: any[] = [];
-
-  // ==========================================
-  // NUEVO: Variables para controlar el Popup
-  // ==========================================
   mostrarModal: boolean = false;
   historial: any[] = [];
-  // ==========================================
+  mostrarModalDetalles: boolean = false;
+  casoSeleccionado: any = null;
+
+  mostrarModalImagen: boolean = false;
+  imagenSeleccionada: string = '';
+
+  // NUEVO: Ruta base de tu backend donde se sirven las imágenes
+  private backendUrl = 'http://localhost:8080';
 
   constructor(
     private router: Router,
     private reclamoService: ReclamoService,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone // MEJORA DE RAPIDEZ: Inyectamos NgZone
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -35,41 +38,30 @@ export class MiscasosComponent implements OnInit {
   cargarMisCasos() {
     this.reclamoService.obtenerMisCasos().subscribe({
       next: (datosBackend: any[]) => {
-        // MEJORA DE RAPIDEZ: Forzamos la actualización inmediata
         this.ngZone.run(() => {
-          console.log('📦 1. Datos del Backend:', datosBackend);
-
           if (datosBackend && datosBackend.length > 0) {
             this.reclamos = datosBackend.map(reclamo => ({
-              id: reclamo.id, // NUEVO: Extraemos el ID numérico para buscar su historial
+              id: reclamo.id,
               codigo: reclamo.codigoSeguimiento,
               fecha: reclamo.fechaCompra || reclamo.fechaRegistro || 'Sin fecha',
               motivo: `[${reclamo.tipoSolicitud}] - ${reclamo.productoImplicado || 'General'}`,
-              estado: reclamo.estado ? reclamo.estado.nombre : 'Ingresado'
+              estado: reclamo.estado ? reclamo.estado.nombre : 'Ingresado',
+              detalleCompleto: reclamo
             }));
-
-            console.log('✅ 2. Datos listos para la tabla:', this.reclamos);
             this.cdr.detectChanges();
           } else {
             this.reclamos = [];
           }
         });
       },
-      error: (error) => {
-        console.error('❌ Error al cargar la tabla:', error);
-      }
+      error: (error) => console.error('❌ Error al cargar la tabla:', error)
     });
   }
 
-  // ==========================================
-  // NUEVO: Métodos para la Trazabilidad
-  // ==========================================
   abrirModalTrazabilidad(id: number) {
     if (!id) return;
-
     this.reclamoService.obtenerHistorialPublico(id).subscribe({
       next: (data) => {
-        // MEJORA DE RAPIDEZ: Apertura inmediata del modal
         this.ngZone.run(() => {
           this.historial = data;
           this.mostrarModal = true;
@@ -83,21 +75,44 @@ export class MiscasosComponent implements OnInit {
   cerrarModal() {
     this.mostrarModal = false;
   }
-  // ==========================================
+
+  abrirModalDetalles(detalle: any) {
+    this.ngZone.run(() => {
+      this.casoSeleccionado = detalle;
+      this.mostrarModalDetalles = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  cerrarModalDetalles() {
+    this.mostrarModalDetalles = false;
+    this.casoSeleccionado = null;
+  }
+
+ // --- MÉTODO ACTUALIZADO PARA EL VISOR DE IMÁGENES ---
+  abrirModalImagen(rutaArchivo: string) {
+    this.ngZone.run(() => {
+      // Usamos encodeURI para que los espacios se conviertan en %20 y el navegador no rompa la URL
+      this.imagenSeleccionada = this.backendUrl + encodeURI(rutaArchivo);
+      this.mostrarModalImagen = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  cerrarModalImagen() {
+    this.ngZone.run(() => {
+      this.mostrarModalImagen = false;
+      this.imagenSeleccionada = '';
+      this.cdr.detectChanges();
+    });
+  }
 
   nuevoReclamo() {
     this.router.navigate(['/reclamo/datos']);
   }
 
-  verDetalle(codigo: string) {
-    console.log('Viendo detalle del caso:', codigo);
-  }
-
   salir() {
     localStorage.removeItem('token');
-    this.router.navigate(['/ingresar']);
-    // NUEVO: Borramos el token del almacenamiento local para cerrar la sesión real
-
-     // Redirigimos a la pantalla de inicio de sesión
+    this.router.navigate(['/login']);
   }
 }

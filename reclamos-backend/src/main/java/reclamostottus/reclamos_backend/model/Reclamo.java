@@ -3,6 +3,7 @@ package reclamostottus.reclamos_backend.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List; // modificado: Importación necesaria para utilizar List
 
 @Entity
 @Table(name = "reclamos")
@@ -66,6 +67,11 @@ public class Reclamo {
 
     @Column(name = "fecha_vencimiento", nullable = false)
     private LocalDateTime fechaVencimiento;
+
+    // modificado: Relación añadida para que Spring Boot empaquete las imágenes
+    // automáticamente en el JSON
+    @OneToMany(mappedBy = "reclamo", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Evidencia> evidencias;
 
     public Reclamo() {
     }
@@ -199,5 +205,14 @@ public class Reclamo {
 
     public void setFechaVencimiento(LocalDateTime fechaVencimiento) {
         this.fechaVencimiento = fechaVencimiento;
+    }
+
+    // modificado: Getters y Setters de la nueva lista
+    public List<Evidencia> getEvidencias() {
+        return evidencias;
+    }
+
+    public void setEvidencias(List<Evidencia> evidencias) {
+        this.evidencias = evidencias;
     }
 }

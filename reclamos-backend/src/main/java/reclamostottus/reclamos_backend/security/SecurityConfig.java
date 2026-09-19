@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .permitAll()
                         // ---> NUEVO: Permite a los invitados leer el historial público sin token <---
                         .requestMatchers(HttpMethod.GET, "/api/historial/*/publico").permitAll()
+                        // ---> NUEVO: Permite que el navegador descargue las imágenes sin token <---
+                        .requestMatchers("/uploads/**").permitAll()
 
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

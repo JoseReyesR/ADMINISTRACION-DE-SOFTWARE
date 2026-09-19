@@ -1,5 +1,6 @@
 package reclamostottus.reclamos_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore; // modificado: Importación crucial para prevenir bucles de recursión
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +15,8 @@ public class Evidencia {
 
     @ManyToOne
     @JoinColumn(name = "reclamo_id", nullable = false)
+    @JsonIgnore // modificado: Evita que el JSON intente leer el reclamo infinitamente al
+                // devolver las evidencias
     private Reclamo reclamo;
 
     @Column(name = "nombre_archivo", nullable = false, length = 255)
