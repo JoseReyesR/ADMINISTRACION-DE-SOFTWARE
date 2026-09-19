@@ -92,6 +92,6 @@ export class ConsultainvitadoComponent {
   }
 
   volver() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/ingresar']);
   }
 }

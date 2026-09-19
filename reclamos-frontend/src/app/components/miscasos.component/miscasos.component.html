@@ -4,28 +4,35 @@
     <div class="d-flex align-items-center">
       <span class="bg-white text-success fw-bold px-2 py-1 rounded me-2">TOTTUS</span>
       <span class="text-white fw-bold me-2">Portal de Clientes</span>
-      <a href="javascript:void(0)" class="text-white text-decoration-none ms-2" (click)="salir()"
-        >> Salir</a
-      >
     </div>
     <div class="d-flex align-items-center">
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small fw-bold"
         (click)="nuevoReclamo()"
-        >Nuevo Reclamo</a
       >
+        Nuevo Reclamo
+      </a>
       <a
         href="javascript:void(0)"
         class="text-white text-decoration-none me-4 small fw-bold text-decoration-underline"
-        >&#128193; Mis Casos</a
       >
+        &#128193; Mis Casos
+      </a>
+      <!-- NUEVO: Botón Salir movido a la derecha con un separador visual -->
+      <a
+        href="javascript:void(0)"
+        class="text-white text-decoration-none small fw-bold border-start ps-3"
+        (click)="salir()"
+      >
+        Salir &#8594;
+      </a>
     </div>
   </div>
 </nav>
 
 <div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
-  <div class="card shadow-sm border-0" style="width: 100%; max-width: 900px; height: fit-content">
+  <div class="card shadow-sm border-0" style="width: 100%; max-width: 1000px; height: fit-content">
     <div class="card-body p-5">
       <!-- Cabecera de la tabla -->
       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -54,12 +61,14 @@
               <th class="fw-bold pb-3">Motivo</th>
               <th class="fw-bold pb-3">Estado</th>
               <th class="fw-bold pb-3 text-center">Acción</th>
+              <!-- NUEVO: Cabecera de la nueva columna -->
+              <th class="fw-bold pb-3 text-center">Trazabilidad</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let caso of reclamos" class="bg-white border-bottom">
               <td class="fw-bold text-dark py-3">{{ caso.codigo }}</td>
-              <td class="text-secondary small">{{ caso.fecha }}</td>
+              <td class="text-secondary small">{{ caso.fecha | date: 'dd/MM/yyyy' }}</td>
               <td class="text-secondary small">{{ caso.motivo }}</td>
               <td>
                 <span
@@ -84,6 +93,15 @@
                   Ver
                 </button>
               </td>
+              <!-- NUEVO: Botón para abrir el historial -->
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm"
+                  (click)="abrirModalTrazabilidad(caso.id)"
+                >
+                  <i class="bi bi-search me-1"></i> Historial
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -103,3 +121,84 @@
 >
   <i class="fs-4 text-white">&#9855;</i>
 </button>
+
+<!-- ========================================================= -->
+<!-- NUEVO: POPUP / MODAL DE TRAZABILIDAD                      -->
+<!-- ========================================================= -->
+
+<!-- Fondo oscuro (Backdrop) -->
+<div
+  *ngIf="mostrarModal"
+  class="modal-backdrop fade show"
+  style="
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1040;
+  "
+></div>
+
+<!-- Contenedor del Modal -->
+<div
+  *ngIf="mostrarModal"
+  class="modal fade show d-block"
+  tabindex="-1"
+  role="dialog"
+  style="z-index: 1050"
+>
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg">
+      <!-- Cabecera -->
+      <div class="modal-header text-white" style="background-color: #7bb32e">
+        <h5 class="modal-title fw-bold">Historial de Seguimiento</h5>
+        <!-- Botón X para cerrar -->
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="cerrarModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <!-- Cuerpo (Timeline) -->
+      <div class="modal-body p-4" style="background-color: #f8f9fa">
+        <div *ngIf="historial.length === 0" class="text-center text-muted small py-4">
+          Aún no hay actualizaciones públicas para este caso.
+        </div>
+
+        <!-- Ciclo de notas (Línea de tiempo) -->
+        <div
+          *ngFor="let nota of historial"
+          class="mb-3 p-3 rounded border border-start border-4 border-success bg-white shadow-sm"
+        >
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold small text-dark">Actualización del Caso</span>
+            <small class="text-muted" style="font-size: 0.75rem">{{
+              nota.fechaRegistro | date: 'dd/MM/yyyy HH:mm'
+            }}</small>
+          </div>
+          <p class="small text-muted mb-0">{{ nota.comentario }}</p>
+
+          <!-- Si hubo cambio de estado -->
+          <div *ngIf="nota.estadoNuevo" class="mt-2 pt-2 border-top small fw-bold text-success">
+            &#8594; Estado actualizado a: {{ nota.estadoNuevo.nombre }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie (Botón Cerrar) -->
+      <div class="modal-footer bg-white border-top-0">
+        <button
+          type="button"
+          class="btn btn-outline-secondary fw-bold rounded-pill px-4"
+          (click)="cerrarModal()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
