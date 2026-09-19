@@ -129,6 +129,9 @@ export class DashboardComponent implements OnInit {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
+ irAClientes() {
+    this.router.navigate(['/clientes']);
+  }
 
 
   // =========================================================

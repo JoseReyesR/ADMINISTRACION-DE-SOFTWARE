@@ -13,6 +13,7 @@ import { IngresoClienteComponent } from './components/ingreso-cliente.component/
 import { MiscasosComponent } from './components/miscasos.component/miscasos.component';
 import { DetallecasoComponent } from './components/detallecaso.component/detallecaso.component';
 //import { DetalleCasoComponent } from './components/detalle-caso.component/detalle-caso.component';
+import { ClientesComponent } from './components/clientes.component/clientes.component'; // Agrega esta importación arriba
 
 export const routes: Routes = [
   // Ruta por defecto redirige al login
@@ -39,6 +40,7 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'dashboard/caso/:codigo', component: DetallecasoComponent },
   // ... aquí irán otras rutas de administración (ej. listado de reclamos)
+  { path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard] },
   // Ruta comodín para manejar errores 404
   { path: '**', redirectTo: '/login' }
 ];
