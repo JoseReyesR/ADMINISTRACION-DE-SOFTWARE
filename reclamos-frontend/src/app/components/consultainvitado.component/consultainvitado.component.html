@@ -91,7 +91,6 @@
 
       <!-- Resultados de la consulta -->
       <div *ngIf="buscado" class="mt-5">
-        <!-- NUEVO: Tarjeta de éxito rediseñada con el botón del Modal -->
         <div *ngIf="resultado" class="alert alert-success border-0 shadow-sm p-4">
           <div class="d-flex justify-content-between align-items-center flex-wrap">
             <div>
@@ -106,12 +105,20 @@
                 <span class="badge bg-warning text-dark">{{ resultado.estado }}</span>
               </p>
             </div>
-            <div class="mt-3 mt-md-0">
+
+            <!-- NUEVO: Agrupamos ambos botones para el invitado -->
+            <div class="mt-3 mt-md-0 d-flex flex-column gap-2">
               <button
-                class="btn btn-success fw-bold px-4 rounded-pill shadow-sm"
+                class="btn btn-outline-success fw-bold px-4 rounded-pill shadow-sm"
                 (click)="abrirModalDetalles()"
               >
-                <i class="bi bi-search me-1"></i> Ver Trazabilidad
+                Ver Detalles
+              </button>
+              <button
+                class="btn btn-success fw-bold px-4 rounded-pill shadow-sm"
+                (click)="abrirModalTrazabilidad()"
+              >
+                <i class="bi bi-search me-1"></i> Ver Historial
               </button>
             </div>
           </div>
@@ -128,10 +135,8 @@
 </div>
 
 <!-- ========================================================= -->
-<!-- NUEVO: POPUP / MODAL DE TRAZABILIDAD                      -->
+<!-- POPUP / MODAL DE TRAZABILIDAD (INTACTO)                   -->
 <!-- ========================================================= -->
-
-<!-- Fondo oscuro (Backdrop) -->
 <div
   *ngIf="mostrarModal"
   class="modal-backdrop fade show"
@@ -146,7 +151,6 @@
   "
 ></div>
 
-<!-- Contenedor del Modal -->
 <div
   *ngIf="mostrarModal"
   class="modal fade show d-block"
@@ -156,10 +160,8 @@
 >
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg">
-      <!-- Cabecera -->
       <div class="modal-header text-white" style="background-color: #7bb32e">
         <h5 class="modal-title fw-bold">Historial de Seguimiento</h5>
-        <!-- Botón X para cerrar -->
         <button
           type="button"
           class="btn-close btn-close-white"
@@ -167,14 +169,10 @@
           aria-label="Close"
         ></button>
       </div>
-
-      <!-- Cuerpo (Timeline) -->
       <div class="modal-body p-4" style="background-color: #f8f9fa">
         <div *ngIf="historial.length === 0" class="text-center text-muted small py-4">
           Aún no hay actualizaciones públicas para este caso.
         </div>
-
-        <!-- Ciclo de notas (Línea de tiempo) -->
         <div
           *ngFor="let nota of historial"
           class="mb-3 p-3 rounded border border-start border-4 border-success bg-white shadow-sm"
@@ -186,15 +184,11 @@
             }}</small>
           </div>
           <p class="small text-muted mb-0">{{ nota.comentario }}</p>
-
-          <!-- Si hubo cambio de estado -->
           <div *ngIf="nota.estadoNuevo" class="mt-2 pt-2 border-top small fw-bold text-success">
             &#8594; Estado actualizado a: {{ nota.estadoNuevo.nombre }}
           </div>
         </div>
       </div>
-
-      <!-- Pie (Botón Cerrar) -->
       <div class="modal-footer bg-white border-top-0">
         <button
           type="button"
@@ -203,6 +197,223 @@
         >
           Cerrar
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- NUEVO: POPUP / MODAL DE DETALLES DEL RECLAMO              -->
+<!-- ========================================================= -->
+<div
+  *ngIf="mostrarModalDetalles"
+  class="modal-backdrop fade show"
+  style="
+    background-color: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1040;
+  "
+></div>
+
+<div
+  *ngIf="mostrarModalDetalles"
+  class="modal fade show d-block"
+  tabindex="-1"
+  role="dialog"
+  style="z-index: 1050"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-white border-bottom-0 pb-0">
+        <h4 class="modal-title fw-bold text-dark w-100 text-center mt-3">
+          Detalles del Caso
+          <span class="text-success">{{ casoSeleccionado?.codigoSeguimiento }}</span>
+        </h4>
+        <button
+          type="button"
+          class="btn-close position-absolute top-0 end-0 m-3"
+          (click)="cerrarModalDetalles()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4 pt-2">
+        <div class="p-3 rounded mb-4" style="background-color: #f1f9ec; border: 1px solid #d4ecd0">
+          <p class="small fw-bold text-dark mb-1">Tipo de Solicitud:</p>
+          <span
+            class="badge bg-success bg-opacity-25 text-dark fs-6 px-3 py-2 border border-success"
+          >
+            {{ casoSeleccionado?.tipoSolicitud }}
+          </span>
+        </div>
+
+        <div class="mb-4">
+          <label class="small fw-bold text-dark mb-2">Canal de Compra</label>
+          <div class="p-3 rounded border bg-light text-center fw-bold text-success">
+            <i
+              class="bi"
+              [ngClass]="
+                casoSeleccionado?.canalCompra === 'Tienda Física' ? 'bi-shop' : 'bi-laptop'
+              "
+            ></i>
+            {{ casoSeleccionado?.canalCompra }}
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="small fw-bold text-dark mb-1">Tienda</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              [value]="casoSeleccionado?.tienda?.nombre || 'No especificada'"
+              readonly
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="small fw-bold text-dark mb-1">N° Boleta</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              [value]="casoSeleccionado?.numeroBoletaPedido || 'No especificada'"
+              readonly
+            />
+          </div>
+          <div class="col-md-4">
+            <label class="small fw-bold text-dark mb-1">Fecha de Compra</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              [value]="casoSeleccionado?.fechaCompra || 'Sin registro'"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="small fw-bold text-dark mb-1">Motivo</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              [value]="casoSeleccionado?.motivo?.nombre || 'General'"
+              readonly
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="small fw-bold text-dark mb-1">Producto Implicado</label>
+            <input
+              type="text"
+              class="form-control bg-light"
+              [value]="casoSeleccionado?.productoImplicado || 'N/A'"
+              readonly
+            />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="small fw-bold text-dark mb-1">Descripción de lo sucedido</label>
+          <textarea class="form-control bg-light" rows="4" readonly>{{
+            casoSeleccionado?.descripcionCaso
+          }}</textarea>
+        </div>
+
+        <!-- Evidencia -->
+        <div
+          class="mb-2"
+          *ngIf="casoSeleccionado?.evidencias && casoSeleccionado.evidencias.length > 0"
+        >
+          <label class="small fw-bold text-dark mb-2">Evidencia Adjunta</label>
+          <div
+            *ngFor="let archivo of casoSeleccionado.evidencias"
+            class="p-3 mb-3 rounded bg-light text-center border-success border-opacity-50 shadow-sm"
+            style="border-width: 2px !important; border-style: dashed !important"
+          >
+            <i class="fs-1 d-block mb-2 text-warning">&#128194;</i>
+            <p class="small text-muted mb-3 fw-bold">
+              {{ archivo.nombreArchivo || archivo.nombre_archivo }}
+            </p>
+            <button
+              type="button"
+              class="btn btn-outline-success fw-bold px-4 rounded-pill bg-white shadow-sm"
+              (click)="abrirModalImagen(archivo.rutaArchivo || archivo.ruta_archivo)"
+            >
+              <i class="bi bi-eye me-1"></i> Ver Imagen
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="mb-2"
+          *ngIf="!casoSeleccionado?.evidencias || casoSeleccionado.evidencias.length === 0"
+        >
+          <label class="small fw-bold text-dark mb-2">Evidencia Adjunta</label>
+          <div class="p-3 rounded bg-light text-center border text-muted small">
+            No adjuntaste archivos para este caso.
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer bg-white border-top-0 d-flex justify-content-center pb-4">
+        <button
+          type="button"
+          class="btn btn-success fw-bold rounded-pill px-5"
+          (click)="cerrarModalDetalles()"
+        >
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- NUEVO: POPUP / MODAL VISOR DE IMÁGENES SUPERPUESTO        -->
+<!-- ========================================================= -->
+<div
+  *ngIf="mostrarModalImagen"
+  class="modal-backdrop fade show"
+  style="
+    background-color: rgba(0, 0, 0, 0.85);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1060;
+  "
+></div>
+
+<div
+  *ngIf="mostrarModalImagen"
+  class="modal fade show d-block"
+  tabindex="-1"
+  role="dialog"
+  style="z-index: 1070"
+  (click)="cerrarModalImagen()"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-transparent border-0 shadow-none">
+      <div class="modal-header border-0 p-0 justify-content-end mb-2">
+        <button
+          type="button"
+          class="btn-close btn-close-white fs-4"
+          (click)="cerrarModalImagen()"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <div class="modal-body p-0 text-center" (click)="$event.stopPropagation()">
+        <img
+          [src]="imagenSeleccionada"
+          class="img-fluid rounded shadow-lg border border-3 border-white"
+          alt="Evidencia del Reclamo"
+          style="max-height: 85vh; object-fit: contain; background-color: #fff"
+        />
       </div>
     </div>
   </div>

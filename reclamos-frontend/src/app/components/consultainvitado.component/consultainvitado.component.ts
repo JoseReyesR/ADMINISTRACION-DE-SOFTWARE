@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core'; // MEJORA DE RAPIDEZ: Importamos NgZone
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,17 +21,24 @@ export class ConsultainvitadoComponent {
   resultado: any = null;
   buscado: boolean = false;
 
-    // ==========================================
-  // NUEVO: Variables para controlar el Popup
-  // ==========================================
+  // Variables para controlar el Popup de Trazabilidad
   mostrarModal: boolean = false;
   historial: any[] = [];
+
+  // NUEVO: Variables para controlar el Popup de Detalles
+  mostrarModalDetalles: boolean = false;
+  casoSeleccionado: any = null;
+
+  // NUEVO: Variables para el Visor de Imágenes
+  mostrarModalImagen: boolean = false;
+  imagenSeleccionada: string = '';
+  private backendUrl = 'http://localhost:8080';
 
   constructor(
     private router: Router,
     private reclamoService: ReclamoService,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone // MEJORA DE RAPIDEZ: Inyectamos NgZone en el constructor
+    private ngZone: NgZone
   ) {}
 
   consultarCaso() {
@@ -41,14 +48,15 @@ export class ConsultainvitadoComponent {
     this.reclamoService.consultarSeguimiento(this.consulta.codigoSeguimiento, this.consulta.numeroDocumento)
       .subscribe({
         next: (datosBackend) => {
-          // MEJORA DE RAPIDEZ: Obligamos a Angular a procesar la respuesta instantáneamente
           this.ngZone.run(() => {
             this.resultado = {
               id: datosBackend.id,
               codigo: datosBackend.codigoSeguimiento,
               estado: datosBackend.estado ? datosBackend.estado.nombre : 'Ingresado',
               fecha: datosBackend.fechaRegistro || 'Reciente',
-              motivo: `[${datosBackend.tipoSolicitud}] - ${datosBackend.productoImplicado || 'General'}`
+              motivo: `[${datosBackend.tipoSolicitud}] - ${datosBackend.productoImplicado || 'General'}`,
+              // NUEVO: Guardamos el objeto completo devuelto por Spring Boot para el Modal de Detalles
+              detalleCompleto: datosBackend
             };
 
             this.buscado = true;
@@ -56,7 +64,6 @@ export class ConsultainvitadoComponent {
           });
         },
         error: (err) => {
-          // MEJORA DE RAPIDEZ: Respuesta de error inmediata
           this.ngZone.run(() => {
             this.resultado = null;
             this.buscado = true;
@@ -67,19 +74,15 @@ export class ConsultainvitadoComponent {
       });
   }
 
- // ==========================================
-  // NUEVO: Métodos para la Trazabilidad
-  // ==========================================
-  abrirModalDetalles() {
+  // --- MÉTODOS PARA EL POPUP DE TRAZABILIDAD ---
+  abrirModalTrazabilidad() {
     if (!this.resultado || !this.resultado.id) return;
 
-   // Llamamos a la ruta pública que NO trae las notas marcadas como "esInterno"
     this.reclamoService.obtenerHistorialPublico(this.resultado.id).subscribe({
       next: (data) => {
-        // MEJORA DE RAPIDEZ: Apertura del Popup instantánea sin doble clic
         this.ngZone.run(() => {
           this.historial = data;
-          this.mostrarModal = true; // Mostramos el popup
+          this.mostrarModal = true;
           this.cdr.detectChanges();
         });
       },
@@ -88,7 +91,44 @@ export class ConsultainvitadoComponent {
   }
 
   cerrarModal() {
-    this.mostrarModal = false; // Ocultamos el popup
+    this.ngZone.run(() => {
+      this.mostrarModal = false;
+      this.cdr.detectChanges();
+    });
+  }
+
+  // --- NUEVO: MÉTODOS PARA EL POPUP DE DETALLES ---
+  abrirModalDetalles() {
+    this.ngZone.run(() => {
+      this.casoSeleccionado = this.resultado.detalleCompleto;
+      this.mostrarModalDetalles = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  cerrarModalDetalles() {
+    this.ngZone.run(() => {
+      this.mostrarModalDetalles = false;
+      this.casoSeleccionado = null;
+      this.cdr.detectChanges();
+    });
+  }
+
+  // --- NUEVO: MÉTODOS PARA EL VISOR DE IMÁGENES ---
+  abrirModalImagen(rutaArchivo: string) {
+    this.ngZone.run(() => {
+      this.imagenSeleccionada = this.backendUrl + encodeURI(rutaArchivo);
+      this.mostrarModalImagen = true;
+      this.cdr.detectChanges();
+    });
+  }
+
+  cerrarModalImagen() {
+    this.ngZone.run(() => {
+      this.mostrarModalImagen = false;
+      this.imagenSeleccionada = '';
+      this.cdr.detectChanges();
+    });
   }
 
   volver() {
