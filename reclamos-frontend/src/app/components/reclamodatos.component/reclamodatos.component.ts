@@ -24,40 +24,26 @@ export class ReclamodatosComponent implements OnInit {
   };
 
   mensajeBienvenida: string = '';
-
-  // GETTER DINÁMICO: Calcula automáticamente si el cliente está logueado
-   // get esClienteRegistrado(): boolean {
-   //   return localStorage.getItem('token_cliente') !== null;
-   // }
-  esClienteRegistrado: boolean = false; // <-- Vuelve a poner esto
+  esClienteRegistrado: boolean = false;
 
   constructor(
     private usuarioService: UsuarioService,
     private router: Router,
     private reclamoService: ReclamoService
   ) {}
-ngOnInit(): void {
-    console.log('--- INICIANDO COMPONENTE RECLAMO DATOS ---');
 
-    // 1. Revisamos el Token
+  ngOnInit(): void {
+    console.log('--- INICIANDO COMPONENTE RECLAMO DATOS ---');
     const token = typeof window !== 'undefined' ? localStorage.getItem('token_cliente') : null;
-    console.log('1. Token en memoria:', token);
 
     if (token) {
       this.esClienteRegistrado = true;
-      console.log('2. ¡Token detectado! esClienteRegistrado cambió a:', this.esClienteRegistrado);
-    } else {
-      console.log('2. No hay token. esClienteRegistrado se queda en:', this.esClienteRegistrado);
     }
 
-    // 2. Revisamos los datos del cliente
     const datosGuardados = typeof window !== 'undefined' ? localStorage.getItem('cliente_datos') : null;
-    console.log('3. Datos del cliente en memoria (Texto crudo):', datosGuardados);
 
     if (datosGuardados) {
       const usuario = JSON.parse(datosGuardados);
-      console.log('4. Datos convertidos a objeto Angular:', usuario);
-
       this.cliente.tipoDocumento = usuario.tipoDocumento;
       this.cliente.numeroDocumento = usuario.numeroDocumento;
       this.cliente.nombres = usuario.nombres;
@@ -67,36 +53,51 @@ ngOnInit(): void {
 
       this.mensajeBienvenida = `¡Hola ${usuario.nombres}! Tus datos han sido precargados de tu sesión.`;
     }
-    console.log('--- FIN DEL ARRANQUE ---');
   }
 
+  // =========================================================
+  // NUEVO: GETTERS PARA VALIDACIONES REGEX DINÁMICAS
+  // =========================================================
+
+  // Define el patrón exacto según el documento seleccionado
+  get documentoPattern(): string {
+    if (this.cliente.tipoDocumento === 'DNI') return '^[0-9]{8}$'; // Exactamente 8 números
+    if (this.cliente.tipoDocumento === 'CE') return '^[0-9]{9}$'; // Exactamente 9 números
+    if (this.cliente.tipoDocumento === 'PASAPORTE') return '^[A-Za-z]{1}[0-9]{8}$'; // 1 letra y 8 números
+    return '.*';
+  }
+
+  // Define el mensaje de error según el documento seleccionado
+  get mensajeErrorDocumento(): string {
+    if (this.cliente.tipoDocumento === 'DNI') return 'El DNI debe tener exactamente 8 números.';
+    if (this.cliente.tipoDocumento === 'CE') return 'El Carnet de Extranjería debe tener exactamente 9 números.';
+    if (this.cliente.tipoDocumento === 'PASAPORTE') return 'El Pasaporte debe tener 1 letra seguida de 8 números.';
+    return 'Documento inválido.';
+  }
+
+  // =========================================================
+
   buscarCliente() {
-    // Solo buscamos si es DNI y tiene exactamente 8 dígitos
-    if (this.cliente.tipoDocumento === 'DNI' && this.cliente.numeroDocumento.length === 8) {
+    // Validamos que cumpla el patrón de 8 dígitos numéricos antes de buscar en BD
+    const esDniValido = new RegExp('^[0-9]{8}$').test(this.cliente.numeroDocumento);
+
+    if (this.cliente.tipoDocumento === 'DNI' && esDniValido) {
       this.usuarioService.buscarPorDocumento(this.cliente.numeroDocumento).subscribe({
         next: (datos) => {
-        // Evaluamos la variable booleana que nos envía Spring Boot
           if (datos.encontrado) {
-          // Cliente encontrado: Autocompletamos los campos
             this.cliente.nombres = datos.nombres;
             this.cliente.apellidos = datos.apellidos;
             this.cliente.correo = datos.correo;
             this.cliente.celular = datos.telefono;
             this.mensajeBienvenida = `¡Hola ${datos.nombres}! Tus datos han sido cargados.`;
           } else {
-          // No encontrado en BD: Pasa a modo Invitado limpiando los campos
             this.limpiarCampos();
           }
         },
         error: (err) => {
-
-
           if (err.status === 404) {
-            // COMPORTAMIENTO ESPERADO: DNI no existe (Invitado).
-            // Limpiamos los campos en silencio sin asustar en la consola.
             this.limpiarCampos();
           } else {
-            // SOLO imprimimos si el servidor realmente falló (ej. Error 500)
             console.error('Error real de conexión con el servidor:', err);
             this.limpiarCampos();
           }
@@ -107,7 +108,6 @@ ngOnInit(): void {
     }
   }
 
-  // Método de apoyo para mantener el código ordenado
   limpiarCampos() {
     this.mensajeBienvenida = '';
     this.cliente.nombres = '';
@@ -116,22 +116,34 @@ ngOnInit(): void {
     this.cliente.celular = '';
   }
 
-   // Método para avanzar al siguiente paso
   siguientePaso() {
- // Guardamos en el servicio en lugar de solo imprimir en consola
+    // NUEVO: Doble validación manual al hacer clic en "Continuar"
+    if (!new RegExp(this.documentoPattern).test(this.cliente.numeroDocumento)) {
+      alert(`Error: ${this.mensajeErrorDocumento}`);
+      return;
+    }
+    if (!this.cliente.nombres.trim() || !this.cliente.apellidos.trim()) {
+      alert('Error: Los nombres y apellidos no pueden estar vacíos ni contener solo espacios.');
+      return;
+    }
+    if (!new RegExp('^[0-9]{9}$').test(this.cliente.celular)) {
+      alert('Error: El celular debe contener exactamente 9 dígitos numéricos.');
+      return;
+    }
+    if (!new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$').test(this.cliente.correo)) {
+      alert('Error: Debe ingresar un correo electrónico válido (ejemplo@correo.com).');
+      return;
+    }
+
+    // Si todo está perfecto, avanza
     this.reclamoService.guardarDatosCliente(this.cliente);
     this.router.navigate(['/reclamo/evidencia']);
   }
 
- // Método para regresar al login/inicio
   volver() {
-    // Limpiamos la sesión del cliente al retroceder
     localStorage.removeItem('token_cliente');
     localStorage.removeItem('cliente_datos');
-
-    // Lo enviamos de regreso al login de clientes
     this.router.navigate(['/ingresar']);
-
   }
 
   salir() {
@@ -144,13 +156,12 @@ ngOnInit(): void {
     this.cliente = { tipoDocumento: 'DNI', numeroDocumento: '', nombres: '', apellidos: '', correo: '', celular: '' };
     this.limpiarCampos();
   }
-  // NUEVO: Método para ir a la tabla de Mis Casos
+
   irAMisCasos() {
     this.router.navigate(['/mis-casos']);
   }
 
   irAConsulta() {
-
     this.router.navigate(['/consulta']);
   }
 }

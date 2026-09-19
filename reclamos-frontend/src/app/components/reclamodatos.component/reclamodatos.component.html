@@ -13,7 +13,6 @@
         data-cy="nav-nuevo-reclamo"
         >Nuevo Reclamo</a
       >
-      <!-- "Mis Casos" solo se muestra si el cliente está logueado -->
       <a
         *ngIf="esClienteRegistrado"
         href="javascript:void(0)"
@@ -44,7 +43,7 @@
 <div class="container py-5 d-flex justify-content-center bg-light" style="min-height: 90vh">
   <div class="card shadow-sm border-0" style="width: 100%; max-width: 800px; height: fit-content">
     <div class="card-body p-5">
-      <!-- Stepper Visual (3 Pasos Optimizados) -->
+      <!-- Stepper Visual -->
       <div class="position-relative mb-5">
         <div
           class="progress position-absolute top-50 start-50 translate-middle"
@@ -83,24 +82,30 @@
         </div>
       </div>
 
-      <!-- Título y Subtítulo -->
       <h3 class="fw-bold mb-1 text-dark">Hola, identifícate</h3>
       <p class="text-muted mb-4 small">
         Ingresa tus datos personales para continuar con el registro.
       </p>
+
+      <!-- Mensaje dinámico de bienvenida -->
+      <div *ngIf="mensajeBienvenida" class="alert alert-success small py-2 mb-4">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ mensajeBienvenida }}
+      </div>
 
       <!-- Formulario de Datos -->
       <form #datosForm="ngForm" (ngSubmit)="siguientePaso()">
         <div class="row g-4">
           <!-- Tipo de Documento -->
           <div class="col-md-6">
-            <label class="form-label fw-bold text-dark small">Tipo Documento</label>
+            <label class="form-label fw-bold text-dark small mb-0">Tipo Documento</label>
+            <!-- DIV RESERVADOR DE ESPACIO PARA ALINEAR -->
+            <div style="min-height: 18px"></div>
             <select
               class="form-select"
               name="tipoDocumento"
               [(ngModel)]="cliente.tipoDocumento"
+              (change)="cliente.numeroDocumento = ''"
               required
-              data-cy="select-tipo-documento"
             >
               <option value="DNI">DNI</option>
               <option value="CE">Carnet de Extranjería</option>
@@ -110,69 +115,119 @@
 
           <!-- Número de Documento -->
           <div class="col-md-6">
-            <label class="form-label fw-bold text-dark small">Número de Documento</label>
+            <label class="form-label fw-bold text-dark small mb-0">Número de Documento</label>
+            <!-- DIV CON ALTURA FIJA PARA EL ERROR -->
+            <div style="min-height: 18px">
+              <small
+                *ngIf="doc.invalid && (doc.dirty || doc.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+              >
+                <span *ngIf="doc.errors?.['required']">El documento es obligatorio.</span>
+                <span *ngIf="doc.errors?.['pattern']">{{ mensajeErrorDocumento }}</span>
+              </small>
+            </div>
             <input
               type="text"
               class="form-control"
               name="numeroDocumento"
               [(ngModel)]="cliente.numeroDocumento"
+              #doc="ngModel"
               (keyup)="buscarCliente()"
               required
-              minlength="8"
-              maxlength="20"
-              data-cy="input-numero-documento"
+              [pattern]="documentoPattern"
             />
           </div>
 
           <!-- Nombres -->
           <div class="col-md-6 mt-3">
-            <label class="form-label fw-bold text-dark small">Nombres</label>
+            <label class="form-label fw-bold text-dark small mb-0">Nombres</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="nombres.invalid && (nombres.dirty || nombres.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+              >
+                Los nombres no pueden estar vacíos.
+              </small>
+            </div>
             <input
               type="text"
               class="form-control"
               name="nombres"
               [(ngModel)]="cliente.nombres"
+              #nombres="ngModel"
               required
-              data-cy="input-nombres"
+              pattern=".*[a-zA-ZáéíóúÁÉÍÓÚñÑ].*"
             />
           </div>
 
           <!-- Apellidos -->
           <div class="col-md-6 mt-3">
-            <label class="form-label fw-bold text-dark small">Apellidos</label>
+            <label class="form-label fw-bold text-dark small mb-0">Apellidos</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="apellidos.invalid && (apellidos.dirty || apellidos.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+              >
+                Los apellidos no pueden estar vacíos.
+              </small>
+            </div>
             <input
               type="text"
               class="form-control"
               name="apellidos"
               [(ngModel)]="cliente.apellidos"
+              #apellidos="ngModel"
               required
-              data-cy="input-apellidos"
+              pattern=".*[a-zA-ZáéíóúÁÉÍÓÚñÑ].*"
             />
           </div>
 
           <!-- Correo -->
           <div class="col-md-6 mt-3">
-            <label class="form-label fw-bold text-dark small">Correo (Importante)</label>
+            <label class="form-label fw-bold text-dark small mb-0">Correo (Importante)</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="correo.invalid && (correo.dirty || correo.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+              >
+                Debe ingresar un correo válido (ej: usuario@dominio.com).
+              </small>
+            </div>
             <input
               type="email"
               class="form-control"
               name="correo"
               [(ngModel)]="cliente.correo"
+              #correo="ngModel"
               required
-              data-cy="input-correo"
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
             />
           </div>
 
           <!-- Celular -->
           <div class="col-md-6 mt-3">
-            <label class="form-label fw-bold text-dark small">Celular</label>
+            <label class="form-label fw-bold text-dark small mb-0">Celular</label>
+            <div style="min-height: 18px">
+              <small
+                *ngIf="celular.invalid && (celular.dirty || celular.touched)"
+                class="text-danger d-block fst-italic"
+                style="font-size: 0.75rem"
+              >
+                Debe contener exactamente 9 dígitos numéricos.
+              </small>
+            </div>
             <input
               type="text"
               class="form-control"
               name="celular"
               [(ngModel)]="cliente.celular"
+              #celular="ngModel"
               required
-              data-cy="input-celular"
+              pattern="^[0-9]{9}$"
             />
           </div>
         </div>
@@ -187,6 +242,7 @@
           >
             &#8592; Atrás
           </button>
+
           <button
             type="submit"
             class="btn text-white px-5 fw-bold rounded-pill"
@@ -201,5 +257,3 @@
     </div>
   </div>
 </div>
-
-<!-- Widget de Accesibilidad (Botón Flotante) -->
