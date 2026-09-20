@@ -20,6 +20,9 @@ public class ReclamoRequestDTO {
     private String descripcion;
     private String fechaCompra;
 
+    // --- CORRECCIÓN: Agregamos la propiedad para recibir la categoría ---
+    private String categoria;
+
     public ReclamoRequestDTO() {
     }
 
@@ -136,4 +139,12 @@ public class ReclamoRequestDTO {
         this.fechaCompra = fechaCompra;
     }
 
+    // --- CORRECCIÓN: Getter y Setter de Categoría ---
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 }

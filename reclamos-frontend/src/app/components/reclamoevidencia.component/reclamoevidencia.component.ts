@@ -19,7 +19,7 @@ export class ReclamoevidenciaComponent implements OnInit {
     tienda: '',
     numeroBoleta: '',
     fechaCompra: '',
-    categoria: '', // <-- NUEVO: Se agregó categoría
+    categoria: '',
     motivo: '',
     producto: '',
     descripcion: ''
@@ -27,7 +27,7 @@ export class ReclamoevidenciaComponent implements OnInit {
 
   listaTiendas: any[] = [];
   listaMotivos: any[] = [];
-  listaCategorias: any[] = []; // <-- NUEVO: Almacena las categorías
+  listaCategorias: any[] = [];
 
   archivoSeleccionado: File | null = null;
   mensajeError: string = '';
@@ -55,7 +55,6 @@ export class ReclamoevidenciaComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    // NUEVO: Llamada para cargar las categorías de la BD
     this.catalogoService.obtenerCategorias().subscribe(data => {
       this.listaCategorias = data;
       this.cdr.detectChanges();
@@ -78,7 +77,19 @@ export class ReclamoevidenciaComponent implements OnInit {
   }
 
   siguientePaso() {
-    this.reclamoService.enviarReclamoTotal(this.incidente, this.archivoSeleccionado).subscribe({
+    // --- INICIO DE CORRECCIÓN ---
+    // Forzamos a que los IDs se envíen estrictamente como Números enteros (Integer)
+    // y añadimos 'categoriaId' como respaldo por si tu DTO en Java lo exige con ese nombre exacto.
+    const incidenteFormateado = {
+      ...this.incidente,
+      tienda: Number(this.incidente.tienda),
+      motivo: Number(this.incidente.motivo),
+      categoria: Number(this.incidente.categoria),
+      categoriaId: Number(this.incidente.categoria)
+    };
+    // --- FIN DE CORRECCIÓN ---
+
+    this.reclamoService.enviarReclamoTotal(incidenteFormateado, this.archivoSeleccionado).subscribe({
       next: (respuesta) => {
        this.router.navigate(['/reclamo/confirmacion'], {
          state: {

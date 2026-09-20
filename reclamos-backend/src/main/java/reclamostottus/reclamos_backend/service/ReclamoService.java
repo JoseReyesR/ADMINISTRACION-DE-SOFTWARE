@@ -150,9 +150,23 @@ public class ReclamoService {
         nuevoReclamo.setFechaVencimiento(LocalDateTime.now().plusDays(21));
 
         // 4. Llaves foráneas por defecto
-        Categoria catDefault = new Categoria();
-        catDefault.setId(1);
-        nuevoReclamo.setCategoria(catDefault);
+        // --- INICIO DE CORRECCIÓN: Lógica dinámica para la Categoría ---
+        if (dto.getCategoria() != null && !dto.getCategoria().isEmpty()) {
+            try {
+                Integer categoriaId = Integer.parseInt(dto.getCategoria());
+                Categoria categoriaSeleccionada = new Categoria();
+                categoriaSeleccionada.setId(categoriaId);
+                nuevoReclamo.setCategoria(categoriaSeleccionada);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("El ID de la categoría es inválido.");
+            }
+        } else {
+            // Solo como respaldo de seguridad si el frontend falla
+            Categoria catDefault = new Categoria();
+            catDefault.setId(1);
+            nuevoReclamo.setCategoria(catDefault);
+        }
+        // --- FIN DE CORRECCIÓN ---
 
         Prioridad prioDefault = new Prioridad();
         prioDefault.setId(2);
@@ -234,7 +248,7 @@ public class ReclamoService {
                 "El estado de tu caso ha cambiado a: " + nuevoEstado.getNombre());
         return guardado;
 
-       // return reclamoRepository.save(reclamo);
+        // return reclamoRepository.save(reclamo);
     }
 
     public Reclamo actualizarPrioridadReclamo(Integer id, Integer idPrioridad) {

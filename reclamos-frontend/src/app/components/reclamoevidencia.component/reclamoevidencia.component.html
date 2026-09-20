@@ -243,7 +243,10 @@
               required
             >
               <option value="" disabled>Seleccione...</option>
-              <option *ngFor="let c of listaCategorias" [value]="c.id">{{ c.nombre }}</option>
+              <!-- --- INICIO DE CORRECCIÓN --- -->
+              <!-- Cambiamos [value] por [ngValue] para evitar que el número se convierta en texto -->
+              <option *ngFor="let c of listaCategorias" [ngValue]="c.id">{{ c.nombre }}</option>
+              <!-- --- FIN DE CORRECCIÓN --- -->
             </select>
           </div>
 
