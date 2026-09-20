@@ -18,6 +18,31 @@ USE `reclamos_db`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `catalogo_motivos`
+--
+
+DROP TABLE IF EXISTS `catalogo_motivos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `catalogo_motivos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(150) NOT NULL,
+  `tipo_solicitud` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `catalogo_motivos`
+--
+
+LOCK TABLES `catalogo_motivos` WRITE;
+/*!40000 ALTER TABLE `catalogo_motivos` DISABLE KEYS */;
+INSERT INTO `catalogo_motivos` VALUES (1,'Cobro equivocado en caja','Reclamo'),(2,'Producto vencido o en mal estado','Reclamo'),(3,'No aplicaron promoción o descuento','Reclamo'),(4,'Mala atención del personal','Queja'),(5,'Demora excesiva en caja o atención','Queja'),(6,'Instalaciones sucias o con fallas','Queja');
+/*!40000 ALTER TABLE `catalogo_motivos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `categorias`
 --
 
@@ -83,7 +108,7 @@ CREATE TABLE `evidencias` (
   PRIMARY KEY (`id`),
   KEY `reclamo_id` (`reclamo_id`),
   CONSTRAINT `evidencias_ibfk_1` FOREIGN KEY (`reclamo_id`) REFERENCES `reclamos` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,8 +117,70 @@ CREATE TABLE `evidencias` (
 
 LOCK TABLES `evidencias` WRITE;
 /*!40000 ALTER TABLE `evidencias` DISABLE KEYS */;
-INSERT INTO `evidencias` VALUES (1,2,'Captura de pantalla 2025-11-10 190445.png','/uploads/Captura de pantalla 2025-11-10 190445.png','image/png',0.01,'2026-09-12 13:13:19'),(2,3,'Captura de pantalla 2026-09-10 144402.png','/uploads/Captura de pantalla 2026-09-10 144402.png','image/png',0.03,'2026-09-12 16:20:10'),(3,4,'Captura de pantalla 2026-09-12 020948.png','/uploads/Captura de pantalla 2026-09-12 020948.png','image/png',0.04,'2026-09-12 16:31:57'),(4,5,'Captura de pantalla 2026-09-10 144352.png','/uploads/Captura de pantalla 2026-09-10 144352.png','image/png',0.06,'2026-09-12 16:34:51'),(5,6,'Captura de pantalla 2025-11-13 220656.png','/uploads/Captura de pantalla 2025-11-13 220656.png','image/png',0.14,'2026-09-12 18:53:30'),(6,7,'Captura de pantalla 2026-09-12 141642.png','/uploads/Captura de pantalla 2026-09-12 141642.png','image/png',0.08,'2026-09-12 19:19:10'),(7,8,'Captura de pantalla 2026-09-12 142433.png','/uploads/Captura de pantalla 2026-09-12 142433.png','image/png',0.07,'2026-09-12 19:26:55'),(8,9,'Captura de pantalla 2026-09-12 130654.png','/uploads/Captura de pantalla 2026-09-12 130654.png','image/png',0.05,'2026-09-12 20:32:32'),(9,10,'Captura de pantalla 2025-11-10 190449.png','/uploads/Captura de pantalla 2025-11-10 190449.png','image/png',0.01,'2026-09-13 17:12:41'),(10,11,'Captura de pantalla 2025-11-10 190445.png','/uploads/Captura de pantalla 2025-11-10 190445.png','image/png',0.01,'2026-09-15 04:43:12');
+INSERT INTO `evidencias` VALUES (1,1,'Captura de pantalla 2025-11-10 190445.png','/uploads/Captura de pantalla 2025-11-10 190445.png','image/png',0.01,'2026-09-15 21:59:15'),(2,2,'Captura de pantalla 2026-09-15 170027.png','/uploads/Captura de pantalla 2026-09-15 170027.png','image/png',0.05,'2026-09-15 23:34:00'),(3,3,'Captura de pantalla 2026-09-15 000348.png','/uploads/Captura de pantalla 2026-09-15 000348.png','image/png',0.01,'2026-09-16 00:39:12'),(4,4,'Captura de pantalla 2025-11-10 190445.png','/uploads/Captura de pantalla 2025-11-10 190445.png','image/png',0.01,'2026-09-18 02:08:03'),(5,5,'Captura de pantalla 2026-09-17 205046.png','/uploads/Captura de pantalla 2026-09-17 205046.png','image/png',0.06,'2026-09-18 02:09:45'),(6,6,'20250414_195517.jpg','/uploads/20250414_195517.jpg','image/jpeg',8.19,'2026-09-18 06:03:01'),(7,7,'Captura de pantalla 2026-09-18 193939.png','/uploads/Captura de pantalla 2026-09-18 193939.png','image/png',0.04,'2026-09-19 01:40:22'),(8,8,'Captura de pantalla 2025-11-10 171519.png','/uploads/Captura de pantalla 2025-11-10 171519.png','image/png',0.01,'2026-09-19 13:32:18'),(9,9,'Captura de pantalla 2026-09-19 081127.png','/uploads/Captura de pantalla 2026-09-19 081127.png','image/png',0.04,'2026-09-19 15:07:29'),(10,10,'Captura de pantalla 2026-09-18 222320.png','/uploads/Captura de pantalla 2026-09-18 222320.png','image/png',0.06,'2026-09-19 15:19:02'),(11,11,'Captura de pantalla 2026-09-18 221830.png','/uploads/Captura de pantalla 2026-09-18 221830.png','image/png',0.01,'2026-09-19 15:22:30'),(12,12,'Captura de pantalla 2026-09-19 120339.png','/uploads/Captura de pantalla 2026-09-19 120339.png','image/png',0.04,'2026-09-19 17:09:42'),(13,13,'Captura de pantalla 2026-09-19 081127.png','/uploads/Captura de pantalla 2026-09-19 081127.png','image/png',0.04,'2026-09-19 17:12:56');
 /*!40000 ALTER TABLE `evidencias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `historial_seguimientos`
+--
+
+DROP TABLE IF EXISTS `historial_seguimientos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `historial_seguimientos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `reclamo_id` int NOT NULL,
+  `usuario_id_responsable` int NOT NULL,
+  `estado_anterior_id` int DEFAULT NULL,
+  `estado_nuevo_id` int DEFAULT NULL,
+  `comentario` text NOT NULL,
+  `es_interno` tinyint(1) DEFAULT '0',
+  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `reclamo_id` (`reclamo_id`),
+  KEY `usuario_id_responsable` (`usuario_id_responsable`),
+  KEY `estado_anterior_id` (`estado_anterior_id`),
+  KEY `estado_nuevo_id` (`estado_nuevo_id`),
+  CONSTRAINT `historial_seguimientos_ibfk_1` FOREIGN KEY (`reclamo_id`) REFERENCES `reclamos` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `historial_seguimientos_ibfk_2` FOREIGN KEY (`usuario_id_responsable`) REFERENCES `usuarios` (`id`),
+  CONSTRAINT `historial_seguimientos_ibfk_3` FOREIGN KEY (`estado_anterior_id`) REFERENCES `estados_reclamo` (`id`),
+  CONSTRAINT `historial_seguimientos_ibfk_4` FOREIGN KEY (`estado_nuevo_id`) REFERENCES `estados_reclamo` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `historial_seguimientos`
+--
+
+LOCK TABLES `historial_seguimientos` WRITE;
+/*!40000 ALTER TABLE `historial_seguimientos` DISABLE KEYS */;
+INSERT INTO `historial_seguimientos` VALUES (1,3,2,NULL,NULL,'Reclamo recibido - gracias',0,'2026-09-18 05:56:12'),(2,3,2,NULL,NULL,'reclamo asignado al user 1',1,'2026-09-18 05:56:32'),(3,2,2,NULL,NULL,'asignandose',0,'2026-09-19 00:09:33'),(4,2,2,NULL,NULL,'asignado a backoffice',0,'2026-09-19 00:09:44'),(5,4,2,NULL,NULL,'Cerrado',0,'2026-09-19 00:10:06'),(6,9,2,NULL,NULL,'Agregando nota',0,'2026-09-19 15:24:19'),(7,10,2,NULL,NULL,'nota usuario',0,'2026-09-19 15:38:35'),(8,10,2,NULL,NULL,'nota privada',1,'2026-09-19 15:38:42');
+/*!40000 ALTER TABLE `historial_seguimientos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `motivos`
+--
+
+DROP TABLE IF EXISTS `motivos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `motivos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `tipo_solicitud` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `motivos`
+--
+
+LOCK TABLES `motivos` WRITE;
+/*!40000 ALTER TABLE `motivos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `motivos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -136,7 +223,8 @@ CREATE TABLE `reclamos` (
   `estado_id` int NOT NULL,
   `tipo_solicitud` varchar(50) NOT NULL,
   `canal_compra` varchar(50) DEFAULT NULL,
-  `tienda` varchar(100) DEFAULT NULL,
+  `tienda_id` int NOT NULL,
+  `motivo_id` int NOT NULL,
   `numero_boleta_pedido` varchar(100) DEFAULT NULL,
   `fecha_compra` date DEFAULT NULL,
   `producto_implicado` varchar(255) DEFAULT NULL,
@@ -149,11 +237,15 @@ CREATE TABLE `reclamos` (
   KEY `categoria_id` (`categoria_id`),
   KEY `prioridad_id` (`prioridad_id`),
   KEY `estado_id` (`estado_id`),
+  KEY `tienda_id` (`tienda_id`),
+  KEY `motivo_id` (`motivo_id`),
   CONSTRAINT `reclamos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
   CONSTRAINT `reclamos_ibfk_2` FOREIGN KEY (`categoria_id`) REFERENCES `categorias` (`id`),
   CONSTRAINT `reclamos_ibfk_3` FOREIGN KEY (`prioridad_id`) REFERENCES `prioridades` (`id`),
-  CONSTRAINT `reclamos_ibfk_4` FOREIGN KEY (`estado_id`) REFERENCES `estados_reclamo` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `reclamos_ibfk_4` FOREIGN KEY (`estado_id`) REFERENCES `estados_reclamo` (`id`),
+  CONSTRAINT `reclamos_ibfk_5` FOREIGN KEY (`tienda_id`) REFERENCES `tiendas` (`id`),
+  CONSTRAINT `reclamos_ibfk_6` FOREIGN KEY (`motivo_id`) REFERENCES `catalogo_motivos` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,7 +254,7 @@ CREATE TABLE `reclamos` (
 
 LOCK TABLES `reclamos` WRITE;
 /*!40000 ALTER TABLE `reclamos` DISABLE KEYS */;
-INSERT INTO `reclamos` VALUES (1,'REQ-2026-2973',2,1,2,4,'Reclamo','Tienda Física','Trujillo Centro','asd','2026-09-05','asd','eq','2026-09-12 06:57:45','2026-10-03 11:57:46'),(2,'REQ-2026-9485',8,1,2,4,'Reclamo','Tottus.com','Trujillo Centro','gggg','2026-09-10','g1','g2','2026-09-12 13:13:19','2026-10-03 18:13:20'),(3,'REQ-2026-4464',18,1,2,3,'Reclamo','Tottus.com','Trujillo Centro','r1','2026-09-02','r11','r111','2026-09-12 16:20:10','2026-10-03 21:20:11'),(4,'REQ-2026-2225',18,1,2,3,'Reclamo','Tienda Física','Mall Aventura','asdad','2026-08-30','prueba2','yuiyuiyui','2026-09-12 16:31:57','2026-10-03 21:31:58'),(5,'REQ-2026-8999',19,1,2,2,'Reclamo','Tienda Física','Trujillo Centro','andrea23','2026-09-04','andrea1','andrea12','2026-09-12 16:34:51','2026-10-03 21:34:51'),(6,'REQ-2026-1463',18,1,2,1,'Reclamo','Tienda Física','Trujillo Centro','123','2026-09-11','123','123','2026-09-12 18:53:30','2026-10-03 23:53:30'),(7,'REQ-2026-6277',18,1,2,5,'Queja','Tottus.com','Trujillo Centro','nuevaboleta','2026-08-30','nuevo','nuevo','2026-09-12 19:19:10','2026-10-04 00:19:10'),(8,'REQ-2026-6935',18,1,2,1,'Reclamo','Tottus.com','Trujillo Centro','nuevo2','2026-08-31','nuevo2','nuevo2','2026-09-12 19:26:55','2026-10-04 00:26:56'),(9,'REQ-2026-9870',20,1,2,2,'Reclamo','Tottus.com','Trujillo Centro','hola','2026-09-02','prodhola','holadetal','2026-09-12 20:32:32','2026-10-04 01:32:33'),(10,'REQ-2026-4385',21,1,2,1,'Reclamo','Tottus.com','Mall Aventura','bb41','2026-08-31','qef','adas','2026-09-13 17:12:41','2026-10-04 22:12:41'),(11,'REQ-2026-8418',22,1,2,1,'Reclamo','Tottus.com','Trujillo Centro','asd','2026-09-01','prueba2','adasasdad','2026-09-15 04:43:12','2026-10-06 09:43:13');
+INSERT INTO `reclamos` VALUES (1,'REQ-2026-8242',4,1,2,3,'Queja','Tottus.com',1,1,'boleta02222','2026-09-01','','mala atencion en tottus ','2026-09-15 21:59:15','2026-10-07 02:59:15'),(2,'REQ-2026-3901',3,1,2,2,'Queja','Tienda Física',1,1,'bb41','2026-09-01','w','1','2026-09-15 23:34:00','2026-10-07 04:34:00'),(3,'REQ-2026-1659',5,1,4,1,'Reclamo','Tottus.com',1,1,'b123132','2026-09-08','12312','prueba 2','2026-09-16 00:39:12','2026-10-07 05:39:12'),(4,'REQ-2026-7283',3,1,4,4,'Reclamo','Tottus.com',1,2,'12aa','2026-09-05','t67','97t','2026-09-18 02:08:03','2026-10-09 07:08:04'),(5,'REQ-2026-5473',7,1,5,2,'Queja','Tottus.com',3,6,'bb33','2026-09-02','a','asd','2026-09-18 02:09:45','2026-10-09 07:09:45'),(6,'REQ-2026-1894',7,1,4,1,'Reclamo','Tienda Física',1,2,'12311','2026-09-17','arroz','quiero reclamar','2026-09-18 06:03:01','2026-10-09 11:03:02'),(7,'REQ-2026-6089',3,1,2,1,'Queja','Tottus.com',2,4,'prueba imagen','2026-09-05','imagen','foto agregada','2026-09-19 01:40:22','2026-10-10 06:40:22'),(8,'REQ-2026-6718',8,1,2,1,'Reclamo','Tottus.com',1,1,'b12','2026-09-04','24','123','2026-09-19 13:32:18','2026-10-10 18:32:19'),(9,'REQ-2026-1793',3,1,2,1,'Reclamo','Tienda Física',2,2,'email','2026-09-18','email2','email3','2026-09-19 15:07:29','2026-10-10 20:07:29'),(10,'REQ-2026-6826',9,1,2,3,'Reclamo','Tienda Física',3,1,'12312','2026-09-03','123123','prueba email ','2026-09-19 15:19:02','2026-10-10 20:19:03'),(11,'REQ-2026-5615',9,1,2,1,'Reclamo','Tottus.com',2,1,'pruebadatos','2026-09-02','datos','datos','2026-09-19 15:22:30','2026-10-10 20:22:30'),(12,'REQ-2026-6820',10,1,2,1,'Reclamo','Tottus.com',3,2,'12aa','2026-09-03','producto1','asdasdsd','2026-09-19 17:09:42','2026-10-10 22:09:42'),(13,'REQ-2026-6131',11,1,2,1,'Queja','Tottus.com',2,5,'bol231','2026-09-05','111','111','2026-09-19 17:12:56','2026-10-10 22:12:57');
 /*!40000 ALTER TABLE `reclamos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,6 +284,30 @@ INSERT INTO `roles` VALUES (2,'ROLE_ADMIN'),(1,'ROLE_CLIENTE'),(3,'ROLE_INVITADO
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tiendas`
+--
+
+DROP TABLE IF EXISTS `tiendas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tiendas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tiendas`
+--
+
+LOCK TABLES `tiendas` WRITE;
+/*!40000 ALTER TABLE `tiendas` DISABLE KEYS */;
+INSERT INTO `tiendas` VALUES (1,'Trujillo Centro'),(2,'Mall Aventura'),(3,'Real Plaza Trujillo');
+/*!40000 ALTER TABLE `tiendas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `usuarios`
 --
 
@@ -207,7 +323,7 @@ CREATE TABLE `usuarios` (
   `correo` varchar(150) NOT NULL,
   `telefono` varchar(20) DEFAULT NULL,
   `direccion` varchar(255) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `rol_id` int NOT NULL,
   `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_active` tinyint(1) DEFAULT '1',
@@ -215,7 +331,7 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `numero_documento` (`numero_documento`),
   KEY `rol_id` (`rol_id`),
   CONSTRAINT `usuarios_ibfk_1` FOREIGN KEY (`rol_id`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,7 +340,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (2,'DNI','72672658','abc','123','registrador@registrador','123',NULL,'$2a$10$GGewNiQAKHNhh8ICGgAubOC.GarKO9TfBuP7YXHZ7Pzu45Qz3IWyS',3,'2026-09-12 06:57:45',1),(3,'DNI','88888888','Soporte','Tottus','soporte@tottus.com','999888777',NULL,'$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQs840FCS',2,'2026-09-12 07:01:44',1),(5,'DNI','20202020','Luis','Soporte','tecnico@tottus.com','999333444',NULL,'$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQs840FCS',2,'2026-09-12 12:30:46',1),(6,'DNI','30303030','Ana','Cliente','cliente@gmail.com','999555666',NULL,'$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQs840FCS',3,'2026-09-12 12:30:46',1),(7,'DNI','99999999','Admin','Tottus','admin@tottus.com','999999999',NULL,'123456',2,'2026-09-12 13:07:09',1),(8,'DNI','14785236','jose','rubio','j@j','987654322',NULL,'$2a$10$LgXgJPjDlh1tsQZ7cm4EGOk2x77Nqa7gAyI5uyok1jcS91Ym2Gt5O',3,'2026-09-12 13:13:19',1),(9,'DNI','10203040','Administrador','Seguro','admi@admin','999000111',NULL,'$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQs840FCS',2,'2026-09-12 13:17:23',1),(10,'DNI','77777777','Desarrollador','Tottus','dev@dev.com','999999999',NULL,'$2a$10$qarvGQJTJutDJINtg7dxr.Q.AWajDD5sJyjAwkZ3j8ZssvA2nc56.',2,'2026-09-12 13:18:21',1),(13,'DNI','77777771','Admin','Seguro','admin@admin','999999999',NULL,'$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQs840FCS',2,'2026-09-12 13:21:29',1),(14,'DNI','12312312','Usuario','Prueba','prueba@admin','999111222',NULL,'$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjQs840FCS',2,'2026-09-12 13:42:35',1),(15,'DNI','44444444','Usuario','Final','final@admin','999999999',NULL,'123456',2,'2026-09-12 14:18:09',1),(16,'DNI','44444441','Usuario1','Final1','final@final','999999949',NULL,'$2a$10$NCg4iB4Ox5nLwoDzko72E.KrcsvpwmClFEX4QQeW37MPCd5SGyRHy',2,'2026-09-12 14:25:07',1),(17,'DNI','77778888','Usuario','Test','test@admin','999000111',NULL,'$2a$10$/anDO8WUxBJ5fBix4Re.8eRjVOdyEc2hjYFCdA9nH1lFS574mM48W',2,'2026-09-12 14:28:18',1),(18,'DNI','88889999','María','Torres','cliente@tottus.com','987654321',NULL,'$2a$10$s1u8AVK2h1RzYU6kIGBfweFRC/Z93Gc.jtHMnxHYqibdrUtWpSGza',1,'2026-09-12 16:05:10',1),(19,'DNI','09991111','andrea','andrea1','andrea@andrea','09876543',NULL,'$2a$10$hAjFWBbBF3JXtJPa4u8rAefKYW4MGShwp.oABOVg2gn2cuMBa38D.',3,'2026-09-12 16:34:51',1),(20,'DNI','77771234','hola','chay','hola@hola','987667891',NULL,'$2a$10$RZejufcdUprj65QLj0xXneVeYwWrkK5NHV2SzdNZxFx.fVmExnfp6',3,'2026-09-12 20:32:32',1),(21,'DNI','23123121','sdsdas','asdasd','soporte@tottuss.com','931980059',NULL,'$2a$10$MQzvaaMxCgB9wYlISX1IB.BDk6thlqnuhXZKS6q2pe2XyeD9r78aK',3,'2026-09-13 17:12:41',1),(22,'DNI','72672611','j','jj','jj','jj',NULL,'$2a$10$LXvZBrXTDkHNHy/N6ymEq.1QGT5ZTKXjcKVnAqVmLXm4EH/N66/qC',3,'2026-09-15 04:43:12',1);
+INSERT INTO `usuarios` VALUES (1,'DNI','44444441','Usuario1','Final1','final@final','999999949',NULL,'$2a$10$2xcXN/YEnoPGJTD42C86Me4KYllswXNcnwbRZ9CubCJITD2ZOjloy',2,'2026-09-15 05:51:07',1),(2,'DNI','77778888','Usuario','Test','test@admin','999000111',NULL,'$2a$10$LDIpSCGN8rQLiI0CYwukpOMy8gKkQFLE0/56lIX0AB96OErQkSV16',2,'2026-09-15 05:51:07',1),(3,'DNI','88889999','María','Torres','cliente@tottus.com','987654321',NULL,'$2a$10$Rs2OvzFd7SjF7CABpPayUuBIdCZWWyb1T6YOd0kU45AF/aUmDkUcW',1,'2026-09-15 05:51:07',1),(4,'DNI','77667766','juan','perez','a@a','987654123',NULL,'$2a$10$ghsSY/txXIKkIMnIkgW2zOqGbWm5XQeavtVbh77JjoC/rnJwjSQK.',3,'2026-09-15 21:59:15',1),(5,'DNI','87655444','jesica','jess','jess@jess','9494949492',NULL,'$2a$10$zVUo3dSB5hk2P6hgc/V2Z.D7MYzL/p7PzCHSO.vzIsh9UNUtTB5yq',3,'2026-09-16 00:39:12',1),(7,'DNI','98988989','jessie','Ruiz','ruiz@ruiz','818178412',NULL,'$2a$10$8IyZEwrK1Uw4pyMIMkNTCebBaKYaDoopKlti93uqr70KQLhCdHq76',3,'2026-09-18 02:09:45',1),(8,'DNI','12311111','jesus','trujillo','jesus@jesus','987789654',NULL,'$2a$10$1LOdM3omRmcxtE.gs6X1MeVlktbfSIvaqx5rJhZ56NkxKRjAT1Z1m',3,'2026-09-19 13:32:18',1),(9,'DNI','77771234','Cliente','cliente2','cliente@cliente','987789555',NULL,'$2a$10$akv01NibkeNswXJH.0H5seh8hWFz5csQOeg4jgE38C/C1SK6xqY/m',3,'2026-09-19 15:19:02',1),(10,'DNI','78876543','Juancito','Perecito','q@q.com','900011111',NULL,'$2a$10$9F6oMIKP20WX1I27cn2kvuxoKkysRj5ZwmwWvgNvuBM346of8gMQK',3,'2026-09-19 17:09:42',1),(11,'DNI','72672643','lidia','lidias','lidia@lidia.com','983983983',NULL,'$2a$10$5mcE0I4PlUp11G5Y0uD1XOokIlcvGbT/xMHiQNX8EUUCGBQI5752G',3,'2026-09-19 17:12:56',1);
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -237,4 +353,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-15  0:33:03
+-- Dump completed on 2026-09-19 14:43:50
