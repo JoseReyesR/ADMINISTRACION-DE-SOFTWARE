@@ -160,30 +160,6 @@ INSERT INTO `historial_seguimientos` VALUES (1,3,2,NULL,NULL,'Reclamo recibido -
 UNLOCK TABLES;
 
 --
--- Table structure for table `motivos`
---
-
-DROP TABLE IF EXISTS `motivos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `motivos` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `tipo_solicitud` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `motivos`
---
-
-LOCK TABLES `motivos` WRITE;
-/*!40000 ALTER TABLE `motivos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `motivos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `prioridades`
 --
 
@@ -254,7 +230,7 @@ CREATE TABLE `reclamos` (
 
 LOCK TABLES `reclamos` WRITE;
 /*!40000 ALTER TABLE `reclamos` DISABLE KEYS */;
-INSERT INTO `reclamos` VALUES (1,'REQ-2026-8242',4,1,2,3,'Queja','Tottus.com',1,1,'boleta02222','2026-09-01','','mala atencion en tottus ','2026-09-15 21:59:15','2026-10-07 02:59:15'),(2,'REQ-2026-3901',3,1,2,2,'Queja','Tienda Física',1,1,'bb41','2026-09-01','w','1','2026-09-15 23:34:00','2026-10-07 04:34:00'),(3,'REQ-2026-1659',5,1,4,1,'Reclamo','Tottus.com',1,1,'b123132','2026-09-08','12312','prueba 2','2026-09-16 00:39:12','2026-10-07 05:39:12'),(4,'REQ-2026-7283',3,1,4,4,'Reclamo','Tottus.com',1,2,'12aa','2026-09-05','t67','97t','2026-09-18 02:08:03','2026-10-09 07:08:04'),(5,'REQ-2026-5473',7,1,5,2,'Queja','Tottus.com',3,6,'bb33','2026-09-02','a','asd','2026-09-18 02:09:45','2026-10-09 07:09:45'),(6,'REQ-2026-1894',7,1,4,1,'Reclamo','Tienda Física',1,2,'12311','2026-09-17','arroz','quiero reclamar','2026-09-18 06:03:01','2026-10-09 11:03:02'),(7,'REQ-2026-6089',3,1,2,1,'Queja','Tottus.com',2,4,'prueba imagen','2026-09-05','imagen','foto agregada','2026-09-19 01:40:22','2026-10-10 06:40:22'),(8,'REQ-2026-6718',8,1,2,1,'Reclamo','Tottus.com',1,1,'b12','2026-09-04','24','123','2026-09-19 13:32:18','2026-10-10 18:32:19'),(9,'REQ-2026-1793',3,1,2,1,'Reclamo','Tienda Física',2,2,'email','2026-09-18','email2','email3','2026-09-19 15:07:29','2026-10-10 20:07:29'),(10,'REQ-2026-6826',9,1,2,3,'Reclamo','Tienda Física',3,1,'12312','2026-09-03','123123','prueba email ','2026-09-19 15:19:02','2026-10-10 20:19:03'),(11,'REQ-2026-5615',9,1,2,1,'Reclamo','Tottus.com',2,1,'pruebadatos','2026-09-02','datos','datos','2026-09-19 15:22:30','2026-10-10 20:22:30'),(12,'REQ-2026-6820',10,1,2,1,'Reclamo','Tottus.com',3,2,'12aa','2026-09-03','producto1','asdasdsd','2026-09-19 17:09:42','2026-10-10 22:09:42'),(13,'REQ-2026-6131',11,1,2,1,'Queja','Tottus.com',2,5,'bol231','2026-09-05','111','111','2026-09-19 17:12:56','2026-10-10 22:12:57');
+INSERT INTO `reclamos` VALUES (1,'REQ-2026-8242',4,1,2,3,'Queja','Tottus.com',1,1,'boleta02222','2026-09-01','','mala atencion en tottus ','2026-09-15 21:59:15','2026-10-07 02:59:15'),(2,'REQ-2026-3901',3,1,2,2,'Queja','Tienda Física',1,1,'bb41','2026-09-01','w','1','2026-09-15 23:34:00','2026-10-07 04:34:00'),(3,'REQ-2026-1659',5,1,4,1,'Reclamo','Tottus.com',1,1,'b123132','2026-09-08','12312','prueba 2','2026-09-16 00:39:12','2026-10-07 05:39:12'),(4,'REQ-2026-7283',3,1,4,4,'Reclamo','Tottus.com',1,2,'12aa','2026-09-05','t67','97t','2026-09-18 02:08:03','2026-10-09 07:08:04'),(5,'REQ-2026-5473',7,1,5,2,'Queja','Tottus.com',3,6,'bb33','2026-09-02','a','asd','2026-09-18 02:09:45','2026-10-09 07:09:45'),(6,'REQ-2026-1894',7,1,4,1,'Reclamo','Tienda Física',1,2,'12311','2026-09-17','arroz','quiero reclamar','2026-09-18 06:03:01','2026-10-09 11:03:02'),(7,'REQ-2026-6089',3,1,2,1,'Queja','Tottus.com',2,4,'prueba imagen','2026-09-05','imagen','foto agregada','2026-09-19 01:40:22','2026-10-10 06:40:22'),(8,'REQ-2026-6718',8,1,2,4,'Reclamo','Tottus.com',1,1,'b12','2026-09-04','24','123','2026-09-19 13:32:18','2026-10-10 18:32:19'),(9,'REQ-2026-1793',3,1,2,1,'Reclamo','Tienda Física',2,2,'email','2026-09-18','email2','email3','2026-09-19 15:07:29','2026-10-10 20:07:29'),(10,'REQ-2026-6826',9,1,2,3,'Reclamo','Tienda Física',3,1,'12312','2026-09-03','123123','prueba email ','2026-09-19 15:19:02','2026-10-10 20:19:03'),(11,'REQ-2026-5615',9,1,2,1,'Reclamo','Tottus.com',2,1,'pruebadatos','2026-09-02','datos','datos','2026-09-19 15:22:30','2026-10-10 20:22:30'),(12,'REQ-2026-6820',10,1,2,1,'Reclamo','Tottus.com',3,2,'12aa','2026-09-03','producto1','asdasdsd','2026-09-19 17:09:42','2026-10-10 22:09:42'),(13,'REQ-2026-6131',11,1,2,1,'Queja','Tottus.com',2,5,'bol231','2026-09-05','111','111','2026-09-19 17:12:56','2026-10-10 22:12:57');
 /*!40000 ALTER TABLE `reclamos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -353,4 +329,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-19 14:43:50
+-- Dump completed on 2026-09-19 19:36:26
