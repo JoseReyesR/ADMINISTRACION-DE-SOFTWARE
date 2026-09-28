@@ -35,4 +35,28 @@ public class UsuarioService {
         }
         return respuesta;
     }
+
+    public Map<String, Object> buscarPorCorreo(String correo) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByCorreo(correo);
+        Map<String, Object> respuesta = new HashMap<>();
+
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            // Verificamos si la cuenta está activa para evitar el autocompletado de cuentas
+            // restringidas
+            if (!usuario.getIsActive()) {
+                throw new RuntimeException("Cuenta inactiva");
+            }
+            respuesta.put("encontrado", true);
+            respuesta.put("numeroDocumento", usuario.getNumeroDocumento());
+            respuesta.put("tipoDocumento", usuario.getTipoDocumento());
+            respuesta.put("nombres", usuario.getNombres());
+            respuesta.put("apellidos", usuario.getApellidos());
+            respuesta.put("correo", usuario.getCorreo());
+            respuesta.put("telefono", usuario.getTelefono());
+        } else {
+            respuesta.put("encontrado", false);
+        }
+        return respuesta;
+    }
 }

@@ -42,7 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
                         .requestMatchers("/api/auth/login", "/error", "/api/reclamos", "/api/usuarios/documento/**",
-                                "/api/usuarios/dni/**", "/api/reclamos/seguimiento/**", "/api/catalogos/**")
+                            "/api/usuarios/correo/**", "/api/usuarios/dni/**", "/api/reclamos/seguimiento/**", "/api/catalogos/**")
                         .permitAll()
                         // ---> NUEVO: Permite a los invitados leer el historial público sin token <---
                         .requestMatchers(HttpMethod.GET, "/api/historial/*/publico").permitAll()

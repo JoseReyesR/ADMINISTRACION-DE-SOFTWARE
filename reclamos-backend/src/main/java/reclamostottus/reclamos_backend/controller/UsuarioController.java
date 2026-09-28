@@ -26,4 +26,18 @@ public class UsuarioController {
             return ResponseEntity.status(403).body(Map.of("error", e.getMessage())); // Devuelve 403 si está inactivo
         }
     }
+
+    @GetMapping("/correo/{correo}")
+    public ResponseEntity<Map<String, Object>> buscarClientePorCorreo(@PathVariable String correo) {
+        try {
+            Map<String, Object> resultado = usuarioService.buscarPorCorreo(correo);
+            if ((Boolean) resultado.get("encontrado")) {
+                return ResponseEntity.ok(resultado);
+            } else {
+                return ResponseEntity.notFound().build(); // Devuelve error 404 para indicar a Angular que es invitado
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage())); // Devuelve 403 si está inactivo
+        }
+    }
 }
