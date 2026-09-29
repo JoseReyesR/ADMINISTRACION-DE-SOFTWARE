@@ -13,4 +13,8 @@ export class UsuarioService {
   buscarPorDocumento(numero: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/documento/${numero}`);
   }
+
+  buscarPorCorreo(correo: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/correo/${correo}`);
+  }
 }

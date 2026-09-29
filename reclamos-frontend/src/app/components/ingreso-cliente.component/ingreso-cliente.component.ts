@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-ingreso-cliente',
@@ -19,7 +20,7 @@ export class IngresoClienteComponent {
 
   mensajeError: string = '';
 
-  constructor(private authService: AuthService, private router: Router,private cdr: ChangeDetectorRef) {}
+  constructor(private authService: AuthService, private usuarioService: UsuarioService, private router: Router,private cdr: ChangeDetectorRef) {}
 
 
 
@@ -46,17 +47,29 @@ iniciarSesion() {
           // 2. GUARDAMOS SUS DATOS BÁSICOS EN MEMORIA
           // Guardamos el correo que usó para loguearse. Si falta el DNI,
           // el formulario del Paso 1 lo pedirá y buscará el resto.
-          localStorage.setItem('cliente_datos', JSON.stringify({
-            tipoDocumento: 'DNI',
-            numeroDocumento: '',
-            nombres: 'Cliente Registrado',
-            apellidos: '',
-            correo: this.credenciales.correo,
-            telefono: ''
-          }));
-
-          // 3. Redirigimos al formulario (o a /mis-casos si prefieres)
-          this.router.navigate(['/reclamo/datos']);
+          this.usuarioService.buscarPorCorreo(this.credenciales.correo).subscribe({
+          next: (usuario) => {
+            if (usuario) {
+              localStorage.setItem('cliente_datos', JSON.stringify({
+                tipoDocumento: usuario.tipoDocumento || 'DNI',
+                numeroDocumento: usuario.numeroDocumento || this.credenciales.correo,
+                nombres: usuario.nombres || 'Cliente Registrado',
+                apellidos: usuario.apellidos || '',
+                correo: usuario.correo || this.credenciales.correo,
+                telefono: usuario.telefono || ''
+              }));
+            } else {
+              console.warn('No se encontró información del usuario.');
+            }
+            // Redirigimos ÚNICAMENTE cuando la data ya está guardada en localStorage
+            this.router.navigate(['/reclamo/datos']);
+          },
+          error: (err) => {
+            console.error('Error al buscar el usuario:', err);
+            // Redirigimos de todos modos o manejamos un aviso previo
+            this.router.navigate(['/reclamo/datos']);
+          }
+        });
 
         } else {
           this.authService.cerrarSesion();
