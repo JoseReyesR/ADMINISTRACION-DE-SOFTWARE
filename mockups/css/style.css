@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f3f4f6;
+}
+
+/* --- Estilos del Wizard --- */
+.step-indicator {
+    transition: all 0.3s ease;
+}
+.step-active {
+    background-color: #6daa2c;
+    color: white;
+    border-color: #6daa2c;
+}
+.step-inactive {
+    background-color: white;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+}
+.step-completed {
+    background-color: #6daa2c;
+    color: white;
+    border-color: #6daa2c;
+}
+
+/* --- Animaciones --- */
+.form-step {
+    display: none;
+    animation: slideUp 0.4s ease-out;
+}
+.form-step.active {
+    display: block;
+}
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- Componentes --- */
+.file-upload-box {
+    border: 2px dashed #cbd5e1;
+    transition: all 0.2s;
+}
+.file-upload-box:hover {
+    border-color: #6daa2c;
+    background-color: #f4f9f0;
+}
+
+/* --- Loader --- */
+.loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #6daa2c;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- Badges de Estado --- */
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-pending { background-color: #fef3c7; color: #92400e; } /* Amarillo */
+.badge-resolved { background-color: #def7ec; color: #03543f; } /* Verde */
+.badge-expired { background-color: #fde8e8; color: #9b1c1c; } /* Rojo */
+
+/* --- MÓDULO DE ACCESIBILIDAD (v1.5) --- */
+
+/* 1. Contraste Alto (Invierte colores claros/oscuros) */
+body.acc-contrast {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+body.acc-contrast .bg-white,
+body.acc-contrast .bg-gray-50 {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border-color: #444 !important;
+}
+body.acc-contrast .text-gray-800,
+body.acc-contrast .text-gray-700,
+body.acc-contrast .text-gray-600,
+body.acc-contrast .text-gray-500 {
+    color: #e0e0e0 !important;
+}
+/* Forzamos inputs y selects */
+body.acc-contrast input, 
+body.acc-contrast select, 
+body.acc-contrast textarea {
+    background-color: #333 !important;
+    color: white !important;
+    border-color: #555 !important;
+}
+
+/* 2. Agrandar Texto (Aumenta el tamaño base un 20%) */
+html.acc-text-big {
+    font-size: 120% !important;
+}
+
+/* 3. Resaltar Enlaces (Subraya y pone amarillo fuerte) */
+body.acc-links a,
+body.acc-links button {
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+body.acc-links a:not(.bg-tottus-green):not(.bg-gray-800),
+body.acc-links button:not(.bg-tottus-green):not(.bg-gray-800) {
+    color: #d97706 !important; /* Color ámbar oscuro fuerte */
+    background-color: #fef3c7 !important; /* Fondo claro para resaltar */
+}
+
+/* 4. Espaciado de Texto */
+body.acc-spacing {
+    word-spacing: 0.1em !important;
+    letter-spacing: 0.05em !important;
+    line-height: 1.8 !important;
+}
+
+/* 5. Detener Animaciones */
+body.acc-no-ani *,
+body.acc-no-ani *::before,
+body.acc-no-ani *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* 6. Saturación (Escala de Grises) */
+body.acc-grayscale {
+    filter: grayscale(100%) !important;
+}
+
+/* Estilo para el botón activo del menú */
+.acc-btn-active {
+    background-color: #dcfce7 !important; /* Verde claro Tottus */
+    border-color: #6daa2c !important;
+    font-weight: bold;
+}

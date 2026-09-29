@@ -1,0 +1,67 @@
+/* --- Dashboard Tottus (Admin) --- */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Color corporativo específico para admin (un poco más serio) */
+.bg-tottus-green {
+    background-color: #6daa2c;
+}
+
+/* Badges de Prioridad */
+.prio-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.prio-high {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+.prio-medium {
+    background-color: #ffedd5;
+    color: #9a3412;
+    border: 1px solid #fed7aa;
+}
+.prio-low {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+/* Estado Badges (Redondos) */
+.status-dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+}
+.status-pending { background-color: #fbbf24; } /* Amarillo */
+.status-analysis { background-color: #3b82f6; } /* Azul */
+.status-resolved { background-color: #10b981; } /* Verde */
+.status-expired { background-color: #ef4444; } /* Rojo */
+.status-rejected { background-color: #6b7280; } /* Gris */
+
+/* Scrollbar personalizado para la tabla */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8; 
+}

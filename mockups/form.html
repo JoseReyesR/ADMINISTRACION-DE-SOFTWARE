@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centro de Reclamos - Tottus</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              tottus: {
+                green: "#6daa2c",
+                dark: "#4a7c1a",
+                light: "#f4f9f0",
+                error: "#e02424",
+                warning: "#e3a008",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="flex flex-col min-h-screen bg-gray-100">
+    <header class="bg-tottus-green text-white shadow-lg relative z-50">
+      <div
+        class="container mx-auto px-4 py-3 flex justify-between items-center"
+      >
+        <div
+          class="flex items-center gap-2 cursor-pointer"
+          onclick="showView('wizard')"
+        >
+          <div
+            class="bg-white text-tottus-green font-bold px-2 py-1 rounded border-2 border-tottus-dark"
+          >
+            TOTTUS
+          </div>
+          <span class="font-semibold text-lg md:text-xl ml-2"
+            >Centro de Ayuda</span>
+          <a
+            href="index.html"
+            class="font-semibold text-lg md:text-xl ml-2"
+          >
+            > Salir
+          </a>
+        </div>
+
+        <button
+          id="mobile-menu-btn"
+          class="md:hidden text-white focus:outline-none p-2"
+        >
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+
+        <nav
+          id="main-nav"
+          class="hidden md:block absolute md:static top-16 left-0 w-full md:w-auto bg-tottus-green md:bg-transparent shadow-lg md:shadow-none z-40 transition-all duration-300 ease-in-out"
+          role="navigation"
+          aria-label="Menú Principal"
+        >
+          <ul
+            class="flex flex-col md:flex-row gap-4 md:gap-6 text-sm font-semibold items-center p-6 md:p-0"
+          >
+            <li
+              class="w-full md:w-auto border-b md:border-none border-tottus-dark pb-2 md:pb-0"
+            >
+              <button
+                onclick="toggleMobileMenu(); showView('wizard')"
+                class="hover:text-tottus-light text-left md:text-center w-full md:w-auto focus:outline-none"
+              >
+                Nuevo Reclamo
+              </button>
+            </li>
+
+            <li
+              class="w-full md:w-auto border-b md:border-none border-tottus-dark pb-2 md:pb-0"
+            >
+              <button
+                onclick="toggleMobileMenu(); showView('my-cases')"
+                class="hover:text-tottus-light text-left md:text-center w-full md:w-auto focus:outline-none"
+              >
+                <i class="fas fa-list-alt"></i> Mis Casos
+              </button>
+            </li>
+
+            <li class="w-full md:w-auto">
+              <button
+                onclick="toggleMobileMenu(); showView('guest-lookup')"
+                class="bg-tottus-dark md:bg-tottus-dark px-3 py-2 md:py-1 rounded hover:bg-opacity-80 transition w-full md:w-auto text-left md:text-center focus:outline-none"
+              >
+                <i class="fas fa-search"></i> Seguimiento Invitado
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 relative">
+      <div
+        id="view-wizard"
+        class="view-section max-w-3xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden"
+      >
+        <div class="bg-gray-50 border-b border-gray-200 p-6">
+          <div class="flex justify-between items-center relative">
+            <div
+              class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-0 transform -translate-y-1/2"
+            ></div>
+            <div class="relative z-10 bg-white px-2 text-center">
+              <div
+                id="ind-1"
+                class="step-indicator step-active w-10 h-10 rounded-full flex items-center justify-center border-2 font-bold shadow-sm mx-auto"
+              >
+                1
+              </div>
+              <p class="text-xs mt-1 font-semibold text-tottus-green">Datos</p>
+            </div>
+            <div class="relative z-10 bg-white px-2 text-center">
+              <div
+                id="ind-2"
+                class="step-indicator step-inactive w-10 h-10 rounded-full flex items-center justify-center border-2 font-bold shadow-sm mx-auto"
+              >
+                2
+              </div>
+              <p class="text-xs mt-1 text-gray-400">Incidente</p>
+            </div>
+            <div class="relative z-10 bg-white px-2 text-center">
+              <div
+                id="ind-3"
+                class="step-indicator step-inactive w-10 h-10 rounded-full flex items-center justify-center border-2 font-bold shadow-sm mx-auto"
+              >
+                3
+              </div>
+              <p class="text-xs mt-1 text-gray-400">Evidencia</p>
+            </div>
+            <div class="relative z-10 bg-white px-2 text-center">
+              <div
+                id="ind-4"
+                class="step-indicator step-inactive w-10 h-10 rounded-full flex items-center justify-center border-2 font-bold shadow-sm mx-auto"
+              >
+                <i class="fas fa-check"></i>
+              </div>
+              <p class="text-xs mt-1 text-gray-400">Fin</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 md:p-10">
+          <form id="claimForm" onsubmit="return false;">
+            <div id="step-1" class="form-step active">
+              <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                Hola, identifícate
+              </h2>
+              <p class="text-gray-500 mb-6 text-sm">
+                Si ya tienes cuenta, cargaremos tus datos automáticamente.
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2"
+                    >Tipo Documento</label
+                  >
+                  <select
+                    id="docType"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-tottus-green outline-none"
+                  >
+                    <option>DNI</option>
+                    <option>CE</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2"
+                    >Número de Documento</label
+                  >
+                  <div class="relative">
+                    <input
+                      type="number"
+                      id="dniInput"
+                      aria-label="Número de documento"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-tottus-green outline-none"
+                      placeholder="Ej: 45892100"
+                    />
+                    <button
+                      type="button"
+                      onclick="validateUser()"
+                      class="absolute right-2 top-1 text-xs text-tottus-green font-bold hover:underline mt-2 bg-white px-1"
+                    >
+                      <span id="btnTextValidar">Validar</span>
+                      <div id="loaderValidar" class="loader hidden"></div>
+                    </button>
+                  </div>
+                  <p
+                    id="userFoundMsg"
+                    class="hidden text-xs text-tottus-green mt-1 font-bold fade-in"
+                  >
+                    <i class="fas fa-check-circle"></i> ¡Hola María! Datos
+                    cargados.
+                  </p>
+                </div>
+
+                <div
+                  class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6"
+                >
+                  <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                      >Nombres</label
+                    >
+                    <input
+                      type="text"
+                      id="nameInput"
+                      class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-gray-600"
+                      placeholder="Nombres"
+                      readonly
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                      >Apellidos</label
+                    >
+                    <input
+                      type="text"
+                      id="lastNameInput"
+                      class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-gray-600"
+                      placeholder="Apellidos"
+                      readonly
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                      >Correo (Importante)</label
+                    >
+                    <input
+                      type="email"
+                      id="emailInput"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-tottus-green outline-none"
+                      placeholder="correo@ejemplo.com"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                      >Celular</label
+                    >
+                    <input
+                      type="tel"
+                      id="phoneInput"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-1 focus:ring-tottus-green outline-none"
+                      placeholder="999 999 999"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-8 flex justify-end">
+                <button
+                  onclick="nextStep(2)"
+                  class="bg-tottus-green hover:bg-tottus-dark text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 flex items-center gap-2"
+                >
+                  Continuar <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="step-2" class="form-step">
+              <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                Detalles del Caso
+              </h2>
+
+              <div
+                class="mb-6 bg-green-50 p-4 rounded-lg border border-green-100 mt-4"
+              >
+                <label class="block text-gray-700 text-sm font-bold mb-3"
+                  >¿Qué deseas presentar?</label
+                >
+                <div class="flex gap-6">
+                  <label class="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="claimType"
+                      value="reclamo"
+                      checked
+                      onchange="updateCategories()"
+                      class="w-4 h-4 text-tottus-green focus:ring-tottus-green"
+                    />
+                    <span class="ml-2 text-gray-700 font-medium">Reclamo</span>
+                    <span class="text-xs text-gray-400 ml-1 block"
+                      >(Producto/Cobro)</span
+                    >
+                  </label>
+
+                  <label class="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name="claimType"
+                      value="queja"
+                      onchange="updateCategories()"
+                      class="w-4 h-4 text-tottus-green focus:ring-tottus-green"
+                    />
+                    <span class="ml-2 text-gray-700 font-medium">Queja</span>
+                    <span class="text-xs text-gray-400 ml-1 block"
+                      >(Atención/Infraestructura)</span
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <div class="flex gap-4 mb-6">
+                <label class="flex-1 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="channel"
+                    value="tienda"
+                    class="peer hidden"
+                    checked
+                    onchange="toggleChannel('tienda')"
+                  />
+                  <div
+                    class="peer-checked:border-tottus-green peer-checked:bg-tottus-light peer-checked:text-tottus-dark border-2 border-gray-200 rounded-lg p-4 text-center transition-all group-hover:border-gray-300"
+                  >
+                    <i class="fas fa-store mb-2 text-2xl"></i>
+                    <div class="font-bold text-sm">Tienda Física</div>
+                  </div>
+                </label>
+                <label class="flex-1 cursor-pointer group">
+                  <input
+                    type="radio"
+                    name="channel"
+                    value="online"
+                    class="peer hidden"
+                    onchange="toggleChannel('online')"
+                  />
+                  <div
+                    class="peer-checked:border-tottus-green peer-checked:bg-tottus-light peer-checked:text-tottus-dark border-2 border-gray-200 rounded-lg p-4 text-center transition-all group-hover:border-gray-300"
+                  >
+                    <i class="fas fa-laptop mb-2 text-2xl"></i>
+                    <div class="font-bold text-sm">Tottus.com</div>
+                  </div>
+                </label>
+              </div>
+
+              <div class="grid grid-cols-1 gap-6">
+                <div id="store-selector">
+                  <label class="block text-gray-700 text-sm font-bold mb-2"
+                    >Tienda y Boleta</label
+                  >
+                  <div class="grid grid-cols-2 gap-2">
+                    <select
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none"
+                    >
+                      <option value="">-- Tienda --</option>
+                      <option value="trujillo">Trujillo - Mall Plaza</option>
+                      <option value="lima">Lima - San Isidro</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder="N° Boleta (Ej: B001-123)"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div id="order-selector" class="hidden">
+                  <label class="block text-gray-700 text-sm font-bold mb-2"
+                    >Número de Pedido</label
+                  >
+                  <input
+                    type="text"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none"
+                    placeholder="Ej: 11002548"
+                  />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                      >Motivo</label
+                    >
+                    <select
+                      id="categorySelect"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none"
+                    ></select>
+                    <p
+                      class="text-xs text-orange-500 mt-1 hidden"
+                      id="priorityHint"
+                    >
+                      <i class="fas fa-exclamation-triangle"></i> Caso de Alta
+                      Prioridad
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2"
+                      >Producto (Opcional)</label
+                    >
+                    <input
+                      type="text"
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2 outline-none"
+                      placeholder="Ej: Leche Gloria..."
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-gray-700 text-sm font-bold mb-2"
+                    >Descripción</label
+                  >
+                  <textarea
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 h-24 outline-none focus:border-tottus-green"
+                    placeholder="Detalla lo sucedido..."
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="mt-8 flex justify-between items-center">
+                <button
+                  onclick="prevStep(1)"
+                  class="text-gray-500 font-bold hover:text-gray-700 px-6 py-3 rounded-full border border-gray-300 hover:bg-gray-100 transition flex items-center gap-2"
+                >
+                  <i class="fas fa-arrow-left"></i> Atrás
+                </button>
+                <button
+                  onclick="nextStep(3)"
+                  class="bg-tottus-green hover:bg-tottus-dark text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 flex items-center gap-2"
+                >
+                  Continuar <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="step-3" class="form-step">
+              <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                Adjuntar Evidencia
+              </h2>
+              <p class="text-gray-500 mb-6 text-sm">
+                Foto de boleta, producto o captura de pantalla.
+              </p>
+
+              <div
+                class="file-upload-box rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-green-50"
+                onclick="document.getElementById('fileInput').click()"
+              >
+                <input
+                  type="file"
+                  id="fileInput"
+                  class="hidden"
+                  multiple
+                  onchange="handleFileSelect(this)"
+                  accept="image/*,.pdf"
+                />
+                <div class="text-tottus-green text-4xl mb-3">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3 class="font-bold text-gray-700">Toca para subir</h3>
+                <p class="text-sm text-gray-400 mt-1">
+                  Máx 10MB (JPG, PNG, PDF)
+                </p>
+              </div>
+
+              <div id="filePreview" class="mt-4 space-y-2"></div>
+
+              <div class="mt-8 flex justify-between items-center">
+                <button
+                  onclick="prevStep(2)"
+                  class="text-gray-500 font-bold hover:text-gray-700 px-6 py-3 rounded-full border border-gray-300 hover:bg-gray-100 transition flex items-center gap-2"
+                >
+                  <i class="fas fa-arrow-left"></i> Atrás
+                </button>
+                <button
+                  onclick="submitForm()"
+                  class="bg-tottus-green hover:bg-tottus-dark text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 flex items-center gap-2"
+                >
+                  Registrar Reclamo <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="step-4" class="form-step text-center py-6">
+              <div
+                class="w-20 h-20 bg-tottus-light rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce"
+              >
+                <i class="fas fa-check text-4xl text-tottus-green"></i>
+              </div>
+
+              <h2
+                id="successTitle"
+                class="text-3xl font-bold text-gray-800 mb-2"
+              >
+                ¡Solicitud Registrada!
+              </h2>
+
+              <p class="text-gray-600 mb-6">
+                Hemos enviado una confirmación a
+                <strong id="confirmEmail">tu correo</strong>.
+              </p>
+
+              <div
+                class="bg-blue-50 p-6 rounded-lg max-w-sm mx-auto border border-blue-100 mb-8 shadow-sm"
+              >
+                <p class="text-sm text-gray-500 uppercase tracking-wide">
+                  Código de Seguimiento
+                </p>
+                <p
+                  class="text-3xl font-bold text-blue-800 mt-2 tracking-wider"
+                  id="generatedCode"
+                >
+                  REQ-2025-001
+                </p>
+                <div
+                  class="mt-4 bg-white rounded p-2 text-xs text-gray-500 border border-gray-200"
+                >
+                  <i class="fas fa-clock text-orange-500"></i> Plazo máximo de
+                  respuesta: <strong>15 días hábiles</strong>.
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <button
+                  onclick="showView('my-cases')"
+                  class="bg-gray-800 text-white px-6 py-2 rounded-full hover:bg-gray-900 transition"
+                >
+                  Ver Mis Casos
+                </button>
+                <br />
+                <button
+                  onclick="location.reload()"
+                  class="text-tottus-green font-bold hover:underline text-sm"
+                >
+                <a href="index.html" class="text-tottus-green font-bold hover:underline text-sm">
+                  Salir
+                </a>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div
+        id="view-my-cases"
+        class="view-section hidden max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-6"
+      >
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">
+            <i class="fas fa-folder-open text-tottus-green"></i> Mis Reclamos
+          </h2>
+          <button
+            onclick="showView('wizard')"
+            class="text-tottus-green font-bold hover:underline"
+          >
+            Nuevo Reclamo +
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="text-sm text-gray-500 border-b-2 border-gray-100">
+                <th class="py-3">Código</th>
+                <th class="py-3">Fecha</th>
+                <th class="py-3">Motivo</th>
+                <th class="py-3">Estado</th>
+                <th class="py-3">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="casesTableBody" class="text-sm text-gray-700"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div
+        id="view-guest-lookup"
+        class="view-section hidden max-w-md mx-auto mt-10"
+      >
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden w-full">
+          <div class="bg-gray-800 text-white text-center p-6">
+            <div class="text-tottus-green text-4xl mb-2">
+              <i class="fas fa-search"></i>
+            </div>
+            <h2 class="text-2xl font-bold mb-1">Seguimiento de Caso</h2>
+            <p class="text-sm text-gray-300">
+              Consulta el estado de tu reclamo en tiempo real.
+            </p>
+          </div>
+
+          <div class="p-6 space-y-4">
+            <div>
+              <label
+                class="block text-gray-700 font-bold text-sm mb-2"
+                for="guestDni"
+              >
+                DNI del Titular
+              </label>
+              <input
+                type="number"
+                id="guestDni"
+                class="w-full border-2 border-gray-200 rounded-md p-3 focus:outline-none focus:border-tottus-green placeholder-gray-400 transition"
+                placeholder="Ingresa tu DNI"
+              />
+            </div>
+
+            <div>
+              <label
+                class="block text-gray-700 font-bold text-sm mb-2"
+                for="guestCode"
+              >
+                Código de Reclamo
+              </label>
+              <input
+                type="text"
+                id="guestCode"
+                class="w-full border-2 border-gray-200 rounded-md p-3 focus:outline-none focus:border-tottus-green placeholder-gray-400 transition"
+                placeholder="Ej: REQ-2025-001"
+              />
+            </div>
+
+            <button
+              onclick="searchGuestCase()"
+              class="w-full bg-tottus-green hover:bg-tottus-dark text-white font-bold py-3 rounded-md flex justify-center items-center transition duration-300 shadow-sm mt-2"
+            >
+              Consultar Estado <i class="fas fa-search ml-2"></i>
+            </button>
+
+            <div
+              id="guestResult"
+              class="hidden mt-4 bg-gray-50 p-4 rounded border border-gray-200 animate-pulse"
+            >
+              <div class="flex items-center gap-3 mb-2">
+                <div id="guestStatusIcon" class="text-2xl"></div>
+                <div>
+                  <p class="text-sm font-bold text-gray-800">
+                    Estado:
+                    <span id="guestStatusText" class="text-orange-500"
+                      >En Proceso</span
+                    >
+                  </p>
+                  <p id="guestMessage" class="text-xs text-gray-500 mt-0.5">
+                    Tu caso está siendo revisado.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-3 w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  id="guestProgressBar"
+                  class="bg-orange-500 h-2.5 rounded-full transition-all duration-1000"
+                  style="width: 10%"
+                ></div>
+              </div>
+
+              <div
+                class="mt-3 pt-3 border-t border-gray-200 flex justify-between text-xs text-gray-400"
+              >
+                <span>Fecha: <strong id="guestDate">-</strong></span>
+                <span>Motivo: <strong id="guestReason">-</strong></span>
+              </div>
+            </div>
+
+            <div
+              id="guestError"
+              class="hidden mt-4 p-4 bg-red-50 border border-red-100 rounded text-center text-red-600 text-sm font-bold"
+            >
+              <i class="fas fa-times-circle"></i> No encontramos un caso con
+              esos datos.
+            </div>
+          </div>
+
+          <div class="bg-gray-50 text-center p-4 border-t border-gray-200">
+            <p class="text-gray-600 font-medium text-sm">
+              ¿No tienes un código?
+              <button
+                onclick="showView('wizard')"
+                class="text-tottus-green hover:underline font-bold"
+              >
+                Crea un reclamo aquí.
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <button
+      id="acc-trigger-btn"
+      aria-label="Abrir menú de accesibilidad"
+      class="fixed bottom-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300"
+      onclick="toggleAccMenu()"
+    >
+      <i class="fas fa-universal-access text-2xl"></i>
+    </button>
+
+    <div
+      id="acc-menu"
+      class="fixed hidden bottom-20 right-4 z-50 w-72 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden fade-in"
+    >
+      <div
+        class="bg-gray-100 p-4 flex justify-between items-center border-b border-gray-200"
+      >
+        <h3 class="font-bold text-gray-800 flex items-center gap-2">
+          <i class="fas fa-universal-access text-blue-600"></i> Accesibilidad
+        </h3>
+        <button
+          onclick="toggleAccMenu()"
+          class="text-gray-500 hover:text-gray-700 focus:outline-none"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div class="p-4 grid grid-cols-2 gap-3">
+        <button
+          id="btn-acc-contrast"
+          onclick="toggleAccFeature('contrast')"
+          class="flex flex-col items-center justify-center p-3 border-2 border-gray-100 rounded-lg hover:bg-gray-50 transition focus:outline-none"
+        >
+          <i class="fas fa-adjust text-2xl mb-2 text-gray-700"></i>
+          <span class="text-xs font-semibold text-gray-600">Contraste +</span>
+        </button>
+
+        <button
+          id="btn-acc-text"
+          onclick="toggleAccFeature('text')"
+          class="flex flex-col items-center justify-center p-3 border-2 border-gray-100 rounded-lg hover:bg-gray-50 transition focus:outline-none"
+        >
+          <i class="fas fa-text-height text-2xl mb-2 text-gray-700"></i>
+          <span class="text-xs font-semibold text-gray-600"
+            >Agrandar Texto</span
+          >
+        </button>
+
+        <button
+          id="btn-acc-links"
+          onclick="toggleAccFeature('links')"
+          class="flex flex-col items-center justify-center p-3 border-2 border-gray-100 rounded-lg hover:bg-gray-50 transition focus:outline-none"
+        >
+          <i class="fas fa-link text-2xl mb-2 text-gray-700"></i>
+          <span class="text-xs font-semibold text-gray-600"
+            >Resaltar Links</span
+          >
+        </button>
+
+        <button
+          id="btn-acc-spacing"
+          onclick="toggleAccFeature('spacing')"
+          class="flex flex-col items-center justify-center p-3 border-2 border-gray-100 rounded-lg hover:bg-gray-50 transition focus:outline-none"
+        >
+          <i class="fas fa-arrows-alt-h text-2xl mb-2 text-gray-700"></i>
+          <span class="text-xs font-semibold text-gray-600">Espaciado</span>
+        </button>
+
+        <button
+          id="btn-acc-noani"
+          onclick="toggleAccFeature('noani')"
+          class="flex flex-col items-center justify-center p-3 border-2 border-gray-100 rounded-lg hover:bg-gray-50 transition focus:outline-none"
+        >
+          <i class="fas fa-stop-circle text-2xl mb-2 text-gray-700"></i>
+          <span class="text-xs font-semibold text-gray-600">Sin Animación</span>
+        </button>
+
+        <button
+          id="btn-acc-grayscale"
+          onclick="toggleAccFeature('grayscale')"
+          class="flex flex-col items-center justify-center p-3 border-2 border-gray-100 rounded-lg hover:bg-gray-50 transition focus:outline-none"
+        >
+          <i class="fas fa-tint-slash text-2xl mb-2 text-gray-700"></i>
+          <span class="text-xs font-semibold text-gray-600">Escala Grises</span>
+        </button>
+      </div>
+
+      <div class="p-3 bg-gray-50 border-t border-gray-100 text-center">
+        <button
+          onclick="resetAccessibility()"
+          class="text-sm text-red-500 hover:text-red-700 font-bold flex items-center justify-center gap-2 w-full"
+        >
+          <i class="fas fa-undo"></i> Restablecer todo
+        </button>
+      </div>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>
