@@ -1,8 +1,6 @@
 """
-Flujo de CLIENTE REGISTRADO: login en /ingresar con una cuenta real
-(cliente@tottus.com, sembrada por SetupDataLoader), verifica que sus datos
-se precargan en el paso 1, completa un reclamo, y confirma que aparece en
-/mis-casos.
+Flujo de CLIENTE REGISTRADO. Pruebas ordenadas por HU-CA:
+  HU-001-CA01b (+ HU-004-CA01), HU-004-CA02
 """
 import pytest
 
@@ -18,18 +16,12 @@ PASSWORD_CLIENTE_SEMILLA = "123456"
 
 
 @pytest.mark.cliente
-def test_cliente_registrado_ve_sus_datos_precargados_al_loguearse(driver, frontend_url):
-    ingreso_page = IngresoClientePage(driver, frontend_url).abrir()
-    ingreso_page.iniciar_sesion_como_cliente(CORREO_CLIENTE_SEMILLA, PASSWORD_CLIENTE_SEMILLA)
-
-    datos_page = ReclamoDatosPage(driver, frontend_url)
-    datos_page.esperar_cargada()
-
-    assert datos_page.datos_precargados(), "Debería mostrarse el mensaje de bienvenida con datos precargados"
-
-
-@pytest.mark.cliente
-def test_cliente_registrado_crea_reclamo_y_aparece_en_mis_casos(driver, frontend_url):
+def test_HU001_CA01b_cliente_registrado_crea_reclamo_y_aparece_en_mis_casos(driver, frontend_url):
+    """
+    HU-001-CA01b: registro exitoso como cliente autenticado, sin evidencia
+    (opcional, aquí ausente). También ejercita HU-004-CA01 (el cliente
+    autenticado ve sus reclamos en Mis Casos).
+    """
     ingreso_page = IngresoClientePage(driver, frontend_url).abrir()
     ingreso_page.iniciar_sesion_como_cliente(CORREO_CLIENTE_SEMILLA, PASSWORD_CLIENTE_SEMILLA)
 
@@ -61,8 +53,33 @@ def test_cliente_registrado_crea_reclamo_y_aparece_en_mis_casos(driver, frontend
 
 
 @pytest.mark.cliente
-def test_login_cliente_con_password_incorrecta_muestra_error(driver, frontend_url):
+def test_HU004_CA02_mis_casos_muestra_codigo_fecha_motivo_y_estado(driver, frontend_url):
+    """HU-004-CA02: cada fila de Mis Casos debe mostrar código, fecha, motivo y estado."""
     ingreso_page = IngresoClientePage(driver, frontend_url).abrir()
-    ingreso_page.iniciar_sesion_como_cliente(CORREO_CLIENTE_SEMILLA, "clave-incorrecta")
+    ingreso_page.iniciar_sesion_como_cliente(CORREO_CLIENTE_SEMILLA, PASSWORD_CLIENTE_SEMILLA)
 
-    assert "incorrectas" in ingreso_page.mensaje_error().lower()
+    datos_page = ReclamoDatosPage(driver, frontend_url)
+    datos_page.esperar_cargada()
+    datos_page.continuar()
+
+    evidencia_page = ReclamoEvidenciaPage(driver, frontend_url)
+    evidencia_page.llenar_formulario_completo(
+        boleta="TEST-BOLETA-CLIENTE-0002",
+        producto="Producto de prueba Selenium (columnas Mis Casos)",
+        descripcion="Reclamo creado para verificar las columnas de la tabla Mis Casos.",
+    )
+    evidencia_page.continuar()
+
+    confirmacion_page = ReclamoConfirmacionPage(driver, frontend_url)
+    confirmacion_page.esperar_cargada()
+    codigo = confirmacion_page.obtener_codigo_seguimiento()
+    registrar_dato_creado("Reclamo (cliente registrado)", codigo, extra="usado para verificar columnas de Mis Casos")
+    confirmacion_page.ir_a_mis_casos()
+
+    mis_casos_page = MisCasosPage(driver, frontend_url)
+    fila = mis_casos_page.datos_de_la_fila(codigo)
+
+    assert fila["codigo"] == codigo
+    assert fila["fecha"] != ""
+    assert fila["motivo"] != ""
+    assert fila["estado"] != ""

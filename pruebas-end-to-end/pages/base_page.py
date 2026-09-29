@@ -29,12 +29,27 @@ class BasePage:
         return self._esperar(timeout).until(EC.url_contains(fragmento))
 
     def esperar_url_coincide(self, patron_regex: str, timeout: int = TIMEOUT_POR_DEFECTO):
+        """
+        Espera a que la URL cumpla una expresión regular. Más estricto que
+        esperar_url_contiene: '/dashboard' está "contenido" en
+        '/dashboard/caso/5', pero r'.*/dashboard/?$' solo coincide con el
+        dashboard en sí.
+        """
         return self._esperar(timeout).until(EC.url_matches(patron_regex))
 
     def esperar_desaparece(self, locator, timeout: int = TIMEOUT_POR_DEFECTO):
         return self._esperar(timeout).until(EC.invisibility_of_element_located(locator))
 
     def click(self, locator, timeout: int = TIMEOUT_POR_DEFECTO):
+        """
+        Click robusto:
+          1) scroll del elemento al centro de la vista (en tablas largas la fila
+             puede estar fuera de pantalla);
+          2) si el widget flotante de accesibilidad (position: fixed, z-index
+             9999, esquina inferior derecha) lo tapa -> click por JavaScript;
+          3) si Angular re-renderizó el DOM justo en medio (StaleElement) ->
+             se vuelve a buscar el elemento y se reintenta (hasta 3 veces).
+        """
         ultimo_error = None
         for _ in range(3):
             try:

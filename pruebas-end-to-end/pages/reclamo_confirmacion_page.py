@@ -4,6 +4,8 @@ from pages.base_page import BasePage
 
 
 class ReclamoConfirmacionPage(BasePage):
+    """/reclamo/confirmacion (pantalla final: código de seguimiento generado)."""
+
     TITULO_EXITO = (By.CSS_SELECTOR, "[data-cy='titulo-exito']")
     CORREO_CONFIRMACION = (By.CSS_SELECTOR, "[data-cy='correo-confirmacion']")
     CODIGO_SEGUIMIENTO = (By.CSS_SELECTOR, "[data-cy='codigo-seguimiento']")

@@ -4,6 +4,11 @@ from pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
+    """
+    /login (acceso interno / backoffice). Este componente no tiene
+    atributos data-cy, así que se localiza por el atributo `name` del
+    formulario (name="correo" / name="password") y por el botón submit.
+    """
     RUTA = "/login"
 
     INPUT_CORREO = (By.CSS_SELECTOR, "input[name='correo']")

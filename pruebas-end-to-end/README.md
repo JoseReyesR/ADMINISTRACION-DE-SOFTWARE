@@ -72,12 +72,3 @@ pruebas-end-to-end/
 └── utils/
     └── test_data.py          # generador de datos TEST_ + registro para limpieza manual
 ```
-
-## Nota sobre `alert()` nativos
-
-Varias acciones del backoffice (`detallecaso.component.ts`) usan
-`alert()` nativo del navegador en vez de un modal de Angular, tanto en
-éxito como en error. Los Page Objects correspondientes
-(`DetalleCasoPage`) ya aceptan esos diálogos automáticamente — si agregas
-más pruebas sobre esa pantalla, recuerda que cualquier clic en "Guardar"
-va a necesitar `aceptar_alerta_nativa()` después.

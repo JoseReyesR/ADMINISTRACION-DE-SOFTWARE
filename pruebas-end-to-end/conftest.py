@@ -56,16 +56,12 @@ def driver():
     opciones.add_argument("--disable-notifications")
 
     prefs = {
-        # Desactiva la solicitud para guardar contraseñas
         "credentials_enable_service": False,
         "profile.password_manager_enabled": False,
-        # Desactiva la burbuja/modal de autocompletado de credenciales
         "profile.password_manager_leak_detection": False,
     }
     opciones.add_experimental_option("prefs", prefs)
-    # Argumentos para evitar popups/mensajes del sistema de Chrome
     opciones.add_argument("--disable-save-password-bubble")
-    # Opcional: oculta la barra de advertencia "Chrome está siendo controlado por un software de prueba"
     opciones.add_experimental_option("excludeSwitches", ["enable-automation"])
     opciones.add_experimental_option("useAutomationExtension", False)
 
@@ -114,3 +110,17 @@ def reclamo_de_prueba(driver, frontend_url):
     registrar_dato_creado("Reclamo (fixture compartido)", codigo, extra=f"dni={datos['numero_documento']}")
 
     return {"codigo": codigo, **datos}
+
+
+@pytest.fixture
+def requiere_mailtrap():
+    """
+    Los tests de notificación por correo (test_notificaciones_correo.py) lo piden
+    como parámetro para saltarse limpiamente (en vez de fallar) si todavía no
+    configuraste MAILTRAP_API_TOKEN / MAILTRAP_ACCOUNT_ID / MAILTRAP_INBOX_ID.
+    """
+    from utils.mailtrap_client import MailtrapNoConfigurado, _config
+    try:
+        _config()
+    except MailtrapNoConfigurado as error:
+        pytest.skip(str(error))

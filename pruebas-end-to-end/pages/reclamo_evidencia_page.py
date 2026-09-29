@@ -4,6 +4,7 @@ from pages.base_page import BasePage
 
 
 class ReclamoEvidenciaPage(BasePage):
+    """/reclamo/evidencia (Paso 2 del flujo de reclamo)."""
     RUTA = "/reclamo/evidencia"
 
     RADIO_RECLAMO = (By.CSS_SELECTOR, "[data-cy='radio-reclamo']")
@@ -23,6 +24,8 @@ class ReclamoEvidenciaPage(BasePage):
     MENSAJE_ERROR = (By.CSS_SELECTOR, ".alert-danger")
 
     def esperar_cargada(self):
+        # Espera a que el <select> de tienda tenga al menos una opción real
+        # cargada desde /api/catalogos/tiendas (el <option disabled> inicial no cuenta).
         self._esperar().until(
             lambda d: len(self.driver.find_elements(By.CSS_SELECTOR, "[data-cy='select-tienda'] option")) > 1
         )
@@ -83,6 +86,9 @@ class ReclamoEvidenciaPage(BasePage):
         return self
 
     def adjuntar_archivo(self, ruta_absoluta_archivo: str):
+        # El <input type=file> real está superpuesto (opacity:0) sobre la zona
+        # de "arrastra o toca"; Selenium puede escribirle la ruta igual, sin
+        # necesidad de que sea clickeable/visible para el ojo humano.
         campo = self.driver.find_element(*self.INPUT_FILE)
         campo.send_keys(ruta_absoluta_archivo)
         return self
@@ -106,3 +112,11 @@ class ReclamoEvidenciaPage(BasePage):
     def continuar(self):
         self.click(self.BTN_CONTINUAR)
         return self
+
+    def boton_continuar_deshabilitado(self) -> bool:
+        """
+        HU-001-AC3 (Paso 2): a diferencia del Paso 1, aquí no hay alert() de
+        validación -- el formulario usa [disabled]="!incidenteForm.form.valid",
+        así que un formulario incompleto simplemente deja el botón inactivo.
+        """
+        return not self.driver.find_element(*self.BTN_CONTINUAR).is_enabled()
