@@ -78,7 +78,11 @@ public class ReclamoService {
         Reclamo nuevoReclamo = new Reclamo();
 
         // 1. Generar Código de Seguimiento Aleatorio
-        String codigo = "REQ-2026-" + (new Random().nextInt(9000) + 1000);
+        String randomToken = java.util.UUID.randomUUID().toString()
+            .replace("-", "")
+            .substring(0, 8)
+            .toUpperCase();
+        String codigo = "REQ-2026-" + randomToken;
         nuevoReclamo.setCodigoSeguimiento(codigo);
 
         // 2. Gestión Inteligente del Usuario
